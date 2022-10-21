@@ -97,9 +97,9 @@ class _HotelsHomeState extends State<HotelsHome> {
                     scrollDirection: Axis.vertical,
                     itemCount: hotelCount + 1,
                     itemBuilder: (context, index) {
-                      if (index == hotelCount)
-                        return const SizedBox(height: 6);
-                      else
+                      if (index == hotelCount) {
+                        return const SizedBox(height: 0);
+                      } else
                         return _buildIToteltem(index);
                     },
                     separatorBuilder: (BuildContext context, int index) {
@@ -120,6 +120,7 @@ int hotelCount = 3;
 
 Widget _buildIToteltem(int index) {
   return Container(
+    constraints: BoxConstraints(maxWidth: 100),
     decoration: BoxDecoration(
       border: Border.all(
         color: const Color.fromRGBO(220, 218, 218, 1),
