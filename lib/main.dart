@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:hoteldise/pages/hotels/home.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const MaterialApp(home: HotelsHome()));
 }
 
 class MyApp extends StatelessWidget {
