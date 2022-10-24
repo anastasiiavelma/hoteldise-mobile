@@ -182,21 +182,6 @@ class _HotelsHomeState extends State<HotelsHome> {
                 height: 12,
               ),
               Flexible(
-<<<<<<< Updated upstream
-                  child: ListView.separated(
-                    scrollDirection: Axis.vertical,
-                    itemCount: hotelCount + 1,
-                    itemBuilder: (context, index) {
-                      if (index == hotelCount)
-                        return const SizedBox(height: 6);
-                      else
-                        return _buildIToteltem(index);
-                    },
-                    separatorBuilder: (BuildContext context, int index) {
-                      return const SizedBox(height: 20);
-                    },
-                  ),
-=======
                 child: ListView.separated(
                   scrollDirection: Axis.vertical,
                   itemCount: hotelCount + 1,
@@ -210,7 +195,6 @@ class _HotelsHomeState extends State<HotelsHome> {
                     return const SizedBox(height: 20);
                   },
                 ),
->>>>>>> Stashed changes
               ),
             ],
           ),
@@ -225,6 +209,7 @@ int hotelCount = 3;
 
 Widget _buildIToteltem(int index) {
   return Container(
+    constraints: BoxConstraints(maxWidth: 100),
     decoration: BoxDecoration(
       border: Border.all(
         color: const Color.fromRGBO(220, 218, 218, 1),
