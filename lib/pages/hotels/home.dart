@@ -11,7 +11,44 @@ class HotelsHome extends StatefulWidget {
   State<HotelsHome> createState() => _HotelsHomeState();
 }
 
+List<String> sortOptions = <String>[
+  'Most relevant',
+  'The nearest',
+  'Most rated'
+];
+
 class _HotelsHomeState extends State<HotelsHome> {
+  String currentSortOption = sortOptions[0];
+
+  Color GetColorOfSortListOption(String currentOption) {
+    if (currentOption == 1000)
+      return Colors.green;
+    return Colors.black;
+  }
+
+  List<Material> GetSortListItems() {
+    List<Material> list = [];
+    for (int i = 0; i < sortOptions.length; i++){
+      String label = sortOptions[i];
+      var newItem = Material(
+        child: InkWell(
+          child: ListTile(
+            title: AppText(text: label, color: label == currentSortOption ? primaryColor : Colors.black),
+            onTap: () {
+              setState(() {
+                currentSortOption = label;
+              });
+              Navigator.pop(context);
+            },
+            contentPadding: EdgeInsets.zero,
+          ),
+        ),
+      );
+      list.add(newItem);
+    }
+    return list;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,10 +100,62 @@ class _HotelsHomeState extends State<HotelsHome> {
                       minimumSize: Size.zero,
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      showModalBottomSheet<dynamic>(
+                          isScrollControlled: true,
+                          context: context,
+                          builder: (BuildContext buildContext) {
+                            return Wrap(children: <Widget>[
+                              Container(
+                                color: const Color(0xFF737373),
+                                child: Container(
+                                  decoration: const BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(10),
+                                      topRight: Radius.circular(10),
+                                    ),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 20, right: 30, top: 10),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(vertical: 20),
+                                          child: AppText(
+                                            text: 'Sort by',
+                                            weight: FontWeight.w900,
+                                            size: 20,
+                                          ),
+                                        ),
+                                        Column(children: GetSortListItems()),
+                                        Center(
+                                          child: ListTile(
+                                            title: Center(
+                                                child: AppText(
+                                              text: 'CANCEL',
+                                              weight: FontWeight.w700,
+                                              color: Colors.grey,
+                                            )),
+                                            onTap: () {
+                                              Navigator.pop(context);
+                                            },
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ]);
+                          });
+                    },
                     icon: Icon(Icons.sort, color: Colors.black),
                     label: AppText(
-                      text: "Most relevant",
+                      text: currentSortOption,
                       size: 12,
                       weight: FontWeight.w500,
                     ),
@@ -93,6 +182,7 @@ class _HotelsHomeState extends State<HotelsHome> {
                 height: 12,
               ),
               Flexible(
+<<<<<<< Updated upstream
                   child: ListView.separated(
                     scrollDirection: Axis.vertical,
                     itemCount: hotelCount + 1,
@@ -106,6 +196,21 @@ class _HotelsHomeState extends State<HotelsHome> {
                       return const SizedBox(height: 20);
                     },
                   ),
+=======
+                child: ListView.separated(
+                  scrollDirection: Axis.vertical,
+                  itemCount: hotelCount + 1,
+                  itemBuilder: (context, index) {
+                    if (index == hotelCount) {
+                      return const SizedBox(height: 0);
+                    } else
+                      return _buildIToteltem(index);
+                  },
+                  separatorBuilder: (BuildContext context, int index) {
+                    return const SizedBox(height: 20);
+                  },
+                ),
+>>>>>>> Stashed changes
               ),
             ],
           ),
