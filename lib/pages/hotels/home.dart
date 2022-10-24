@@ -119,115 +119,104 @@ class _HotelsHomeState extends State<HotelsHome> {
 int hotelCount = 3;
 
 Widget _buildIToteltem(int index) {
-  return Container(
-    constraints: BoxConstraints(maxWidth: 100),
-    decoration: BoxDecoration(
-      border: Border.all(
-        color: const Color.fromRGBO(220, 218, 218, 1),
+  return Center(
+    child: Container(
+      constraints: BoxConstraints(maxWidth: 350),
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: const Color.fromRGBO(220, 218, 218, 1),
+        ),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Color(0xffDDDDDD),
+            blurRadius: 6.0,
+            spreadRadius: 2.0,
+            offset: Offset(0.0, 0.0),
+          ),
+        ],
       ),
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(16),
-      boxShadow: [
-        BoxShadow(
-          color: Color(0xffDDDDDD),
-          blurRadius: 6.0,
-          spreadRadius: 2.0,
-          offset: Offset(0.0, 0.0),
-        ),
-      ],
-    ),
-    child: Column(
-      children: [
-        ClipRRect(
-          borderRadius: const BorderRadius.only(
-              topRight: Radius.circular(16), topLeft: Radius.circular(16)),
-          child: Image.asset(
-            height: 180,
-            width: double.infinity,
-            fit: BoxFit.fitWidth,
-            "assets/images/hotel_template.jpg",
+      child: Column(
+        children: [
+          ClipRRect(
+            borderRadius: const BorderRadius.only(
+                topRight: Radius.circular(16), topLeft: Radius.circular(16)),
+            child: Image.asset(
+              height: 180,
+              width: double.infinity,
+              fit: BoxFit.fitWidth,
+              "assets/images/hotel_template.jpg",
+            ),
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  AppText(
-                    text: "Grand Royal Hotel",
-                    size: 16,
-                    weight: FontWeight.w700,
-                  ),
-                  const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      AppText(
-                          text: "Wembley, London",
-                          size: 12,
-                          color: Colors.grey),
-                      const SizedBox(width: 4),
-                      Icon(
-                        Icons.location_on,
-                        size: 14,
-                        color: primaryColor,
-                      ),
-                      AppText(
-                          text: "2 km to city", size: 12, color: Colors.grey),
-                    ],
-                  ),
-                  const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.star_rounded,
-                        size: 16,
-                        color: primaryColor,
-                      ),
-                      Icon(
-                        Icons.star_rounded,
-                        size: 16,
-                        color: primaryColor,
-                      ),
-                      Icon(
-                        Icons.star_rounded,
-                        size: 16,
-                        color: primaryColor,
-                      ),
-                      Icon(
-                        Icons.star_rounded,
-                        size: 16,
-                        color: primaryColor,
-                      ),
-                      Icon(
-                        Icons.star_border_rounded,
-                        size: 16,
-                        color: primaryColor,
-                      ),
-                      const SizedBox(width: 4),
-                      AppText(text: "70 Reviews", size: 12, color: Colors.grey),
-                    ],
-                  ),
-                ],
-              ),
-              Column(
-                children: [
-                  AppText(
-                    text: "190\$",
-                    size: 16,
-                    weight: FontWeight.w700,
-                  ),
-                  const SizedBox(height: 4),
-                  AppText(text: "/per night", size: 12, color: Colors.black),
-                ],
-              ),
-            ],
-          ),
-        )
-      ],
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    AppText(
+                      text: "Grand Royal Hotel",
+                      size: 16,
+                      weight: FontWeight.w700,
+                    ),
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
+                        AppText(
+                            text: "Wembley, London",
+                            size: 12,
+                            color: Colors.grey),
+                        const SizedBox(width: 4),
+                        Icon(
+                          Icons.location_on,
+                          size: 14,
+                          color: primaryColor,
+                        ),
+                        AppText(
+                            text: "2 km to city", size: 12, color: Colors.grey),
+                      ],
+                    ),
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
+                        for (int i = 0; i < 4; i++)
+                          Icon(
+                            Icons.star_rounded,
+                            size: 16,
+                            color: primaryColor,
+                          ),
+                        for (int i = 0; i < 1; i++)
+                          Icon(
+                            Icons.star_border_rounded,
+                            size: 16,
+                            color: primaryColor,
+                          ),
+                        const SizedBox(width: 4),
+                        AppText(text: "70 Reviews", size: 12, color: Colors.grey),
+                      ],
+                    ),
+                  ],
+                ),
+                Column(
+                  children: [
+                    AppText(
+                      text: "190\$",
+                      size: 16,
+                      weight: FontWeight.w700,
+                    ),
+                    const SizedBox(height: 4),
+                    AppText(text: "/per night", size: 12, color: Colors.black),
+                  ],
+                ),
+              ],
+            ),
+          )
+        ],
+      ),
     ),
   );
 }
