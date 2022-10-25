@@ -4,8 +4,6 @@ import '../../themes/colors.dart';
 import '../../widgets/bottom_navigation_bar.dart';
 import '../../widgets/text_widget.dart';
 
-
-
 class HotelsHome extends StatefulWidget {
   const HotelsHome({Key? key}) : super(key: key);
 
@@ -23,19 +21,21 @@ class _HotelsHomeState extends State<HotelsHome> {
   String currentSortOption = sortOptions[0];
 
   Color GetColorOfSortListOption(String currentOption) {
-    if (currentOption == 1000)
-      return Colors.green;
+    if (currentOption == 1000) return Colors.green;
     return Colors.black;
   }
 
   List<Material> GetSortListItems() {
     List<Material> list = [];
-    for (int i = 0; i < sortOptions.length; i++){
+    for (int i = 0; i < sortOptions.length; i++) {
       String label = sortOptions[i];
       var newItem = Material(
         child: InkWell(
           child: ListTile(
-            title: AppText(text: label, color: label == currentSortOption ? primaryColor : Colors.black),
+            title: AppText(
+                text: label,
+                color:
+                    label == currentSortOption ? primaryColor : Colors.black),
             onTap: () {
               setState(() {
                 currentSortOption = label;
@@ -73,13 +73,11 @@ class _HotelsHomeState extends State<HotelsHome> {
                   fillColor: Colors.grey[200],
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14),
-                    borderSide:
-                        const BorderSide(color: Colors.white, width: 0),
+                    borderSide: const BorderSide(color: Colors.white, width: 0),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14),
-                    borderSide:
-                        const BorderSide(color: Colors.white, width: 0),
+                    borderSide: const BorderSide(color: Colors.white, width: 0),
                   ),
                   prefixIcon: const Icon(Icons.search, color: Colors.black54),
                   hintText: "Search for hotels",
@@ -123,7 +121,8 @@ class _HotelsHomeState extends State<HotelsHome> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Padding(
-                                          padding: const EdgeInsets.symmetric(vertical: 20),
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 20),
                                           child: AppText(
                                             text: 'Sort by',
                                             weight: FontWeight.w900,
@@ -243,64 +242,82 @@ Widget _buildIToteltem(int index) {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    AppText(
-                      text: "Grand Royal Hotel",
-                      size: 16,
-                      weight: FontWeight.w700,
-                    ),
-                    const SizedBox(height: 4),
-                    Row(
-                      children: [
-                        AppText(
-                            text: "Wembley, London",
-                            size: 12,
-                            color: Colors.grey),
-                        const SizedBox(width: 4),
-                        Icon(
-                          Icons.location_on,
-                          size: 14,
-                          color: primaryColor,
-                        ),
-                        AppText(
-                            text: "2 km to city", size: 12, color: Colors.grey),
-                      ],
-                    ),
-                    const SizedBox(height: 4),
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.star_rounded,
-                          size: 16,
-                          color: primaryColor,
-                        ),
-                        Icon(
-                          Icons.star_rounded,
-                          size: 16,
-                          color: primaryColor,
-                        ),
-                        Icon(
-                          Icons.star_rounded,
-                          size: 16,
-                          color: primaryColor,
-                        ),
-                        Icon(
-                          Icons.star_rounded,
-                          size: 16,
-                          color: primaryColor,
-                        ),
-                        Icon(
-                          Icons.star_border_rounded,
-                          size: 16,
-                          color: primaryColor,
-                        ),
-                        const SizedBox(width: 4),
-                        AppText(text: "70 Reviews", size: 12, color: Colors.grey),
-                      ],
-                    ),
-                  ],
+                Flexible(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      AppText(
+                        text: "Grand Royal Hotelmmmccm",
+                        size: 16,
+                        weight: FontWeight.w700,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 4),
+                      Row(
+                        children: [
+                          Flexible(
+                            child: Text(
+                              "Wembley, London",
+                              softWrap: false,
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.grey,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                          Icon(
+                            Icons.location_on,
+                            size: 14,
+                            color: primaryColor,
+                          ),
+                          AppText(
+                              text: "2 km to city",
+                              size: 12,
+                              color: Colors.grey),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.star_rounded,
+                            size: 16,
+                            color: primaryColor,
+                          ),
+                          Icon(
+                            Icons.star_rounded,
+                            size: 16,
+                            color: primaryColor,
+                          ),
+                          Icon(
+                            Icons.star_rounded,
+                            size: 16,
+                            color: primaryColor,
+                          ),
+                          Icon(
+                            Icons.star_rounded,
+                            size: 16,
+                            color: primaryColor,
+                          ),
+                          Icon(
+                            Icons.star_border_rounded,
+                            size: 16,
+                            color: primaryColor,
+                          ),
+                          const SizedBox(width: 4),
+                          Flexible(
+                            child: AppText(
+                                text: "70 Reviews",
+                                size: 12,
+                                color: Colors.grey,
+                            overflow: TextOverflow.ellipsis,),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
                 Column(
                   children: [
