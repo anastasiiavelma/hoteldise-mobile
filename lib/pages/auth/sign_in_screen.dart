@@ -1,60 +1,115 @@
 import 'package:flutter/material.dart';
+import 'package:unicons/unicons.dart';
 
-class SignInScreen extends StatefulWidget {
-  const SignInScreen({Key? key}) : super(key: key);
+class SignUpScreen extends StatelessWidget {
+  const SignUpScreen({Key? key}) : super(key: key);
 
-  @override
-  State<SignInScreen> createState() => SighInScreenState();
-}
-
-class SighInScreenState extends State<SignInScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.white,
-        body: Container(
-            alignment: Alignment.center,
-            height: double.infinity,
-            width: double.infinity,
-            child: SingleChildScrollView(
-                padding: const EdgeInsets.only(
-                    top: 40, bottom: 30, left: 30, right: 30),
-                reverse: true,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
+      body: Container(
+        color: Colors.white,
+        alignment: Alignment.center,
+        padding:
+            const EdgeInsets.only(top: 40, bottom: 70, left: 30, right: 30),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              flex: 5,
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    Expanded(
+                      child: Container(
+                        constraints: BoxConstraints.loose(Size.infinite),
+                        margin: const EdgeInsets.only(bottom: 15),
+                        child: Image.asset(
+                          'assets/images/building.png',
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                    ),
+                    Form(
+                        child: Column(
                       mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        Container(
-                          constraints: const BoxConstraints(
-                              maxHeight: 160, minHeight: 80),
-                          margin: const EdgeInsets.only(bottom: 15),
-                          child: Image.asset(
-                            'assets/images/planet.png',
-                            fit: BoxFit.contain,
+                        TextFormField(
+                          decoration: const InputDecoration(
+                            icon: Icon(UniconsLine.user),
+                            border: UnderlineInputBorder(),
+                            hintText: "Name",
                           ),
                         ),
-                        Text('ddfdf'),
-                        Text('ddfdf'),
-                        TextField(),
-                        const TextField(),
-                        TextButton(
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all(
-                                const Color(0x00f85f6a)), //Background Color
-                            elevation: MaterialStateProperty.all(
-                                3), //Defines Elevation
-                            shadowColor: MaterialStateProperty.all(
-                                const Color(0x00f85f6a)), //Defines shadowColor
+                        const SizedBox(
+                          height: 10.0,
+                        ),
+                        TextFormField(
+                          keyboardType: TextInputType.emailAddress,
+                          textInputAction: TextInputAction.next,
+                          decoration: const InputDecoration(
+                            icon: Icon(UniconsLine.envelope_alt),
+                            border: UnderlineInputBorder(),
+                            hintText: "Email",
                           ),
-                          onPressed: () {},
-                          child: Text('Sign In'),
-                        )
+                        ),
+                        const SizedBox(
+                          height: 10.0,
+                        ),
+                        TextFormField(
+                          autocorrect: false,
+                          keyboardType: TextInputType.visiblePassword,
+                          textInputAction: TextInputAction.next,
+                          decoration: const InputDecoration(
+                            icon: Icon(UniconsLine.key_skeleton_alt),
+                            border: UnderlineInputBorder(),
+                            hintText: "Password",
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 20.0,
+                        ),
+                        ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              minimumSize: const Size.fromHeight(50),
+                            ),
+                            onPressed: () {
+                              Navigator.pushNamedAndRemoveUntil(
+                                  context, '/', (route) => false);
+                            },
+                            child: const Text("Sign Up")),
                       ],
-                    ),
-                  ],
-                ))));
+                    ))
+                  ]),
+            ),
+            const SizedBox(
+              height: 20.0,
+            ),
+            const Divider(
+              height: 3.0,
+              indent: 50.0,
+              endIndent: 50.0,
+              color: Colors.black,
+            ),
+            Expanded(
+              flex: 1,
+              child: Container(
+                alignment: Alignment.bottomCenter,
+                child: OutlinedButton(
+                    style: OutlinedButton.styleFrom(
+                        minimumSize: const Size.fromHeight(50),
+                        side:
+                            BorderSide(color: Theme.of(context).primaryColor)),
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/signIn');
+                    },
+                    child: const Text("Sign In")),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
