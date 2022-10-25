@@ -4,6 +4,8 @@ import '../../themes/colors.dart';
 import '../../widgets/bottom_navigation_bar.dart';
 import '../../widgets/text_widget.dart';
 
+
+
 class HotelsHome extends StatefulWidget {
   const HotelsHome({Key? key}) : super(key: key);
 
@@ -60,32 +62,29 @@ class _HotelsHomeState extends State<HotelsHome> {
               const SizedBox(
                 height: 10,
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 0),
-                child: TextField(
-                  autocorrect: false,
-                  enableSuggestions: false,
-                  style: const TextStyle(fontSize: 14, color: Colors.black87),
-                  cursorColor: Colors.black87,
-                  decoration: InputDecoration(
-                    contentPadding: EdgeInsets.symmetric(horizontal: 0),
-                    filled: true,
-                    fillColor: Colors.grey[200],
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14),
-                      borderSide:
-                          const BorderSide(color: Colors.white, width: 0),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14),
-                      borderSide:
-                          const BorderSide(color: Colors.white, width: 0),
-                    ),
-                    prefixIcon: const Icon(Icons.search, color: Colors.black54),
-                    hintText: "Search for hotels",
-                    hintStyle:
-                        const TextStyle(fontSize: 14, color: Colors.black54),
+              TextField(
+                autocorrect: false,
+                enableSuggestions: false,
+                style: const TextStyle(fontSize: 14, color: Colors.black87),
+                cursorColor: Colors.black87,
+                decoration: InputDecoration(
+                  contentPadding: EdgeInsets.symmetric(horizontal: 0),
+                  filled: true,
+                  fillColor: Colors.grey[200],
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14),
+                    borderSide:
+                        const BorderSide(color: Colors.white, width: 0),
                   ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14),
+                    borderSide:
+                        const BorderSide(color: Colors.white, width: 0),
+                  ),
+                  prefixIcon: const Icon(Icons.search, color: Colors.black54),
+                  hintText: "Search for hotels",
+                  hintStyle:
+                      const TextStyle(fontSize: 14, color: Colors.black54),
                 ),
               ),
               SizedBox(
