@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hoteldise/pages/auth/sign_in_screen.dart';
+import 'package:hoteldise/pages/hotels/home.dart';
 
 void main() {
   runApp(const MyApp());

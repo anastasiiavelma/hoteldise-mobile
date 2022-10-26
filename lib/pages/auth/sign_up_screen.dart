@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:unicons/unicons.dart';
 import 'package:hoteldise/pages/auth/sign_in_screen.dart';
+import '../../themes/colors.dart';
 
 class SignUpScreen extends StatelessWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -79,6 +80,7 @@ class SignUpScreen extends StatelessWidget {
                         ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               minimumSize: const Size.fromHeight(50),
+                              backgroundColor: primaryColor,
                             ),
                             onPressed: () {
                               Navigator.pushNamedAndRemoveUntil(
@@ -104,7 +106,7 @@ class SignUpScreen extends StatelessWidget {
                   TextSpan(
                       text: 'Login',
                       style: const TextStyle(
-                        color: Colors.blue,
+                        color: primaryColor,
                       ),
                       recognizer: TapGestureRecognizer()
                         ..onTap = () {

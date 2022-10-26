@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:unicons/unicons.dart';
 import 'package:hoteldise/pages/auth/sign_up_screen.dart';
+import '../../themes/colors.dart';
 
 class SignInScreen extends StatelessWidget {
   const SignInScreen({Key? key}) : super(key: key);
@@ -60,6 +61,7 @@ class SignInScreen extends StatelessWidget {
                       children: [
                         ElevatedButton.icon(
                           style: ElevatedButton.styleFrom(
+                            backgroundColor: primaryColor,
                             minimumSize: const Size.fromHeight(50),
                           ),
                           icon: const Icon(
@@ -107,6 +109,7 @@ class SignInScreen extends StatelessWidget {
                         ),
                         ElevatedButton(
                             style: ElevatedButton.styleFrom(
+                              backgroundColor: primaryColor,
                               minimumSize: const Size.fromHeight(50),
                             ),
                             onPressed: () {
@@ -133,9 +136,9 @@ class SignInScreen extends StatelessWidget {
                 alignment: Alignment.bottomCenter,
                 child: OutlinedButton(
                     style: OutlinedButton.styleFrom(
+                        primary: primaryColor,
                         minimumSize: const Size.fromHeight(50),
-                        side:
-                            BorderSide(color: Theme.of(context).primaryColor)),
+                        side: BorderSide(color: primaryColor)),
                     onPressed: () {
                       Navigator.push(
                           context,
