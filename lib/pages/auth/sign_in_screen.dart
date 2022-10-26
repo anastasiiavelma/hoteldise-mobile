@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/physics.dart';
 import 'package:unicons/unicons.dart';
 import 'package:hoteldise/pages/auth/sign_up_screen.dart';
 import '../../themes/colors.dart';
@@ -46,6 +47,7 @@ class SignInScreen extends StatelessWidget {
                       child: Text(
                         "Hi there! Nice to see you again",
                         style: TextStyle(
+                          color: Color.fromARGB(255, 122, 122, 122),
                           fontWeight: FontWeight.w600,
                           fontSize: 18,
                         ),
