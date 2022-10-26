@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hoteldise/pages/auth/sign_up_screen.dart';
+import 'package:hoteldise/pages/auth/sign_in_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -60,7 +60,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: const Text('Open route'),
         onPressed: () {
           Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const SignUpScreen()));
+              MaterialPageRoute(builder: (context) => const SignInScreen()));
         },
       )),
     );
