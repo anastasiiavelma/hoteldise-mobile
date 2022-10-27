@@ -1,7 +1,12 @@
-import 'package:geopoint/geopoint.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Address {
-  Address({required this.address, required this.geopoint});
-  final String address;
-  final GeoPoint geopoint;
+
+   late String address;
+   late GeoPoint geopoint;
+
+  Address.fromJson(Map json) {
+    address = json['address'];
+    geopoint = json['geopoint'];
+  }
 }
