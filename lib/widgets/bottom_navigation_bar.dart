@@ -21,22 +21,22 @@ class _MyHomePageState extends State<BottomMenu>
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 4,  // Added
+      length: 4, // Added
       initialIndex: 0, //Added
       child: Material(
         color: Color(0xffff5d55),
         child: TabBar(
-            indicatorColor: Colors.white,
-            unselectedLabelColor: Colors.white,
-            labelColor: Color(0xffffdad8),
-            onTap: (index) {},
-            tabs: [
-              Tab(icon: Icon(UniconsLine.bed)),
-              Tab(icon: Icon(Icons.favorite)),
-              Tab(icon: Icon(Icons.account_box)),
-              Tab(icon: Icon(Icons.settings_rounded)),
-            ],
-          ),
+          indicatorColor: Colors.white,
+          unselectedLabelColor: Colors.white,
+          labelColor: Color(0xffffdad8),
+          onTap: (index) {},
+          tabs: [
+            Tab(icon: Icon(UniconsLine.bed)),
+            Tab(icon: Icon(Icons.favorite)),
+            Tab(icon: Icon(Icons.account_box)),
+            Tab(icon: Icon(Icons.settings_rounded)),
+          ],
+        ),
       ),
     );
   }
