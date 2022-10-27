@@ -21,19 +21,21 @@ class _HotelsHomeState extends State<HotelsHome> {
   String currentSortOption = sortOptions[0];
 
   Color GetColorOfSortListOption(String currentOption) {
-    if (currentOption == 1000)
-      return Colors.green;
+    if (currentOption == 1000) return Colors.green;
     return Colors.black;
   }
 
   List<Material> GetSortListItems() {
     List<Material> list = [];
-    for (int i = 0; i < sortOptions.length; i++){
+    for (int i = 0; i < sortOptions.length; i++) {
       String label = sortOptions[i];
       var newItem = Material(
         child: InkWell(
           child: ListTile(
-            title: AppText(text: label, color: label == currentSortOption ? primaryColor : Colors.black),
+            title: AppText(
+                text: label,
+                color:
+                    label == currentSortOption ? primaryColor : Colors.black),
             onTap: () {
               setState(() {
                 currentSortOption = label;
@@ -60,32 +62,27 @@ class _HotelsHomeState extends State<HotelsHome> {
               const SizedBox(
                 height: 10,
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 0),
-                child: TextField(
-                  autocorrect: false,
-                  enableSuggestions: false,
-                  style: const TextStyle(fontSize: 14, color: Colors.black87),
-                  cursorColor: Colors.black87,
-                  decoration: InputDecoration(
-                    contentPadding: EdgeInsets.symmetric(horizontal: 0),
-                    filled: true,
-                    fillColor: Colors.grey[200],
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14),
-                      borderSide:
-                          const BorderSide(color: Colors.white, width: 0),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14),
-                      borderSide:
-                          const BorderSide(color: Colors.white, width: 0),
-                    ),
-                    prefixIcon: const Icon(Icons.search, color: Colors.black54),
-                    hintText: "Search for hotels",
-                    hintStyle:
-                        const TextStyle(fontSize: 14, color: Colors.black54),
+              TextField(
+                autocorrect: false,
+                enableSuggestions: false,
+                style: const TextStyle(fontSize: 14, color: Colors.black87),
+                cursorColor: Colors.black87,
+                decoration: InputDecoration(
+                  contentPadding: EdgeInsets.symmetric(horizontal: 0),
+                  filled: true,
+                  fillColor: Colors.grey[200],
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14),
+                    borderSide: const BorderSide(color: Colors.white, width: 0),
                   ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14),
+                    borderSide: const BorderSide(color: Colors.white, width: 0),
+                  ),
+                  prefixIcon: const Icon(Icons.search, color: Colors.black54),
+                  hintText: "Search for hotels",
+                  hintStyle:
+                      const TextStyle(fontSize: 14, color: Colors.black54),
                 ),
               ),
               SizedBox(
@@ -124,7 +121,8 @@ class _HotelsHomeState extends State<HotelsHome> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Padding(
-                                          padding: const EdgeInsets.symmetric(vertical: 20),
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 20),
                                           child: AppText(
                                             text: 'Sort by',
                                             weight: FontWeight.w900,
@@ -208,115 +206,135 @@ class _HotelsHomeState extends State<HotelsHome> {
 int hotelCount = 3;
 
 Widget _buildIToteltem(int index) {
-  return Container(
-    constraints: BoxConstraints(maxWidth: 100),
-    decoration: BoxDecoration(
-      border: Border.all(
-        color: const Color.fromRGBO(220, 218, 218, 1),
+  return Center(
+    child: Container(
+      constraints: BoxConstraints(maxWidth: 340),
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: const Color.fromRGBO(220, 218, 218, 1),
+        ),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Color(0xffDDDDDD),
+            blurRadius: 6.0,
+            spreadRadius: 2.0,
+            offset: Offset(0.0, 0.0),
+          ),
+        ],
       ),
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(16),
-      boxShadow: [
-        BoxShadow(
-          color: Color(0xffDDDDDD),
-          blurRadius: 6.0,
-          spreadRadius: 2.0,
-          offset: Offset(0.0, 0.0),
-        ),
-      ],
-    ),
-    child: Column(
-      children: [
-        ClipRRect(
-          borderRadius: const BorderRadius.only(
-              topRight: Radius.circular(16), topLeft: Radius.circular(16)),
-          child: Image.asset(
-            height: 180,
-            width: double.infinity,
-            fit: BoxFit.fitWidth,
-            "assets/images/hotel_template.jpg",
+      child: Column(
+        children: [
+          ClipRRect(
+            borderRadius: const BorderRadius.only(
+                topRight: Radius.circular(16), topLeft: Radius.circular(16)),
+            child: Image.asset(
+              height: 180,
+              width: double.infinity,
+              fit: BoxFit.fitWidth,
+              "assets/images/hotel_template.jpg",
+            ),
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  AppText(
-                    text: "Grand Royal Hotel",
-                    size: 16,
-                    weight: FontWeight.w700,
-                  ),
-                  const SizedBox(height: 4),
-                  Row(
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Flexible(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       AppText(
-                          text: "Wembley, London",
-                          size: 12,
-                          color: Colors.grey),
-                      const SizedBox(width: 4),
-                      Icon(
-                        Icons.location_on,
-                        size: 14,
-                        color: primaryColor,
+                        text: "Grand Royal Hotelmmmccm",
+                        size: 16,
+                        weight: FontWeight.w700,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      AppText(
-                          text: "2 km to city", size: 12, color: Colors.grey),
+                      const SizedBox(height: 4),
+                      Row(
+                        children: [
+                          Flexible(
+                            child: Text(
+                              "Wembley, London",
+                              softWrap: false,
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.grey,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                          Icon(
+                            Icons.location_on,
+                            size: 14,
+                            color: primaryColor,
+                          ),
+                          AppText(
+                              text: "2 km to city",
+                              size: 12,
+                              color: Colors.grey),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.star_rounded,
+                            size: 16,
+                            color: primaryColor,
+                          ),
+                          Icon(
+                            Icons.star_rounded,
+                            size: 16,
+                            color: primaryColor,
+                          ),
+                          Icon(
+                            Icons.star_rounded,
+                            size: 16,
+                            color: primaryColor,
+                          ),
+                          Icon(
+                            Icons.star_rounded,
+                            size: 16,
+                            color: primaryColor,
+                          ),
+                          Icon(
+                            Icons.star_border_rounded,
+                            size: 16,
+                            color: primaryColor,
+                          ),
+                          const SizedBox(width: 4),
+                          Flexible(
+                            child: AppText(
+                                text: "70 Reviews",
+                                size: 12,
+                                color: Colors.grey,
+                            overflow: TextOverflow.ellipsis,),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
-                  const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.star_rounded,
-                        size: 16,
-                        color: primaryColor,
-                      ),
-                      Icon(
-                        Icons.star_rounded,
-                        size: 16,
-                        color: primaryColor,
-                      ),
-                      Icon(
-                        Icons.star_rounded,
-                        size: 16,
-                        color: primaryColor,
-                      ),
-                      Icon(
-                        Icons.star_rounded,
-                        size: 16,
-                        color: primaryColor,
-                      ),
-                      Icon(
-                        Icons.star_border_rounded,
-                        size: 16,
-                        color: primaryColor,
-                      ),
-                      const SizedBox(width: 4),
-                      AppText(text: "70 Reviews", size: 12, color: Colors.grey),
-                    ],
-                  ),
-                ],
-              ),
-              Column(
-                children: [
-                  AppText(
-                    text: "190\$",
-                    size: 16,
-                    weight: FontWeight.w700,
-                  ),
-                  const SizedBox(height: 4),
-                  AppText(text: "/per night", size: 12, color: Colors.black),
-                ],
-              ),
-            ],
-          ),
-        )
-      ],
+                ),
+                Column(
+                  children: [
+                    AppText(
+                      text: "190\$",
+                      size: 16,
+                      weight: FontWeight.w700,
+                    ),
+                    const SizedBox(height: 4),
+                    AppText(text: "/per night", size: 12, color: Colors.black),
+                  ],
+                ),
+              ],
+            ),
+          )
+        ],
+      ),
     ),
   );
 }

@@ -2,9 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:hoteldise/pages/auth/sign_in_screen.dart';
 import 'package:hoteldise/pages/auth/sign_up_screen.dart';
 import 'package:hoteldise/pages/hotels/home.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
-void main() {
-  runApp(const MyApp());
+Future<void> main() async {
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  runApp(my App());
 }
 
 class MyApp extends StatelessWidget {
