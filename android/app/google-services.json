@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "231569168072",
+    "project_id": "hoteldise-adab9",
+    "storage_bucket": "hoteldise-adab9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:231569168072:android:77c981cef648b7f10537fd",
+        "android_client_info": {
+          "package_name": "com.example.hoteldise"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "231569168072-gs80vkn8lrfsacgnpilrk8aa8ai05sjr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBT-ghz70MfAgnNbKegS3TDi4ScjZy1FdQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "231569168072-gs80vkn8lrfsacgnpilrk8aa8ai05sjr.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "231569168072-cjo0icn3qa6c3a6ab8p5vv8s6824mklc.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.hoteldise"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
