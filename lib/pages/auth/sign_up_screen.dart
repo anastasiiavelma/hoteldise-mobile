@@ -79,8 +79,8 @@ class SignUpScreen extends StatelessWidget {
                         ),
                         ElevatedButton(
                             style: ElevatedButton.styleFrom(
+                              primary: primaryColor,
                               minimumSize: const Size.fromHeight(50),
-                              backgroundColor: primaryColor,
                             ),
                             onPressed: () {
                               Navigator.pushNamedAndRemoveUntil(

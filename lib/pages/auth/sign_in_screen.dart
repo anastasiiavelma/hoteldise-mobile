@@ -63,7 +63,7 @@ class SignInScreen extends StatelessWidget {
                       children: [
                         ElevatedButton.icon(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: primaryColor,
+                            primary: primaryColor,
                             minimumSize: const Size.fromHeight(50),
                           ),
                           icon: const Icon(
@@ -111,7 +111,7 @@ class SignInScreen extends StatelessWidget {
                         ),
                         ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: primaryColor,
+                              primary: primaryColor,
                               minimumSize: const Size.fromHeight(50),
                             ),
                             onPressed: () {
