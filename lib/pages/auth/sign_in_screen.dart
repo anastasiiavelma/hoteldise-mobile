@@ -3,12 +3,95 @@ import 'package:flutter/physics.dart';
 import 'package:unicons/unicons.dart';
 import 'package:hoteldise/pages/auth/sign_up_screen.dart';
 import '../../themes/colors.dart';
+import 'package:provider/provider.dart';
+import 'package:loader_overlay/loader_overlay.dart';
+import 'package:form_field_validator/form_field_validator.dart';
+import 'package:hoteldise/services/auth.dart';
+import 'package:hoteldise/utils/toast.dart';
 
-class SignInScreen extends StatelessWidget {
+class SignInScreen extends StatefulWidget {
   const SignInScreen({Key? key}) : super(key: key);
 
   @override
+  State<SignInScreen> createState() => _SignInScreenState();
+}
+
+class _SignInScreenState extends State<SignInScreen> {
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    super.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+  }
+
+  void _signInWithEmailAndPassword(BuildContext context) async {
+    if (!_formKey.currentState!.validate()) return;
+    context.loaderOverlay.show();
+    AuthBase? auth = Provider.of<AuthBase>(context, listen: false);
+    try {
+      await auth.signInWithEmailAndPassword(
+          email: emailController.text, password: passwordController.text);
+      context.loaderOverlay.hide();
+      Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+    } catch (e) {
+      CustomToast(message: 'No user or incorrect password').show();
+    } finally {
+      context.loaderOverlay.hide();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final emailField = TextFormField(
+      controller: emailController,
+      keyboardType: TextInputType.emailAddress,
+      textInputAction: TextInputAction.next,
+      validator: MultiValidator([
+        RequiredValidator(errorText: 'email is required'),
+        EmailValidator(errorText: 'enter correct email'),
+      ]),
+      onSaved: (value) {
+        emailController.text = value!;
+      },
+      decoration: const InputDecoration(
+        icon: Icon(UniconsLine.envelope_alt),
+        border: UnderlineInputBorder(),
+        hintText: "Email",
+      ),
+    );
+
+    final passwordField = TextFormField(
+      controller: passwordController,
+      autocorrect: false,
+      autovalidateMode: AutovalidateMode.disabled,
+      textInputAction: TextInputAction.done,
+      obscureText: true,
+      validator: MultiValidator([
+        RequiredValidator(errorText: 'password is requires'),
+        MinLengthValidator(8, errorText: 'password must be more 8 letters'),
+      ]),
+      onSaved: (value) {
+        passwordController.text = value!;
+      },
+      decoration: const InputDecoration(
+        icon: Icon(UniconsLine.key_skeleton_alt),
+        border: UnderlineInputBorder(),
+        hintText: "Password",
+      ),
+    );
+
+    final signInButton = ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          primary: primaryColor,
+          minimumSize: const Size.fromHeight(50),
+        ),
+        onPressed: () => _signInWithEmailAndPassword(context),
+        child: Text('Sign In'));
+
     return Scaffold(
       body: Container(
         color: Colors.white,
@@ -84,41 +167,15 @@ class SignInScreen extends StatelessWidget {
                           style: TextStyle(
                               fontWeight: FontWeight.w600, fontSize: 18.0),
                         ),
-                        TextFormField(
-                          keyboardType: TextInputType.emailAddress,
-                          textInputAction: TextInputAction.next,
-                          decoration: const InputDecoration(
-                            icon: Icon(UniconsLine.envelope_alt),
-                            border: UnderlineInputBorder(),
-                            hintText: "Email",
-                          ),
-                        ),
+                        emailField,
                         const SizedBox(
                           height: 10.0,
                         ),
-                        TextFormField(
-                          autocorrect: false,
-                          keyboardType: TextInputType.visiblePassword,
-                          textInputAction: TextInputAction.next,
-                          decoration: const InputDecoration(
-                            icon: Icon(UniconsLine.key_skeleton_alt),
-                            border: UnderlineInputBorder(),
-                            hintText: "Password",
-                          ),
-                        ),
+                        passwordField,
                         const SizedBox(
                           height: 20.0,
                         ),
-                        ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              primary: primaryColor,
-                              minimumSize: const Size.fromHeight(50),
-                            ),
-                            onPressed: () {
-                              Navigator.pushNamedAndRemoveUntil(
-                                  context, '/', (route) => false);
-                            },
-                            child: const Text("Sign In")),
+                        signInButton,
                       ],
                     ))
                   ]),
