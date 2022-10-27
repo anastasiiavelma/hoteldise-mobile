@@ -167,15 +167,23 @@ class _SignInScreenState extends State<SignInScreen> {
                           style: TextStyle(
                               fontWeight: FontWeight.w600, fontSize: 18.0),
                         ),
-                        emailField,
-                        const SizedBox(
-                          height: 10.0,
-                        ),
-                        passwordField,
-                        const SizedBox(
-                          height: 20.0,
-                        ),
-                        signInButton,
+                        Form(
+                            key: _formKey,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                emailField,
+                                const SizedBox(
+                                  height: 10.0,
+                                ),
+                                passwordField,
+                                const SizedBox(
+                                  height: 20.0,
+                                ),
+                                signInButton,
+                              ],
+                            )),
                       ],
                     ))
                   ]),

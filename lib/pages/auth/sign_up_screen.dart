@@ -4,7 +4,6 @@ import 'package:unicons/unicons.dart';
 import 'package:hoteldise/pages/auth/sign_in_screen.dart';
 import '../../themes/colors.dart';
 import 'package:hoteldise/utils/toast.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:provider/provider.dart';
@@ -146,24 +145,26 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       height: 10.0,
                     ),
                     Form(
+                        key: _formKey,
                         child: Column(
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        nameField,
-                        const SizedBox(
-                          height: 10.0,
-                        ),
-                        emailField,
-                        const SizedBox(
-                          height: 10.0,
-                        ),
-                        passwordField,
-                        const SizedBox(
-                          height: 35.0,
-                        ),
-                        signUpButton,
-                      ],
-                    ))
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            nameField,
+                            const SizedBox(
+                              height: 10.0,
+                            ),
+                            emailField,
+                            const SizedBox(
+                              height: 10.0,
+                            ),
+                            passwordField,
+                            const SizedBox(
+                              height: 35.0,
+                            ),
+                            signUpButton,
+                          ],
+                        ))
                   ]),
             ),
             const SizedBox(

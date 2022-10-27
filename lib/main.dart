@@ -3,7 +3,11 @@ import 'package:hoteldise/pages/auth/sign_in_screen.dart';
 import 'package:hoteldise/pages/auth/sign_up_screen.dart';
 import 'package:hoteldise/pages/hotels/home.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:hoteldise/services/auth.dart';
+import 'package:loader_overlay/loader_overlay.dart';
+import 'package:provider/provider.dart';
 import 'firebase_options.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -40,15 +44,26 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: "HotelDise",
-      initialRoute: '/',
-      routes: {
-        '/home': (context) => const HotelsHome(),
-        '/signIn': (context) => const SignInScreen(),
-        '/signUp': (context) => const SignUpScreen(),
-        '/': (context) => const SignInScreen(),
-      },
+    return Provider<AuthBase>(
+      create: (context) => AuthService(),
+      child: GlobalLoaderOverlay(
+          useDefaultLoading: false,
+          overlayWidget: const Center(
+            child: SpinKitThreeInOut(
+              color: Colors.yellowAccent,
+              size: 50.0,
+            ),
+          ),
+          child: MaterialApp(
+            title: "HotelDise",
+            initialRoute: '/',
+            routes: {
+              '/home': (context) => const HotelsHome(),
+              '/signIn': (context) => const SignInScreen(),
+              '/signUp': (context) => const SignUpScreen(),
+              '/': (context) => const SignInScreen(),
+            },
+          )),
     );
   }
 }
