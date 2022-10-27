@@ -47,7 +47,7 @@ class _MyHomePageState extends State<MyHomePage> {
         '/home': (context) => const HotelsHome(),
         '/signIn': (context) => const SignInScreen(),
         '/signUp': (context) => const SignUpScreen(),
-        '/': (context) => const SignInScreen(),
+        '/': (context) => const HotelsHome(),
       },
     );
   }
