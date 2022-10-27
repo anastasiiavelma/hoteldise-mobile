@@ -25,21 +25,24 @@ class _HotelsHomeState extends State<HotelsHome> {
   String currentSortOption = sortOptions[0];
   List<Hotel> hotels = <Hotel>[];
 
-
-
   getAllHotels() async {
     List<Hotel> newHotels = <Hotel>[];
     FirebaseFirestore db = FirebaseFirestore.instance;
-    await db.collection("hotels").withConverter(fromFirestore: Hotel.fromFirestore, toFirestore: (Hotel hotel, _) => hotel.toFirestore()).get().then((event) {
+    await db
+        .collection("hotels")
+        .withConverter(
+            fromFirestore: Hotel.fromFirestore,
+            toFirestore: (Hotel hotel, _) => hotel.toFirestore())
+        .get()
+        .then((event) {
       for (var doc in event.docs) {
-        newHotels.add(doc.data as Hotel);
+        newHotels.add(doc.data() as Hotel);
       }
       setState(() {
         hotels = newHotels;
       });
     });
   }
-
 
   Color GetColorOfSortListOption(String currentOption) {
     if (currentOption == 1000) return Colors.green;
@@ -74,7 +77,6 @@ class _HotelsHomeState extends State<HotelsHome> {
 
   @override
   Widget build(BuildContext context) {
-
     getAllHotels();
 
     return Scaffold(
@@ -278,7 +280,7 @@ class _HotelsHomeState extends State<HotelsHome> {
                           children: [
                             Flexible(
                               child: Text(
-                                "Wembley, London",
+                                hotels[index].address.address,
                                 softWrap: false,
                                 style: TextStyle(
                                   fontSize: 12,
@@ -302,38 +304,32 @@ class _HotelsHomeState extends State<HotelsHome> {
                         const SizedBox(height: 4),
                         Row(
                           children: [
-                            Icon(
-                              Icons.star_rounded,
-                              size: 16,
-                              color: primaryColor,
-                            ),
-                            Icon(
-                              Icons.star_rounded,
-                              size: 16,
-                              color: primaryColor,
-                            ),
-                            Icon(
-                              Icons.star_rounded,
-                              size: 16,
-                              color: primaryColor,
-                            ),
-                            Icon(
-                              Icons.star_rounded,
-                              size: 16,
-                              color: primaryColor,
-                            ),
-                            Icon(
-                              Icons.star_border_rounded,
-                              size: 16,
-                              color: primaryColor,
-                            ),
+                            for (int i = 0; i < hotels[index].rating.mark; i++)
+                              Icon(
+                                Icons.star_rounded,
+                                size: 16,
+                                color: primaryColor,
+                              ),
+                            for (int i = 0;
+                                i < 5 - hotels[index].rating.mark;
+                                i++)
+                              Icon(
+                                Icons.star_border_rounded,
+                                size: 16,
+                                color: primaryColor,
+                              ),
                             const SizedBox(width: 4),
                             Flexible(
                               child: AppText(
-                                text: "70 Reviews",
+                                text:
+                                    "based on ${hotels[index].rating.count.toString()} mark" +
+                                        (hotels[index].rating.count > 1
+                                            ? "s"
+                                            : ""),
                                 size: 12,
                                 color: Colors.grey,
-                                overflow: TextOverflow.ellipsis,),
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ),
                           ],
                         ),
@@ -348,7 +344,8 @@ class _HotelsHomeState extends State<HotelsHome> {
                         weight: FontWeight.w700,
                       ),
                       const SizedBox(height: 4),
-                      AppText(text: "/per night", size: 12, color: Colors.black),
+                      AppText(
+                          text: "/per night", size: 12, color: Colors.black),
                     ],
                   ),
                 ],
@@ -360,5 +357,3 @@ class _HotelsHomeState extends State<HotelsHome> {
     );
   }
 }
-
-
