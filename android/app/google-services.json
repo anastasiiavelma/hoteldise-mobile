@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "231569168072-kfk035seng6dvf59ff6caic5i54fl3vh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.hoteldise",
+            "certificate_hash": "bc136bd5e59893d555ab28f42e7b5258ec0d449e"
+          }
+        },
+        {
           "client_id": "231569168072-gs80vkn8lrfsacgnpilrk8aa8ai05sjr.apps.googleusercontent.com",
           "client_type": 3
         }
