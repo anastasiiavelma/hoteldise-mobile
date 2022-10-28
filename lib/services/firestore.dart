@@ -6,12 +6,11 @@ import 'package:hoteldise/services/auth.dart';
 class Firestore {
   final FirebaseFirestore _fStore = FirebaseFirestore.instance;
 
-  Future<void> _addUser(User user) async {
+  Future<void> addUser(User user) async {
     Timestamp timestamp = Timestamp.fromDate(DateTime.now());
 
     final newUser = {
       "email": user.email!,
-      "_id": user.uid,
       "timeStamp": timestamp,
       "favourites": [],
     };
@@ -26,7 +25,7 @@ class Firestore {
         .get()
         .then((snapshot) {
       if (snapshot.docs.isEmpty) {
-        _addUser(AuthService().currentUser!);
+        addUser(AuthService().currentUser!);
       } else {
         return FirestoreUser.fromJson(snapshot.docs[0]);
       }

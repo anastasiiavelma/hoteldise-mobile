@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:hoteldise/services/firestore.dart';
 import 'package:unicons/unicons.dart';
 import 'package:hoteldise/pages/auth/sign_in_screen.dart';
 import '../../themes/colors.dart';
@@ -39,9 +41,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
           email: emailController.text,
           password: passwordController.text,
           name: nameController.text);
-      await auth.signInWithEmailAndPassword(
+      User? user = await auth.signInWithEmailAndPassword(
           email: emailController.text, password: passwordController.text);
-      Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+      if (user != null) {
+        await Firestore().addUser(user);
+        Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+      }
     } catch (e) {
       CustomToast(message: 'enter correct field').show();
     } finally {

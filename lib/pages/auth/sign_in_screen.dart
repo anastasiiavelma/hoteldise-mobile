@@ -47,6 +47,19 @@ class _SignInScreenState extends State<SignInScreen> {
     }
   }
 
+  void _signInWithGoogle(BuildContext context) async {
+    context.loaderOverlay.show();
+    AuthBase? auth = Provider.of<AuthBase>(context, listen: false);
+    try {
+      await auth.signInWithGoogle();
+      Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+    } catch (e) {
+      CustomToast(message: "Something went wrong").show();
+    } finally {
+      context.loaderOverlay.hide();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final emailField = TextFormField(
@@ -104,9 +117,7 @@ class _SignInScreenState extends State<SignInScreen> {
         'Sign in with google',
         style: TextStyle(color: Colors.white),
       ),
-      onPressed: () {
-        Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
-      },
+      onPressed: () => _signInWithGoogle(context),
     );
 
     return Scaffold(
