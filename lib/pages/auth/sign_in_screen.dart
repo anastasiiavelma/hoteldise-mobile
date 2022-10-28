@@ -1,3 +1,6 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
 import 'package:unicons/unicons.dart';
@@ -92,6 +95,20 @@ class _SignInScreenState extends State<SignInScreen> {
         onPressed: () => _signInWithEmailAndPassword(context),
         child: Text('Sign In'));
 
+    final googleButton = OutlinedButton(
+      style: ElevatedButton.styleFrom(
+        primary: primaryColor,
+        minimumSize: const Size.fromHeight(50),
+      ),
+      child: const Text(
+        'Sign in with google',
+        style: TextStyle(color: Colors.white),
+      ),
+      onPressed: () {
+        Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+      },
+    );
+
     return Scaffold(
       body: Container(
         color: Colors.white,
@@ -144,28 +161,8 @@ class _SignInScreenState extends State<SignInScreen> {
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        ElevatedButton.icon(
-                          style: ElevatedButton.styleFrom(
-                            primary: primaryColor,
-                            minimumSize: const Size.fromHeight(50),
-                          ),
-                          icon: const Icon(
-                            UniconsLine.google,
-                            size: 30.0,
-                          ),
-                          label: Text('Sign in via google'),
-                          onPressed: () {
-                            Navigator.pushNamedAndRemoveUntil(
-                                context, '/', (route) => false);
-                          },
-                        ),
                         const SizedBox(
                           height: 10.0,
-                        ),
-                        const Text(
-                          "OR",
-                          style: TextStyle(
-                              fontWeight: FontWeight.w600, fontSize: 18.0),
                         ),
                         Form(
                             key: _formKey,
@@ -182,6 +179,10 @@ class _SignInScreenState extends State<SignInScreen> {
                                   height: 20.0,
                                 ),
                                 signInButton,
+                                const SizedBox(
+                                  height: 10.0,
+                                ),
+                                googleButton,
                               ],
                             )),
                       ],
@@ -191,28 +192,22 @@ class _SignInScreenState extends State<SignInScreen> {
             const SizedBox(
               height: 20.0,
             ),
-            const Divider(
-              height: 3.0,
-              indent: 50.0,
-              endIndent: 50.0,
-              color: Colors.black,
-            ),
-            Expanded(
-              flex: 1,
-              child: Container(
-                alignment: Alignment.bottomCenter,
-                child: OutlinedButton(
-                    style: OutlinedButton.styleFrom(
-                        primary: primaryColor,
-                        minimumSize: const Size.fromHeight(50),
-                        side: BorderSide(color: primaryColor)),
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const SignUpScreen()));
-                    },
-                    child: const Text("Sign Up")),
+            Center(
+              child: RichText(
+                text: TextSpan(children: [
+                  TextSpan(
+                      text: 'Sign Up',
+                      style: const TextStyle(
+                        color: primaryColor,
+                      ),
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const SignUpScreen()));
+                        }),
+                ]),
               ),
             ),
           ],

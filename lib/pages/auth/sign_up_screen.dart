@@ -160,7 +160,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             ),
                             passwordField,
                             const SizedBox(
-                              height: 35.0,
+                              height: 20.0,
                             ),
                             signUpButton,
                           ],
