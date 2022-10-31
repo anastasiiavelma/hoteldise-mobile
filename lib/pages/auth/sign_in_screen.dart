@@ -3,6 +3,8 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:hoteldise/utils/welcome.dart';
 import 'package:unicons/unicons.dart';
 import 'package:hoteldise/pages/auth/sign_up_screen.dart';
 import '../../themes/colors.dart';
@@ -119,111 +121,118 @@ class _SignInScreenState extends State<SignInScreen> {
       ),
       onPressed: () => _signInWithGoogle(context),
     );
+    final box = Hive.box('');
 
-    return Scaffold(
-      body: Container(
-        color: Colors.white,
-        alignment: Alignment.center,
-        padding:
-            const EdgeInsets.only(top: 40, bottom: 70, left: 30, right: 30),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              flex: 5,
+    bool firstTimeState = box.get('introduction') ?? true;
+    return firstTimeState
+        ? const WelcomeScreen()
+        : Scaffold(
+            body: Container(
+              color: Colors.white,
+              alignment: Alignment.center,
+              padding: const EdgeInsets.only(
+                  top: 40, bottom: 70, left: 30, right: 30),
               child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Container(
-                        constraints: BoxConstraints.loose(const Size(75, 50)),
-                        child: Image.asset(
-                          'assets/images/building.png',
-                          fit: BoxFit.contain,
-                        ),
-                      ),
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    flex: 5,
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Container(
+                              constraints:
+                                  BoxConstraints.loose(const Size(75, 50)),
+                              child: Image.asset(
+                                'assets/images/building.png',
+                                fit: BoxFit.contain,
+                              ),
+                            ),
+                          ),
+                          const Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              "Sign In",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 24,
+                              ),
+                            ),
+                          ),
+                          const Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              "Hi there! Nice to see you again",
+                              style: TextStyle(
+                                color: Color.fromARGB(255, 122, 122, 122),
+                                fontWeight: FontWeight.w600,
+                                fontSize: 18,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 20.0,
+                          ),
+                          Form(
+                              child: Column(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              const SizedBox(
+                                height: 10.0,
+                              ),
+                              Form(
+                                  key: _formKey,
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      emailField,
+                                      const SizedBox(
+                                        height: 10.0,
+                                      ),
+                                      passwordField,
+                                      const SizedBox(
+                                        height: 20.0,
+                                      ),
+                                      signInButton,
+                                      const SizedBox(
+                                        height: 10.0,
+                                      ),
+                                      googleButton,
+                                    ],
+                                  )),
+                            ],
+                          ))
+                        ]),
+                  ),
+                  const SizedBox(
+                    height: 20.0,
+                  ),
+                  Center(
+                    child: RichText(
+                      text: TextSpan(children: [
+                        TextSpan(
+                            text: 'Sign Up',
+                            style: const TextStyle(
+                              color: primaryColor,
+                            ),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const SignUpScreen()));
+                              }),
+                      ]),
                     ),
-                    const Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        "Sign In",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 24,
-                        ),
-                      ),
-                    ),
-                    const Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        "Hi there! Nice to see you again",
-                        style: TextStyle(
-                          color: Color.fromARGB(255, 122, 122, 122),
-                          fontWeight: FontWeight.w600,
-                          fontSize: 18,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 20.0,
-                    ),
-                    Form(
-                        child: Column(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        const SizedBox(
-                          height: 10.0,
-                        ),
-                        Form(
-                            key: _formKey,
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                emailField,
-                                const SizedBox(
-                                  height: 10.0,
-                                ),
-                                passwordField,
-                                const SizedBox(
-                                  height: 20.0,
-                                ),
-                                signInButton,
-                                const SizedBox(
-                                  height: 10.0,
-                                ),
-                                googleButton,
-                              ],
-                            )),
-                      ],
-                    ))
-                  ]),
-            ),
-            const SizedBox(
-              height: 20.0,
-            ),
-            Center(
-              child: RichText(
-                text: TextSpan(children: [
-                  TextSpan(
-                      text: 'Sign Up',
-                      style: const TextStyle(
-                        color: primaryColor,
-                      ),
-                      recognizer: TapGestureRecognizer()
-                        ..onTap = () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const SignUpScreen()));
-                        }),
-                ]),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
-      ),
-    );
+          );
   }
 }
