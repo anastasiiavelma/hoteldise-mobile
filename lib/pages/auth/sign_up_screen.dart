@@ -123,25 +123,31 @@ class _SignUpScreenState extends State<SignUpScreen> {
       body: Container(
         color: Colors.white,
         alignment: Alignment.center,
-        padding:
-            const EdgeInsets.only(top: 40, bottom: 250, left: 30, right: 30),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              child: Column(
+        height: double.infinity,
+        width: double.infinity,
+        child: SingleChildScrollView(
+          padding:
+              const EdgeInsets.only(top: 40, bottom: 20, left: 30, right: 30),
+          reverse: true,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisSize: MainAxisSize.max,
                   children: [
-                    Expanded(
-                      child: Container(
-                        child: const Align(
-                          alignment: Alignment.topLeft,
-                          child: Text(
-                            "Sign Up",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 26,
-                            ),
+                    Container(
+                      constraints:
+                          BoxConstraints(maxHeight: 160, minHeight: 80),
+                      margin: const EdgeInsets.only(bottom: 15),
+                      child: const Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          "Sign Up",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 26,
                           ),
                         ),
                       ),
@@ -171,35 +177,36 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           ],
                         ))
                   ]),
-            ),
-            const SizedBox(
-              height: 30.0,
-            ),
-            Center(
-              child: RichText(
-                text: TextSpan(children: [
-                  const TextSpan(
-                    text: 'Already have account? ',
-                    style: TextStyle(
-                      color: Colors.black,
-                    ),
-                  ),
-                  TextSpan(
-                      text: 'Login',
-                      style: const TextStyle(
-                        color: primaryColor,
-                      ),
-                      recognizer: TapGestureRecognizer()
-                        ..onTap = () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const SignInScreen()));
-                        }),
-                ]),
+              const SizedBox(
+                height: 30.0,
               ),
-            ),
-          ],
+              Center(
+                child: RichText(
+                  text: TextSpan(children: [
+                    const TextSpan(
+                      text: 'Already have account? ',
+                      style: TextStyle(
+                        color: Colors.black,
+                      ),
+                    ),
+                    TextSpan(
+                        text: 'Login',
+                        style: const TextStyle(
+                          color: primaryColor,
+                        ),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const SignInScreen()));
+                          }),
+                  ]),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
