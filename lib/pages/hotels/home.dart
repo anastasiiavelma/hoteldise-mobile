@@ -21,6 +21,8 @@ List<String> sortOptions = <String>[
   'Most rated'
 ];
 
+List<Hotel> a = new List<Hotel>;
+
 class _HotelsHomeState extends State<HotelsHome> {
   String currentSortOption = sortOptions[0];
   List<Hotel> hotels = <Hotel>[];
