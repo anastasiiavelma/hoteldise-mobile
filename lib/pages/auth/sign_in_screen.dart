@@ -76,9 +76,9 @@ class _SignInScreenState extends State<SignInScreen> {
         emailController.text = value!;
       },
       decoration: const InputDecoration(
-        icon: Icon(UniconsLine.envelope_alt),
         border: UnderlineInputBorder(),
-        hintText: "Email",
+        labelText: 'Email',
+        hintText: "Enter your email",
       ),
     );
 
@@ -96,9 +96,9 @@ class _SignInScreenState extends State<SignInScreen> {
         passwordController.text = value!;
       },
       decoration: const InputDecoration(
-        icon: Icon(UniconsLine.key_skeleton_alt),
         border: UnderlineInputBorder(),
-        hintText: "Password",
+        labelText: 'Password',
+        hintText: "Enter your password",
       ),
     );
 
@@ -112,7 +112,7 @@ class _SignInScreenState extends State<SignInScreen> {
 
     final googleButton = OutlinedButton(
       style: ElevatedButton.styleFrom(
-        primary: primaryColor,
+        primary: secondaryColor,
         minimumSize: const Size.fromHeight(50),
       ),
       child: const Text(
@@ -217,7 +217,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         TextSpan(
                             text: 'Sign Up',
                             style: const TextStyle(
-                              color: primaryColor,
+                              color: secondaryColor,
                             ),
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
