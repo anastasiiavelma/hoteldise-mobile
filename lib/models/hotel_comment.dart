@@ -8,7 +8,7 @@ class HotelComment {
 
   HotelComment.fromJson(Map json) {
     content = json['content'];
-    userId = json['user_id'];
+    userId = json['userId'];
     date = (json['date'] as Timestamp).toDate();
   }
 }
