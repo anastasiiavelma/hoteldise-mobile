@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:hoteldise/models/address.dart';
 import 'package:hoteldise/models/hotel_comment.dart';
 import 'package:hoteldise/models/rating.dart';

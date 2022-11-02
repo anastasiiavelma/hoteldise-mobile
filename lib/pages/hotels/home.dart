@@ -1,5 +1,6 @@
-import 'dart:async';
+import 'dart:typed_data';
 
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:hoteldise/models/hotel.dart';
@@ -24,6 +25,7 @@ List<String> sortOptions = <String>[
 class _HotelsHomeState extends State<HotelsHome> {
   String currentSortOption = sortOptions[0];
   List<Hotel> hotels = <Hotel>[];
+  Uint8List? photo;
 
   getAllHotels() async {
     List<Hotel> newHotels = <Hotel>[];
@@ -36,12 +38,18 @@ class _HotelsHomeState extends State<HotelsHome> {
         .get()
         .then((event) {
       for (var doc in event.docs) {
-        newHotels.add(doc.data() as Hotel);
+        newHotels.add(doc.data());
       }
       setState(() {
         hotels = newHotels;
       });
     });
+
+    final pathReference = FirebaseStorage.instance
+        .ref()
+        .child("hotels/1246280_16061017110043391702.jpg");
+    const oneMegabyte = 1024 * 1024;
+    photo = await pathReference.getData(oneMegabyte * 5);
   }
 
   Color GetColorOfSortListOption(String currentOption) {
