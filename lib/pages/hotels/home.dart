@@ -55,6 +55,7 @@ class _HotelsHomeState extends State<HotelsHome> {
     //     imageUrl = fileURL;
     //   });
     // });
+    print(hotels[0].distance);
   }
 
   Color GetColorOfSortListOption(String currentOption) {
@@ -309,7 +310,7 @@ class _HotelsHomeState extends State<HotelsHome> {
                               color: primaryColor,
                             ),
                             AppText(
-                                text: "${hotels[index].distance} km to city",
+                                text: "${hotels[index].distance} km to hotel",
                                 size: 12,
                                 color: Colors.grey),
                             const SizedBox(width: 50),

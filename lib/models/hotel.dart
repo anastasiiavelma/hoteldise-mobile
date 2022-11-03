@@ -33,7 +33,7 @@ class Hotel {
   final List<String> photosUrls;
   final List<HotelComment> comments;
   final int averageCost;
-  double? distance;
+  double? distance = null;
 
   factory Hotel.fromFirestore(
     DocumentSnapshot<Map<String, dynamic>> snapshot,
