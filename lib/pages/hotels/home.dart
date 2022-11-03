@@ -1,8 +1,9 @@
 import 'dart:typed_data';
 
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:flutter/material.dart';
+
 import 'package:hoteldise/models/hotel.dart';
 
 import '../../themes/colors.dart';
@@ -38,6 +39,7 @@ class _HotelsHomeState extends State<HotelsHome> {
         .get()
         .then((event) {
       for (var doc in event.docs) {
+        doc.data().SetDistance();
         newHotels.add(doc.data());
       }
       setState(() {
@@ -45,11 +47,14 @@ class _HotelsHomeState extends State<HotelsHome> {
       });
     });
 
-    final pathReference = FirebaseStorage.instance
-        .ref()
-        .child("hotels/1246280_16061017110043391702.jpg");
-    const oneMegabyte = 1024 * 1024;
-    photo = await pathReference.getData(oneMegabyte * 5);
+    // var imageUrl;
+    // await FirebaseStorage.instance.ref().child(
+    //     "hotels/1246280_16061017110043391702.jpg").getDownloadURL().then((
+    //     fileURL) {
+    //   setState(() {
+    //     imageUrl = fileURL;
+    //   });
+    // });
   }
 
   Color GetColorOfSortListOption(String currentOption) {
@@ -304,9 +309,10 @@ class _HotelsHomeState extends State<HotelsHome> {
                               color: primaryColor,
                             ),
                             AppText(
-                                text: "2 km to city",
+                                text: "${hotels[index].distance} km to city",
                                 size: 12,
                                 color: Colors.grey),
+                            const SizedBox(width: 50),
                           ],
                         ),
                         const SizedBox(height: 4),
@@ -365,3 +371,5 @@ class _HotelsHomeState extends State<HotelsHome> {
     );
   }
 }
+
+

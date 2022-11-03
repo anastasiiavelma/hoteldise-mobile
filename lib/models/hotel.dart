@@ -1,9 +1,12 @@
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hoteldise/models/address.dart';
 import 'package:hoteldise/models/hotel_comment.dart';
 import 'package:hoteldise/models/rating.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hoteldise/models/room_type.dart';
+
+import '../services/geolocation.dart';
 
 class Hotel {
   Hotel(
@@ -30,6 +33,7 @@ class Hotel {
   final List<String> photosUrls;
   final List<HotelComment> comments;
   final int averageCost;
+  double? distance;
 
   factory Hotel.fromFirestore(
     DocumentSnapshot<Map<String, dynamic>> snapshot,
@@ -66,4 +70,9 @@ class Hotel {
       if (comments != null) "comments": comments,
     };
   }
+
+  void SetDistance() {
+    getDistance(LatLng(this.address.geopoint.latitude, this.address.geopoint.longitude)).then((value) => this.distance = value);
+  }
+
 }
