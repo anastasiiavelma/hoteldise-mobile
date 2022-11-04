@@ -18,9 +18,9 @@ class HotelsHome extends StatefulWidget {
 }
 
 List<String> sortOptions = <String>[
-  'Most relevant',
-  'The nearest',
-  'Most rated'
+  'Average cost (decrease)',
+  'Average cost (increase)',
+  'Distance'
 ];
 
 class _HotelsHomeState extends State<HotelsHome> {
@@ -42,8 +42,10 @@ class _HotelsHomeState extends State<HotelsHome> {
         doc.data().SetDistance();
         newHotels.add(doc.data());
       }
+
       setState(() {
         hotels = newHotels;
+        sortByAverageCost(SortType.desc);
       });
     });
 
@@ -55,19 +57,15 @@ class _HotelsHomeState extends State<HotelsHome> {
     //     imageUrl = fileURL;
     //   });
     // });
-    print(hotels[0].distance);
+    //print(hotels[0].distance);
   }
 
-  Color GetColorOfSortListOption(String currentOption) {
-    if (currentOption == 1000) return Colors.green;
-    return Colors.black;
-  }
-
-  List<Material> GetSortListItems() {
+  List<Material> getSortListItems() {
     List<Material> list = [];
     for (int i = 0; i < sortOptions.length; i++) {
       String label = sortOptions[i];
       var newItem = Material(
+        color: Colors.white,
         child: InkWell(
           child: ListTile(
             title: AppText(
@@ -78,6 +76,17 @@ class _HotelsHomeState extends State<HotelsHome> {
               setState(() {
                 currentSortOption = label;
               });
+              switch(i) {
+                case 0:
+                  sortByAverageCost(SortType.desc);
+                  break;
+                case 1:
+                  sortByAverageCost(SortType.asc);
+                  break;
+                case 2:
+                  sortByDistance();
+                  break;
+              }
               Navigator.pop(context);
             },
             contentPadding: EdgeInsets.zero,
@@ -108,7 +117,7 @@ class _HotelsHomeState extends State<HotelsHome> {
                 style: const TextStyle(fontSize: 14, color: Colors.black87),
                 cursorColor: Colors.black87,
                 decoration: InputDecoration(
-                  contentPadding: EdgeInsets.symmetric(horizontal: 0),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 0),
                   filled: true,
                   fillColor: Colors.grey[200],
                   enabledBorder: OutlineInputBorder(
@@ -125,7 +134,7 @@ class _HotelsHomeState extends State<HotelsHome> {
                       const TextStyle(fontSize: 14, color: Colors.black54),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               Row(
@@ -169,7 +178,7 @@ class _HotelsHomeState extends State<HotelsHome> {
                                             size: 20,
                                           ),
                                         ),
-                                        Column(children: GetSortListItems()),
+                                        Column(children: getSortListItems()),
                                         Center(
                                           child: ListTile(
                                             title: Center(
@@ -191,7 +200,7 @@ class _HotelsHomeState extends State<HotelsHome> {
                             ]);
                           });
                     },
-                    icon: Icon(Icons.sort, color: Colors.black),
+                    icon: const Icon(Icons.sort, color: Colors.black),
                     label: AppText(
                       text: currentSortOption,
                       size: 12,
@@ -207,7 +216,7 @@ class _HotelsHomeState extends State<HotelsHome> {
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
                     onPressed: () {},
-                    icon: Icon(Icons.filter_alt_rounded, color: Colors.black),
+                    icon: const Icon(Icons.filter_alt_rounded, color: Colors.black),
                     label: AppText(
                       text: "Filter",
                       size: 12,
@@ -216,7 +225,7 @@ class _HotelsHomeState extends State<HotelsHome> {
                   ),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 12,
               ),
               Flexible(
@@ -226,8 +235,9 @@ class _HotelsHomeState extends State<HotelsHome> {
                   itemBuilder: (context, index) {
                     if (index == hotels.length) {
                       return const SizedBox(height: 0);
-                    } else
-                      return _buildIToteltem(index);
+                    } else {
+                      return getHotelCard(index);
+                    }
                   },
                   separatorBuilder: (BuildContext context, int index) {
                     return const SizedBox(height: 20);
@@ -238,21 +248,21 @@ class _HotelsHomeState extends State<HotelsHome> {
           ),
         ),
       ),
-      bottomNavigationBar: BottomMenu(),
+      bottomNavigationBar: const BottomMenu(),
     );
   }
 
-  Widget _buildIToteltem(int index) {
+  Widget getHotelCard(int index) {
     return Center(
       child: Container(
-        constraints: BoxConstraints(maxWidth: 340),
+        constraints: const BoxConstraints(maxWidth: 340),
         decoration: BoxDecoration(
           border: Border.all(
             color: const Color.fromRGBO(220, 218, 218, 1),
           ),
           color: Colors.white,
           borderRadius: BorderRadius.circular(16),
-          boxShadow: [
+          boxShadow: const [
             BoxShadow(
               color: Color(0xffDDDDDD),
               blurRadius: 6.0,
@@ -296,7 +306,7 @@ class _HotelsHomeState extends State<HotelsHome> {
                               child: Text(
                                 hotels[index].address.address,
                                 softWrap: false,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 12,
                                   color: Colors.grey,
                                   overflow: TextOverflow.ellipsis,
@@ -304,7 +314,7 @@ class _HotelsHomeState extends State<HotelsHome> {
                               ),
                             ),
                             const SizedBox(width: 4),
-                            Icon(
+                            const Icon(
                               Icons.location_on,
                               size: 14,
                               color: primaryColor,
@@ -320,7 +330,7 @@ class _HotelsHomeState extends State<HotelsHome> {
                         Row(
                           children: [
                             for (int i = 0; i < hotels[index].rating.mark; i++)
-                              Icon(
+                              const Icon(
                                 Icons.star_rounded,
                                 size: 16,
                                 color: primaryColor,
@@ -328,7 +338,7 @@ class _HotelsHomeState extends State<HotelsHome> {
                             for (int i = 0;
                                 i < 5 - hotels[index].rating.mark;
                                 i++)
-                              Icon(
+                              const Icon(
                                 Icons.star_border_rounded,
                                 size: 16,
                                 color: primaryColor,
@@ -337,10 +347,7 @@ class _HotelsHomeState extends State<HotelsHome> {
                             Flexible(
                               child: AppText(
                                 text:
-                                    "based on ${hotels[index].rating.count.toString()} mark" +
-                                        (hotels[index].rating.count > 1
-                                            ? "s"
-                                            : ""),
+                                    "based on ${hotels[index].rating.count.toString()} mark${hotels[index].rating.count > 1 ? "s" : ""}",
                                 size: 12,
                                 color: Colors.grey,
                                 overflow: TextOverflow.ellipsis,
@@ -371,6 +378,22 @@ class _HotelsHomeState extends State<HotelsHome> {
       ),
     );
   }
+
+  void sortByAverageCost(SortType type) {
+    setState(() {
+      if (type == SortType.asc) {
+        hotels.sort((a, b) => a.averageCost.compareTo(b.averageCost));
+      } else {
+        hotels.sort((a, b) => b.averageCost.compareTo(a.averageCost));
+      }
+    });
+  }
+
+  void sortByDistance() {
+    setState(() {
+      hotels.sort((a, b) => a.distance.compareTo(b.distance));
+    });
+  }
 }
 
-
+enum SortType { asc, desc }
