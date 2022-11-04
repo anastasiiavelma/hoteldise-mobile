@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 class Price {
   Price({required this.currency, required this.price});
   late int price;
