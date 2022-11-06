@@ -121,6 +121,7 @@ class _HotelsHomeState extends State<HotelsHome> {
               SizedBox(
                 height: 20,
               ),
+              getTimeDateUI(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -407,9 +408,10 @@ class _HotelsHomeState extends State<HotelsHome> {
                           Text(
                             'Choose date',
                             style: TextStyle(
-                                fontWeight: FontWeight.w100,
+                                fontWeight: FontWeight.w500,
                                 fontSize: 16,
-                                color: Colors.grey.withOpacity(0.8)),
+                                color: Colors.grey.withOpacity(0.8),
+                            )
                           ),
                           const SizedBox(
                             height: 8,
@@ -417,7 +419,7 @@ class _HotelsHomeState extends State<HotelsHome> {
                           Text(
                             '${DateFormat("dd, MMM").format(startDate)} - ${DateFormat("dd, MMM").format(endDate)}',
                             style: TextStyle(
-                              fontWeight: FontWeight.w100,
+                              fontWeight: FontWeight.w500,
                               fontSize: 16,
                             ),
                           ),
@@ -463,7 +465,7 @@ class _HotelsHomeState extends State<HotelsHome> {
                           Text(
                             'Number of Rooms',
                             style: TextStyle(
-                                fontWeight: FontWeight.w100,
+                                fontWeight: FontWeight.w500,
                                 fontSize: 16,
                                 color: Colors.grey.withOpacity(0.8)),
                           ),
@@ -473,7 +475,7 @@ class _HotelsHomeState extends State<HotelsHome> {
                           Text(
                             '1 Room - 2 Adults',
                             style: TextStyle(
-                              fontWeight: FontWeight.w100,
+                              fontWeight: FontWeight.w500,
                               fontSize: 16,
                             ),
                           ),

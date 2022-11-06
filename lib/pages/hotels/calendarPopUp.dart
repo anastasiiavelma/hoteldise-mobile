@@ -111,7 +111,7 @@ class _CalendarPopupViewState extends State<CalendarPopupView>
                                         'From',
                                         textAlign: TextAlign.left,
                                         style: TextStyle(
-                                            fontWeight: FontWeight.w100,
+                                            fontWeight: FontWeight.w500,
                                             fontSize: 16,
                                             color:
                                             Colors.grey.withOpacity(0.8)),
@@ -146,7 +146,7 @@ class _CalendarPopupViewState extends State<CalendarPopupView>
                                       Text(
                                         'To',
                                         style: TextStyle(
-                                            fontWeight: FontWeight.w100,
+                                            fontWeight: FontWeight.w500,
                                             fontSize: 16,
                                             color:
                                             Colors.grey.withOpacity(0.8)),

@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-//import 'range_slider_view.dart';
-//import 'slider_view.dart';
-//import 'hotel_app_theme.dart';
-//import 'model/popular_filter_list.dart';
+
+import '../../themes/colors.dart';
+
+import '../../models/popularFilterList.dart';
+import 'sliderView.dart';
+import 'rangeSliderView.dart';
 
 class FiltersScreen extends StatefulWidget {
   @override
@@ -13,17 +15,18 @@ class FiltersScreen extends StatefulWidget {
 class _FiltersScreenState extends State<FiltersScreen> {
   RangeValues _values = const RangeValues(100, 600);
   double distValue = 50.0;
+  List<PopularFilterListData> popularFilterListData = PopularFilterListData.popularFList;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.grey, // HotelAppTheme.buildLightTheme().backgroundColor,
+      color: Colors.white, // Colors.grey, // HotelAppTheme.buildLightTheme().backgroundColor,
       child: Scaffold(
         backgroundColor: Colors.transparent,
         body: Column(
           children: <Widget>[
             getAppBarUI(),
-            /*Expanded(
+            Expanded(
               child: SingleChildScrollView(
                 child: Column(
                   children: <Widget>[
@@ -35,15 +38,11 @@ class _FiltersScreenState extends State<FiltersScreen> {
                     const Divider(
                       height: 1,
                     ),
-                    distanceViewUI(),
-                    const Divider(
-                      height: 1,
-                    ),
-                    allAccommodationUI()
+                    distanceViewUI()
                   ],
                 ),
               ),
-            ), */
+            ),
             const Divider(
               height: 1,
             ),
@@ -53,7 +52,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
               child: Container(
                 height: 48,
                 decoration: BoxDecoration(
-                  color: Colors.white, //HotelAppTheme.buildLightTheme().primaryColor,
+                  color: primaryColor, //HotelAppTheme.buildLightTheme().primaryColor,
                   borderRadius: const BorderRadius.all(Radius.circular(24.0)),
                   boxShadow: <BoxShadow>[
                     BoxShadow(
@@ -71,7 +70,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
                     onTap: () {
                       Navigator.pop(context);
                     },
-                    child: Center(
+                    child: const Center(
                       child: Text(
                         'Apply',
                         style: TextStyle(
@@ -93,7 +92,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
   Widget getAppBarUI() {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white, //HotelAppTheme.buildLightTheme().backgroundColor,
+        color: primaryColor, // Colors.white, //HotelAppTheme.buildLightTheme().backgroundColor,
         boxShadow: <BoxShadow>[
           BoxShadow(
               color: Colors.grey.withOpacity(0.2),
@@ -145,5 +144,160 @@ class _FiltersScreenState extends State<FiltersScreen> {
         ),
       ),
     );
+  }
+
+  Widget priceBarFilter() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Text(
+            'Price (for 1 night)',
+            textAlign: TextAlign.left,
+            style: TextStyle(
+                color: Colors.black, // Colors.grey
+                fontSize: MediaQuery.of(context).size.width > 360 ? 18 : 16,
+                fontWeight: FontWeight.normal),
+          ),
+        ),
+        RangeSliderView(
+          values: _values,
+          onChangeRangeValues: (RangeValues values) {
+            _values = values;
+          },
+        ),
+        const SizedBox(
+          height: 8,
+        )
+      ],
+    );
+  }
+
+  Widget popularFilter() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Padding(
+          padding:
+          const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 8),
+          child: Text(
+            'Popular filters',
+            textAlign: TextAlign.left,
+            style: TextStyle(
+                color: Colors.black, // Colors.grey
+                fontSize: MediaQuery.of(context).size.width > 360 ? 18 : 16,
+                fontWeight: FontWeight.normal),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(right: 16, left: 16),
+          child: Column(
+            children: getPList(),
+          ),
+        ),
+        const SizedBox(
+          height: 8,
+        )
+      ],
+    );
+  }
+
+  Widget distanceViewUI() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Padding(
+          padding:
+          const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 8),
+          child: Text(
+            'Distance from city center',
+            textAlign: TextAlign.left,
+            style: TextStyle(
+                color: Colors.black, // Colors.grey,
+                fontSize: MediaQuery.of(context).size.width > 360 ? 18 : 16,
+                fontWeight: FontWeight.normal),
+          ),
+        ),
+        SliderView(
+          distValue: distValue,
+          onChangedistValue: (double value) {
+            distValue = value;
+          },
+        ),
+        const SizedBox(
+          height: 8,
+        ),
+      ],
+    );
+  }
+
+  List<Widget> getPList() {
+    final List<Widget> noList = <Widget>[];
+    int count = 0;
+    const int columnCount = 2;
+    for (int i = 0; i < popularFilterListData.length / columnCount; i++) {
+      final List<Widget> listUI = <Widget>[];
+      for (int i = 0; i < columnCount; i++) {
+        try {
+          final PopularFilterListData date = popularFilterListData[count];
+          listUI.add(Expanded(
+            child: Row(
+              children: <Widget>[
+                Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    borderRadius: const BorderRadius.all(Radius.circular(4.0)),
+                    onTap: () {
+                      setState(() {
+                        date.isSelected = !date.isSelected;
+                      });
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        children: <Widget>[
+                          Icon(
+                            date.isSelected
+                                ? Icons.check_box
+                                : Icons.check_box_outline_blank,
+                            color: date.isSelected
+                                ? primaryColor
+                                : Colors.grey.withOpacity(0.6),
+                          ),
+                          const SizedBox(
+                            width: 4,
+                          ),
+                          Text(
+                            date.titleTxt,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ));
+          if (count < popularFilterListData.length - 1) {
+            count += 1;
+          } else {
+            break;
+          }
+        } catch (e) {
+          print(e);
+        }
+      }
+      noList.add(Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: listUI,
+      ));
+    }
+    return noList;
   }
 }
