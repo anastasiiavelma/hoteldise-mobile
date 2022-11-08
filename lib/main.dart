@@ -49,7 +49,6 @@ class _MyAppState extends State<MyApp> {
               '/home': (context) => const HotelsHome(),
               '/signIn': (context) => const SignInScreen(),
               '/signUp': (context) => const SignUpScreen(),
-              '/welcome': (context) => const WelcomeScreen(),
               '/': (context) => HotelsHome(),
             },
           )),
