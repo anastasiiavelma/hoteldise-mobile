@@ -10,6 +10,11 @@ import '../../themes/colors.dart';
 import '../../widgets/bottom_navigation_bar.dart';
 import '../../widgets/text_widget.dart';
 
+import 'package:intl/intl.dart';
+
+import 'filter.dart';
+import 'calendarPopUp.dart';
+
 class HotelsHome extends StatefulWidget {
   const HotelsHome({Key? key}) : super(key: key);
 
@@ -26,6 +31,8 @@ List<String> sortOptions = <String>[
 class _HotelsHomeState extends State<HotelsHome> {
   String currentSortOption = sortOptions[0];
   List<Hotel> hotels = <Hotel>[];
+  DateTime startDate = DateTime.now();
+  DateTime endDate = DateTime.now().add(const Duration(days: 5));
   Uint8List? photo;
 
   getAllHotels() async {
@@ -34,8 +41,8 @@ class _HotelsHomeState extends State<HotelsHome> {
     await db
         .collection("hotels")
         .withConverter(
-            fromFirestore: Hotel.fromFirestore,
-            toFirestore: (Hotel hotel, _) => hotel.toFirestore())
+        fromFirestore: Hotel.fromFirestore,
+        toFirestore: (Hotel hotel, _) => hotel.toFirestore())
         .get()
         .then((event) {
       for (var doc in event.docs) {
@@ -71,12 +78,12 @@ class _HotelsHomeState extends State<HotelsHome> {
             title: AppText(
                 text: label,
                 color:
-                    label == currentSortOption ? primaryColor : Colors.black),
+                label == currentSortOption ? primaryColor : Colors.black),
             onTap: () {
               setState(() {
                 currentSortOption = label;
               });
-              switch(i) {
+              switch (i) {
                 case 0:
                   sortByAverageCost(SortType.desc);
                   break;
@@ -131,12 +138,13 @@ class _HotelsHomeState extends State<HotelsHome> {
                   prefixIcon: const Icon(Icons.search, color: Colors.black54),
                   hintText: "Search for hotels",
                   hintStyle:
-                      const TextStyle(fontSize: 14, color: Colors.black54),
+                  const TextStyle(fontSize: 14, color: Colors.black54),
                 ),
               ),
               const SizedBox(
                 height: 20,
               ),
+              getTimeDateUI(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -167,7 +175,7 @@ class _HotelsHomeState extends State<HotelsHome> {
                                         left: 20, right: 30, top: 10),
                                     child: Column(
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      CrossAxisAlignment.start,
                                       children: [
                                         Padding(
                                           padding: const EdgeInsets.symmetric(
@@ -183,10 +191,10 @@ class _HotelsHomeState extends State<HotelsHome> {
                                           child: ListTile(
                                             title: Center(
                                                 child: AppText(
-                                              text: 'CANCEL',
-                                              weight: FontWeight.w700,
-                                              color: Colors.grey,
-                                            )),
+                                                  text: 'CANCEL',
+                                                  weight: FontWeight.w700,
+                                                  color: Colors.grey,
+                                                )),
                                             onTap: () {
                                               Navigator.pop(context);
                                             },
@@ -215,8 +223,16 @@ class _HotelsHomeState extends State<HotelsHome> {
                       minimumSize: Size.zero,
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
-                    onPressed: () {},
-                    icon: const Icon(Icons.filter_alt_rounded, color: Colors.black),
+                    onPressed: () {
+                      FocusScope.of(context).requestFocus(FocusNode());
+                      Navigator.push<dynamic>(
+                        context,
+                        MaterialPageRoute<dynamic>(
+                            builder: (BuildContext context) => FiltersScreen(),
+                            fullscreenDialog: true),
+                      );
+                    },
+                    icon: Icon(Icons.filter_alt_rounded, color: Colors.black),
                     label: AppText(
                       text: "Filter",
                       size: 12,
@@ -336,8 +352,8 @@ class _HotelsHomeState extends State<HotelsHome> {
                                 color: primaryColor,
                               ),
                             for (int i = 0;
-                                i < 5 - hotels[index].rating.mark;
-                                i++)
+                            i < 5 - hotels[index].rating.mark;
+                            i++)
                               const Icon(
                                 Icons.star_border_rounded,
                                 size: 16,
@@ -347,7 +363,9 @@ class _HotelsHomeState extends State<HotelsHome> {
                             Flexible(
                               child: AppText(
                                 text:
-                                    "based on ${hotels[index].rating.count.toString()} mark${hotels[index].rating.count > 1 ? "s" : ""}",
+                                "based on ${hotels[index].rating.count
+                                    .toString()} mark${hotels[index].rating
+                                    .count > 1 ? "s" : ""}",
                                 size: 12,
                                 color: Colors.grey,
                                 overflow: TextOverflow.ellipsis,
@@ -379,6 +397,148 @@ class _HotelsHomeState extends State<HotelsHome> {
     );
   }
 
+  Widget getTimeDateUI() {
+    return Padding(
+      padding: const EdgeInsets.only(left: 18, bottom: 16),
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            child: Row(
+              children: <Widget>[
+                Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    focusColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
+                    hoverColor: Colors.transparent,
+                    splashColor: Colors.grey.withOpacity(0.2),
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(4.0),
+                    ),
+                    onTap: () {
+                      FocusScope.of(context).requestFocus(FocusNode());
+                      // setState(() {
+                      //   isDatePopupOpen = true;
+                      // });
+                      showDemoDialog(context: context);
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                          left: 8, right: 8, top: 4, bottom: 4),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                              'Choose date',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 16,
+                                color: Colors.grey.withOpacity(0.8),
+                              )
+                          ),
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          Text(
+                            '${DateFormat("dd, MMM").format(
+                                startDate)} - ${DateFormat("dd, MMM").format(
+                                endDate)}',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: Container(
+              width: 1,
+              height: 42,
+              color: Colors.grey.withOpacity(0.8),
+            ),
+          ),
+          Expanded(
+            child: Row(
+              children: <Widget>[
+                Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    focusColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
+                    hoverColor: Colors.transparent,
+                    splashColor: Colors.grey.withOpacity(0.2),
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(4.0),
+                    ),
+                    onTap: () {
+                      FocusScope.of(context).requestFocus(FocusNode());
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                          left: 8, right: 8, top: 4, bottom: 4),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            'Number of Rooms',
+                            style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 16,
+                                color: Colors.grey.withOpacity(0.8)),
+                          ),
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          Text(
+                            '1 Room - 2 Adults',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void showDemoDialog({BuildContext? context}) {
+    showDialog<dynamic>(
+      context: context!,
+      builder: (BuildContext context) =>
+          CalendarPopupView(
+            barrierDismissible: true,
+            minimumDate: DateTime.now(),
+            //  maximumDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day + 10),
+            initialEndDate: endDate,
+            initialStartDate: startDate,
+            onApplyClick: (DateTime startData, DateTime endData) {
+              setState(() {
+                startDate = startData;
+                endDate = endData;
+              });
+            },
+            onCancelClick: () {},
+          ),
+    );
+  }
+
   void sortByAverageCost(SortType type) {
     setState(() {
       if (type == SortType.asc) {
@@ -394,6 +554,8 @@ class _HotelsHomeState extends State<HotelsHome> {
       hotels.sort((a, b) => a.distance.compareTo(b.distance));
     });
   }
-}
 
-enum SortType { asc, desc }
+}
+  enum SortType {
+    asc, desc
+  }
