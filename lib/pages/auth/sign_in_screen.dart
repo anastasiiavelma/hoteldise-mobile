@@ -127,8 +127,8 @@ class _SignInScreenState extends State<SignInScreen> {
     return firstTimeState
         ? const WelcomeScreen()
         : Scaffold(
+            backgroundColor: const Color(0xFF010101),
             body: Container(
-              color: Colors.white,
               alignment: Alignment.center,
               padding: const EdgeInsets.only(
                   top: 40, bottom: 70, left: 30, right: 30),

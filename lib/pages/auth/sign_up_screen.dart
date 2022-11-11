@@ -120,8 +120,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
         child: Text('Continue'));
 
     return Scaffold(
+      backgroundColor: const Color(0xFF010101),
       body: Container(
-        color: Colors.white,
         alignment: Alignment.center,
         height: double.infinity,
         width: double.infinity,
@@ -186,7 +186,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     const TextSpan(
                       text: 'Already have account? ',
                       style: TextStyle(
-                        color: Colors.black,
+                        color: Colors.white,
                       ),
                     ),
                     TextSpan(

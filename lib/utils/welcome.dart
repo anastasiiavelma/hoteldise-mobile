@@ -17,12 +17,13 @@ class WelcomeScreen extends StatelessWidget {
     const pageDecoration = PageDecoration(
       titleTextStyle: TextStyle(fontSize: 28.0, fontWeight: FontWeight.w700),
       bodyPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
-      pageColor: Colors.white,
+      pageColor: Color(0xFF010101),
       imagePadding: EdgeInsets.zero,
     );
 
     return Scaffold(
       body: IntroductionScreen(
+        globalBackgroundColor: const Color(0xFF010101),
         pages: [
           PageViewModel(
             title: "HotelDise",
@@ -76,7 +77,7 @@ class WelcomeScreen extends StatelessWidget {
             size: const Size.square(10.0),
             activeSize: const Size(20.0, 10.0),
             activeColor: primaryColor,
-            color: Colors.black26,
+            color: const Color.fromARGB(255, 122, 122, 122),
             spacing: const EdgeInsets.symmetric(horizontal: 3.0),
             activeShape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(25.0))),

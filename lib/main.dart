@@ -10,6 +10,7 @@ import 'package:loader_overlay/loader_overlay.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import '../../themes/colors.dart';
 
 Future<void> main() async {
   await Hive.initFlutter();
@@ -38,7 +39,7 @@ class _MyAppState extends State<MyApp> {
           useDefaultLoading: false,
           overlayWidget: const Center(
             child: SpinKitThreeInOut(
-              color: Color.fromARGB(255, 237, 60, 29),
+              color: primaryColor,
               size: 50.0,
             ),
           ),
@@ -51,6 +52,7 @@ class _MyAppState extends State<MyApp> {
               '/signUp': (context) => const SignUpScreen(),
               '/': (context) => const WelcomeScreen(),
             },
+            theme: ThemeData.dark(),
           )),
     );
   }
