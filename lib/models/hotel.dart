@@ -72,7 +72,8 @@ class Hotel {
   }
 
   void SetDistance() {
-    getDistance(LatLng(this.address.geopoint.latitude, this.address.geopoint.longitude)).then((value) => this.distance = value);
+    getDistance(LatLng(address.geopoint.latitude, address.geopoint.longitude)).then((value) => distance = value);
+    print(distance);
   }
 
 }
