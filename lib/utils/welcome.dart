@@ -3,6 +3,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hoteldise/pages/auth/sign_in_screen.dart';
 import 'package:hoteldise/themes/colors.dart';
 import 'package:introduction_screen/introduction_screen.dart';
+import '../../themes/colors.dart';
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({Key? key}) : super(key: key);
@@ -17,13 +18,13 @@ class WelcomeScreen extends StatelessWidget {
     const pageDecoration = PageDecoration(
       titleTextStyle: TextStyle(fontSize: 28.0, fontWeight: FontWeight.w700),
       bodyPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
-      pageColor: Color(0xFF010101),
+      pageColor: backgroundColor,
       imagePadding: EdgeInsets.zero,
     );
 
     return Scaffold(
       body: IntroductionScreen(
-        globalBackgroundColor: const Color(0xFF010101),
+        globalBackgroundColor: backgroundColor,
         pages: [
           PageViewModel(
             title: "HotelDise",

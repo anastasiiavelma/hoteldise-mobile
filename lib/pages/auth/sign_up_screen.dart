@@ -120,7 +120,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         child: Text('Continue'));
 
     return Scaffold(
-      backgroundColor: const Color(0xFF010101),
+      backgroundColor: backgroundColor,
       body: Container(
         alignment: Alignment.center,
         height: double.infinity,
