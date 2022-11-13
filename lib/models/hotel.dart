@@ -1,3 +1,4 @@
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hoteldise/models/address.dart';
 import 'package:hoteldise/models/hotel_comment.dart';
@@ -34,6 +35,7 @@ class Hotel {
   final List<HotelComment> comments;
   final int averageCost;
   double distance = 0;
+  String mainImageUrl = "";
 
   factory Hotel.fromFirestore(
     DocumentSnapshot<Map<String, dynamic>> snapshot,
@@ -53,7 +55,7 @@ class Hotel {
             data?['comments'].map((model) => HotelComment.fromJson(model))),
         rooms: List<RoomType>.from(
             data?['rooms'].map((model) => RoomType.fromJson(model))),
-        averageCost: data['averageCost']);
+        averageCost: data['averageCost'].toInt());
   }
 
   //not done
@@ -71,9 +73,15 @@ class Hotel {
     };
   }
 
-  void SetDistance() {
-    getDistance(LatLng(address.geopoint.latitude, address.geopoint.longitude)).then((value) => distance = value);
-    print(distance);
+  Future<void> setDistance() async{
+    await getDistance(LatLng(address.geopoint.latitude, address.geopoint.longitude))
+        .then((value) {
+      distance = value;
+    });
+  }
+
+  Future<void> setMainImage() async {
+    mainImageUrl =  await FirebaseStorage.instance.ref().child(photosUrls[0]).getDownloadURL();
   }
 
 }

@@ -5,11 +5,11 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 Future<Position> getUserCurrentLocation() async {
-  // await Geolocator.requestPermission().then((value){
-  // }).onError((error, stackTrace) async {
-  //   await Geolocator.requestPermission();
-  //   print("ERROR"+error.toString());
-  // });
+  await Geolocator.requestPermission().then((value){
+  }).onError((error, stackTrace) async {
+    await Geolocator.requestPermission();
+    print("ERROR"+error.toString());
+  });
   return await Geolocator.getCurrentPosition(
       forceAndroidLocationManager: true, desiredAccuracy: LocationAccuracy.low);
 }
@@ -25,7 +25,6 @@ Future<double> getDistance(LatLng endLocation) async {
   await getUserCurrentLocation().then((value) {
     startLocation = LatLng(value.latitude, value.longitude);
   });
-  startLocation = LatLng(39.8041713372767, -86.19361604923418);
   PolylinePoints polylinePoints = PolylinePoints();
 
   String googleAPiKey = "AIzaSyA3w26GDz9eip4VBKgwijXcvg1YBh_tp3c";
@@ -46,7 +45,8 @@ Future<double> getDistance(LatLng endLocation) async {
     result.points.forEach((PointLatLng point) {
       polylineCoordinates.add(LatLng(point.latitude, point.longitude));
     });
-  } else {
+  }
+  else {
     print(result.errorMessage);
   }
 
