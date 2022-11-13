@@ -39,6 +39,9 @@ class _RangeSliderViewState extends State<RangeSliderView> {
                     child: Text(
                       '\$${_values!.start.round()}',
                       textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: Colors.black, // Colors.grey
+                          fontWeight: FontWeight.normal),
                     ),
                   ),
                   Expanded(
@@ -58,6 +61,9 @@ class _RangeSliderViewState extends State<RangeSliderView> {
                     child: Text(
                       '\$${_values!.end.round()}',
                       textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: Colors.black, // Colors.grey
+                          fontWeight: FontWeight.normal),
                     ),
                   ),
                   Expanded(
@@ -76,7 +82,7 @@ class _RangeSliderViewState extends State<RangeSliderView> {
               values: _values!,
               min: 0.0,
               max: 1000.0,
-              activeColor: primaryColor,
+              activeColor: secondaryColor,
               inactiveColor: Colors.grey.withOpacity(0.4),
               divisions: 1000,
               onChanged: (RangeValues values) {

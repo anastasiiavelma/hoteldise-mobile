@@ -126,7 +126,7 @@ class _CustomCalendarViewState extends State<CustomCalendarView> {
                       borderRadius:
                       const BorderRadius.all(Radius.circular(24.0)),
                       border: Border.all(
-                        color: primaryColor, //HotelAppTheme.buildLightTheme().dividerColor,
+                        color: secondaryColor, //HotelAppTheme.buildLightTheme().dividerColor,
                       ),
                     ),
                     child: Material(
@@ -180,7 +180,7 @@ class _CustomCalendarViewState extends State<CustomCalendarView> {
               style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
-                  color: primaryColor,) //HotelAppTheme.buildLightTheme().primaryColor),
+                  color: secondaryColor,) //HotelAppTheme.buildLightTheme().primaryColor),
             ),
           ),
         ),
@@ -218,7 +218,7 @@ class _CustomCalendarViewState extends State<CustomCalendarView> {
                               color: startDate != null && endDate != null
                                   ? getIsItStartAndEndDate(date) ||
                                   getIsInRange(date)
-                                  ? primaryColor.withOpacity(0.4) // HotelAppTheme.buildLightTheme().primaryColor.withOpacity(0.4)
+                                  ? secondaryColor.withOpacity(0.4) // HotelAppTheme.buildLightTheme().primaryColor.withOpacity(0.4)
                                   : Colors.transparent
                                   : Colors.transparent,
                               borderRadius: BorderRadius.only(
@@ -287,7 +287,7 @@ class _CustomCalendarViewState extends State<CustomCalendarView> {
                           child: Container(
                             decoration: BoxDecoration(
                               color: getIsItStartAndEndDate(date)
-                                  ? primaryColor // HotelAppTheme.buildLightTheme().primaryColor
+                                  ? secondaryColor // HotelAppTheme.buildLightTheme().primaryColor
                                   : Colors.transparent,
                               borderRadius:
                               const BorderRadius.all(Radius.circular(32.0)),
@@ -341,7 +341,7 @@ class _CustomCalendarViewState extends State<CustomCalendarView> {
                                 DateTime.now().year == date.year
                                 ? getIsInRange(date)
                                 ? Colors.white
-                                : primaryColor // HotelAppTheme.buildLightTheme().primaryColor
+                                : secondaryColor // HotelAppTheme.buildLightTheme().primaryColor
                                 : Colors.transparent,
                             shape: BoxShape.circle),
                       ),

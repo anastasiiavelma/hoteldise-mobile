@@ -33,11 +33,14 @@ class _SliderViewState extends State<SliderView> {
                 flex: distValue.round(),
                 child: const SizedBox(),
               ),
-              Container(
+              SizedBox(
                 width: 170,
                 child: Text(
                   'Less than ${(distValue / 10).toStringAsFixed(1)} Km',
                   textAlign: TextAlign.center,
+                  style: const TextStyle(
+                      color: Colors.black, // Colors.grey
+                      fontWeight: FontWeight.normal),
                 ),
               ),
               Expanded(
@@ -61,7 +64,7 @@ class _SliderViewState extends State<SliderView> {
               },
               min: 0,
               max: 100,
-              activeColor: primaryColor,
+              activeColor: secondaryColor,
               inactiveColor: Colors.grey.withOpacity(0.4),
               divisions: 100,
               value: distValue,
