@@ -41,7 +41,7 @@ class _HotelsHomeState extends State<HotelsHome> {
     getAllHotels();
     super.initState();
   }
-  
+
   getAllHotels() async {
     List<Hotel> newHotels = <Hotel>[];
     FirebaseFirestore db = FirebaseFirestore.instance;
