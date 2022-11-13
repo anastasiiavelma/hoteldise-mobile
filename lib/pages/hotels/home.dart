@@ -36,6 +36,12 @@ class _HotelsHomeState extends State<HotelsHome> {
   DateTime endDate = DateTime.now().add(const Duration(days: 5));
   Uint8List? photo;
 
+  @override
+  void initState() {
+    getAllHotels();
+    super.initState();
+  }
+  
   getAllHotels() async {
     List<Hotel> newHotels = <Hotel>[];
     FirebaseFirestore db = FirebaseFirestore.instance;
@@ -102,7 +108,7 @@ class _HotelsHomeState extends State<HotelsHome> {
 
   @override
   Widget build(BuildContext context) {
-    getAllHotels();
+
 
     return Scaffold(
       backgroundColor: backgroundColor,
