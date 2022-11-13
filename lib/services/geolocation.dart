@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:geocoding/geocoding.dart';
 
 Future<Position> getUserCurrentLocation() async {
   await Geolocator.requestPermission().then((value){
@@ -18,9 +19,16 @@ Future<double> getDistance(LatLng endLocation) async {
   var permission = await Geolocator.checkPermission();
   if (permission == LocationPermission.denied) {
     permission = await Geolocator.requestPermission();
-    if (permission == LocationPermission.denied)
+    if (permission == LocationPermission.denied) {
       return 0;
+    }
   }
+
+
+
+  // List<Placemark> newPlace = await placemarkFromCoordinates(endLocation.latitude, endLocation.longitude);
+
+
   late LatLng startLocation;
   await getUserCurrentLocation().then((value) {
     startLocation = LatLng(value.latitude, value.longitude);
@@ -29,7 +37,7 @@ Future<double> getDistance(LatLng endLocation) async {
 
   String googleAPiKey = "AIzaSyA3w26GDz9eip4VBKgwijXcvg1YBh_tp3c";
 
-  Set<Marker> markers = Set(); //markers for google map
+  Set<Marker> markers = {}; //markers for google map
   Map<PolylineId, Polyline> polylines = {}; //polylines to show direction
 
   List<LatLng> polylineCoordinates = [];
@@ -42,9 +50,9 @@ Future<double> getDistance(LatLng endLocation) async {
   );
 
   if (result.points.isNotEmpty) {
-    result.points.forEach((PointLatLng point) {
+    for (var point in result.points) {
       polylineCoordinates.add(LatLng(point.latitude, point.longitude));
-    });
+    }
   }
   else {
     print(result.errorMessage);
