@@ -1,9 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../../themes/colors.dart';
-
-import '../../models/popularFilterList.dart';
+import '../../../models/popularFilterList.dart';
+import '../../../themes/colors.dart';
 import 'sliderView.dart';
 import 'rangeSliderView.dart';
 

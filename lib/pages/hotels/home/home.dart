@@ -1,20 +1,20 @@
-import 'dart:typed_data';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 
 import 'package:flutter/material.dart';
 
-import 'package:hoteldise/models/hotel.dart';
+import 'package:google_maps_webservice/places.dart';
 
-import '../../themes/colors.dart';
-import '../../widgets/bottom_navigation_bar.dart';
-import '../../widgets/text_widget.dart';
+import 'package:hoteldise/models/hotel.dart';
+import 'package:hoteldise/pages/hotels/home/sort.dart';
+
+import '../../../themes/colors.dart';
+import '../../../widgets/bottom_navigation_bar.dart';
+import '../../../widgets/text_widget.dart';
 
 import 'package:intl/intl.dart';
 
-import 'filter.dart';
 import 'calendarPopUp.dart';
+import 'filter.dart';
 
 class HotelsHome extends StatefulWidget {
   const HotelsHome({Key? key}) : super(key: key);
@@ -23,18 +23,17 @@ class HotelsHome extends StatefulWidget {
   State<HotelsHome> createState() => _HotelsHomeState();
 }
 
-List<String> sortOptions = <String>[
-  'Average cost (decrease)',
-  'Average cost (increase)',
-  'Distance'
+List<SortOption> sortOptions = [
+  SortByMark(),
+  SortByPriceIncrease(),
+  SortByPriceDecrease()
 ];
 
 class _HotelsHomeState extends State<HotelsHome> {
-  String currentSortOption = sortOptions[0];
   List<Hotel> hotels = <Hotel>[];
+  SortOption currentSortOption = sortOptions[0];
   DateTime startDate = DateTime.now();
   DateTime endDate = DateTime.now().add(const Duration(days: 5));
-  Uint8List? photo;
 
   @override
   void initState() {
@@ -48,8 +47,8 @@ class _HotelsHomeState extends State<HotelsHome> {
     await db
         .collection("hotels")
         .withConverter(
-        fromFirestore: Hotel.fromFirestore,
-        toFirestore: (Hotel hotel, _) => hotel.toFirestore())
+            fromFirestore: Hotel.fromFirestore,
+            toFirestore: (Hotel hotel, _) => hotel.toFirestore())
         .get()
         .then((event) async {
       for (var doc in event.docs) {
@@ -63,7 +62,7 @@ class _HotelsHomeState extends State<HotelsHome> {
 
       setState(() {
         hotels = newHotels;
-        sortByAverageCost(SortType.desc);
+        SortByMark().doSort(hotels);
       });
     });
   }
@@ -71,7 +70,7 @@ class _HotelsHomeState extends State<HotelsHome> {
   List<Material> getSortListItems() {
     List<Material> list = [];
     for (int i = 0; i < sortOptions.length; i++) {
-      String label = sortOptions[i];
+      String label = sortOptions[i].name;
       var newItem = Material(
         color: elevatedGrey,
         child: InkWell(
@@ -79,22 +78,12 @@ class _HotelsHomeState extends State<HotelsHome> {
             title: AppText(
                 text: label,
                 color:
-                label == currentSortOption ? primaryColor : textBase),
+                    label == currentSortOption.name ? primaryColor : textBase),
             onTap: () {
               setState(() {
-                currentSortOption = label;
+                currentSortOption = sortOptions[i];
               });
-              switch (i) {
-                case 0:
-                  sortByAverageCost(SortType.desc);
-                  break;
-                case 1:
-                  sortByAverageCost(SortType.asc);
-                  break;
-                case 2:
-                  sortByDistance();
-                  break;
-              }
+              sortOptions[i].doSort(hotels);
               Navigator.pop(context);
             },
             contentPadding: EdgeInsets.zero,
@@ -108,8 +97,6 @@ class _HotelsHomeState extends State<HotelsHome> {
 
   @override
   Widget build(BuildContext context) {
-
-
     return Scaffold(
       backgroundColor: backgroundColor,
       body: SafeArea(
@@ -137,8 +124,7 @@ class _HotelsHomeState extends State<HotelsHome> {
                   ),
                   prefixIcon: const Icon(Icons.search, color: greyColor),
                   hintText: "Search for hotels",
-                  hintStyle:
-                  const TextStyle(fontSize: 14, color: greyColor),
+                  hintStyle: const TextStyle(fontSize: 14, color: greyColor),
                 ),
               ),
               const SizedBox(
@@ -175,7 +161,7 @@ class _HotelsHomeState extends State<HotelsHome> {
                                         left: 20, right: 30, top: 10),
                                     child: Column(
                                       crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Padding(
                                           padding: const EdgeInsets.symmetric(
@@ -192,10 +178,10 @@ class _HotelsHomeState extends State<HotelsHome> {
                                           child: ListTile(
                                             title: Center(
                                                 child: AppText(
-                                                  text: 'CANCEL',
-                                                  weight: FontWeight.w700,
-                                                  color: lightGreyColor,
-                                                )),
+                                              text: 'CANCEL',
+                                              weight: FontWeight.w700,
+                                              color: lightGreyColor,
+                                            )),
                                             onTap: () {
                                               Navigator.pop(context);
                                             },
@@ -211,7 +197,7 @@ class _HotelsHomeState extends State<HotelsHome> {
                     },
                     icon: const Icon(Icons.sort, color: textBase),
                     label: AppText(
-                      text: currentSortOption,
+                      text: currentSortOption.name,
                       size: 12,
                       weight: FontWeight.w500,
                       color: textBase,
@@ -234,7 +220,10 @@ class _HotelsHomeState extends State<HotelsHome> {
                             fullscreenDialog: true),
                       );
                     },
-                    icon: const Icon(Icons.filter_alt_rounded, color: textBase,),
+                    icon: const Icon(
+                      Icons.filter_alt_rounded,
+                      color: textBase,
+                    ),
                     label: AppText(
                       text: "Filter",
                       size: 12,
@@ -255,7 +244,7 @@ class _HotelsHomeState extends State<HotelsHome> {
                     if (index == hotels.length) {
                       return const SizedBox(height: 0);
                     } else {
-                      return getHotelCard(index);
+                      return getHotelCard(hotels[index]);
                     }
                   },
                   separatorBuilder: (BuildContext context, int index) {
@@ -271,7 +260,7 @@ class _HotelsHomeState extends State<HotelsHome> {
     );
   }
 
-  Widget getHotelCard(int index) {
+  Widget getHotelCard(Hotel hotel) {
     return Center(
       child: Container(
         constraints: const BoxConstraints(maxWidth: 340),
@@ -280,7 +269,7 @@ class _HotelsHomeState extends State<HotelsHome> {
           borderRadius: BorderRadius.circular(16),
           boxShadow: const [
             BoxShadow(
-              color:elevatedGrey,
+              color: elevatedGrey,
               blurRadius: 8.0,
               spreadRadius: 4.0,
               offset: Offset(0.0, 0.0),
@@ -290,10 +279,10 @@ class _HotelsHomeState extends State<HotelsHome> {
         child: Column(
           children: [
             ClipRRect(
-              borderRadius: const BorderRadius.only(
-                  topRight: Radius.circular(16), topLeft: Radius.circular(16)),
-              child: Image.network(hotels[index].mainImageUrl)
-            ),
+                borderRadius: const BorderRadius.only(
+                    topRight: Radius.circular(16),
+                    topLeft: Radius.circular(16)),
+                child: Image.network(hotel.mainImageUrl)),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               child: Row(
@@ -305,7 +294,7 @@ class _HotelsHomeState extends State<HotelsHome> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         AppText(
-                          text: hotels[index].name,
+                          text: hotel.name,
                           size: 16,
                           weight: FontWeight.w700,
                           overflow: TextOverflow.ellipsis,
@@ -316,7 +305,7 @@ class _HotelsHomeState extends State<HotelsHome> {
                           children: [
                             Flexible(
                               child: Text(
-                                hotels[index].address.address,
+                                hotel.address.address,
                                 softWrap: false,
                                 style: const TextStyle(
                                   fontSize: 12,
@@ -332,7 +321,9 @@ class _HotelsHomeState extends State<HotelsHome> {
                               color: primaryColor,
                             ),
                             AppText(
-                                text: hotels[index].distance != 0 ? "${hotels[index].distance.toInt()} km to hotel" : "hotel too far",
+                                text: hotel.distance != 0
+                                    ? "${hotel.distance.toInt()} km to hotel"
+                                    : "hotel too far",
                                 size: 12,
                                 color: lightGreyColor),
                             const SizedBox(width: 50),
@@ -341,15 +332,15 @@ class _HotelsHomeState extends State<HotelsHome> {
                         const SizedBox(height: 4),
                         Row(
                           children: [
-                            for (int i = 0; i < hotels[index].rating.mark; i++)
+                            for (int i = 0; i < hotel.rating.mark; i++)
                               const Icon(
                                 Icons.star_rounded,
                                 size: 16,
                                 color: primaryColor,
                               ),
                             for (int i = 0;
-                            i < 5 - hotels[index].rating.mark;
-                            i++)
+                                i < 5 - hotel.rating.mark;
+                                i++)
                               const Icon(
                                 Icons.star_border_rounded,
                                 size: 16,
@@ -359,9 +350,7 @@ class _HotelsHomeState extends State<HotelsHome> {
                             Flexible(
                               child: AppText(
                                 text:
-                                "based on ${hotels[index].rating.count
-                                    .toString()} mark${hotels[index].rating
-                                    .count > 1 ? "s" : ""}",
+                                    "based on ${hotel.rating.count.toString()} mark${hotel.rating.count > 1 ? "s" : ""}",
                                 size: 12,
                                 color: lightGreyColor,
                                 overflow: TextOverflow.ellipsis,
@@ -375,14 +364,13 @@ class _HotelsHomeState extends State<HotelsHome> {
                   Column(
                     children: [
                       AppText(
-                        text: "190\$",
+                        text: "${hotel.averageCost}\$",
                         size: 16,
                         weight: FontWeight.w700,
                         color: textBase,
                       ),
                       const SizedBox(height: 4),
-                      AppText(
-                          text: "/per night", size: 12, color: textBase),
+                      AppText(text: "/per night", size: 12, color: textBase),
                     ],
                   ),
                 ],
@@ -426,21 +414,17 @@ class _HotelsHomeState extends State<HotelsHome> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Text(
-                              'Choose date',
+                          Text('Choose date',
                               style: TextStyle(
                                 fontWeight: FontWeight.w500,
                                 fontSize: 16,
                                 color: Colors.grey.withOpacity(0.8),
-                              )
-                          ),
+                              )),
                           const SizedBox(
                             height: 8,
                           ),
                           Text(
-                            '${DateFormat("dd, MMM").format(
-                                startDate)} - ${DateFormat("dd, MMM").format(
-                                endDate)}',
+                            '${DateFormat("dd, MMM").format(startDate)} - ${DateFormat("dd, MMM").format(endDate)}',
                             style: TextStyle(
                               fontWeight: FontWeight.w500,
                               fontSize: 16,
@@ -518,41 +502,20 @@ class _HotelsHomeState extends State<HotelsHome> {
   void showDemoDialog({BuildContext? context}) {
     showDialog<dynamic>(
       context: context!,
-      builder: (BuildContext context) =>
-          CalendarPopupView(
-            barrierDismissible: true,
-            minimumDate: DateTime.now(),
-            //  maximumDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day + 10),
-            initialEndDate: endDate,
-            initialStartDate: startDate,
-            onApplyClick: (DateTime startData, DateTime endData) {
-              setState(() {
-                startDate = startData;
-                endDate = endData;
-              });
-            },
-            onCancelClick: () {},
-          ),
+      builder: (BuildContext context) => CalendarPopupView(
+        barrierDismissible: true,
+        minimumDate: DateTime.now(),
+        //  maximumDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day + 10),
+        initialEndDate: endDate,
+        initialStartDate: startDate,
+        onApplyClick: (DateTime startData, DateTime endData) {
+          setState(() {
+            startDate = startData;
+            endDate = endData;
+          });
+        },
+        onCancelClick: () {},
+      ),
     );
   }
-
-  void sortByAverageCost(SortType type) {
-    setState(() {
-      if (type == SortType.asc) {
-        hotels.sort((a, b) => a.averageCost.compareTo(b.averageCost));
-      } else {
-        hotels.sort((a, b) => b.averageCost.compareTo(a.averageCost));
-      }
-    });
-  }
-
-  void sortByDistance() {
-    setState(() {
-      hotels.sort((a, b) => a.distance.compareTo(b.distance));
-    });
-  }
-
 }
-  enum SortType {
-    asc, desc
-  }
