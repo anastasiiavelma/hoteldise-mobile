@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 import 'package:flutter/material.dart';
 
@@ -44,10 +45,14 @@ class _HotelsHomeState extends State<HotelsHome> {
         fromFirestore: Hotel.fromFirestore,
         toFirestore: (Hotel hotel, _) => hotel.toFirestore())
         .get()
-        .then((event) {
+        .then((event) async {
       for (var doc in event.docs) {
-        doc.data().SetDistance();
         newHotels.add(doc.data());
+      }
+
+      for (int i = 0; i < newHotels.length; i++) {
+        await newHotels[i].setDistance();
+        await newHotels[i].setMainImage();
       }
 
       setState(() {
@@ -55,16 +60,6 @@ class _HotelsHomeState extends State<HotelsHome> {
         sortByAverageCost(SortType.desc);
       });
     });
-
-    // var imageUrl;
-    // await FirebaseStorage.instance.ref().child(
-    //     "hotels/1246280_16061017110043391702.jpg").getDownloadURL().then((
-    //     fileURL) {
-    //   setState(() {
-    //     imageUrl = fileURL;
-    //   });
-    // });
-    //print(hotels[0].distance);
   }
 
   List<Material> getSortListItems() {
@@ -72,13 +67,13 @@ class _HotelsHomeState extends State<HotelsHome> {
     for (int i = 0; i < sortOptions.length; i++) {
       String label = sortOptions[i];
       var newItem = Material(
-        color: Colors.white,
+        color: elevatedGrey,
         child: InkWell(
           child: ListTile(
             title: AppText(
                 text: label,
                 color:
-                label == currentSortOption ? primaryColor : Colors.black),
+                label == currentSortOption ? primaryColor : textBase),
             onTap: () {
               setState(() {
                 currentSortOption = label;
@@ -110,6 +105,7 @@ class _HotelsHomeState extends State<HotelsHome> {
     getAllHotels();
 
     return Scaffold(
+      backgroundColor: backgroundColor,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 18),
@@ -126,19 +122,17 @@ class _HotelsHomeState extends State<HotelsHome> {
                 decoration: InputDecoration(
                   contentPadding: const EdgeInsets.symmetric(horizontal: 0),
                   filled: true,
-                  fillColor: Colors.grey[200],
+                  fillColor: veryLightGreyColor,
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14),
-                    borderSide: const BorderSide(color: Colors.white, width: 0),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14),
-                    borderSide: const BorderSide(color: Colors.white, width: 0),
                   ),
-                  prefixIcon: const Icon(Icons.search, color: Colors.black54),
+                  prefixIcon: const Icon(Icons.search, color: greyColor),
                   hintText: "Search for hotels",
                   hintStyle:
-                  const TextStyle(fontSize: 14, color: Colors.black54),
+                  const TextStyle(fontSize: 14, color: greyColor),
                 ),
               ),
               const SizedBox(
@@ -161,10 +155,10 @@ class _HotelsHomeState extends State<HotelsHome> {
                           builder: (BuildContext buildContext) {
                             return Wrap(children: <Widget>[
                               Container(
-                                color: const Color(0xFF737373),
+                                color: backgroundColor,
                                 child: Container(
                                   decoration: const BoxDecoration(
-                                    color: Colors.white,
+                                    color: elevatedGrey,
                                     borderRadius: BorderRadius.only(
                                       topLeft: Radius.circular(10),
                                       topRight: Radius.circular(10),
@@ -184,6 +178,7 @@ class _HotelsHomeState extends State<HotelsHome> {
                                             text: 'Sort by',
                                             weight: FontWeight.w900,
                                             size: 20,
+                                            color: textBase,
                                           ),
                                         ),
                                         Column(children: getSortListItems()),
@@ -193,7 +188,7 @@ class _HotelsHomeState extends State<HotelsHome> {
                                                 child: AppText(
                                                   text: 'CANCEL',
                                                   weight: FontWeight.w700,
-                                                  color: Colors.grey,
+                                                  color: lightGreyColor,
                                                 )),
                                             onTap: () {
                                               Navigator.pop(context);
@@ -208,11 +203,12 @@ class _HotelsHomeState extends State<HotelsHome> {
                             ]);
                           });
                     },
-                    icon: const Icon(Icons.sort, color: Colors.black),
+                    icon: const Icon(Icons.sort, color: textBase),
                     label: AppText(
                       text: currentSortOption,
                       size: 12,
                       weight: FontWeight.w500,
+                      color: textBase,
                     ),
                   ),
                   TextButton.icon(
@@ -232,11 +228,12 @@ class _HotelsHomeState extends State<HotelsHome> {
                             fullscreenDialog: true),
                       );
                     },
-                    icon: Icon(Icons.filter_alt_rounded, color: Colors.black),
+                    icon: const Icon(Icons.filter_alt_rounded, color: textBase,),
                     label: AppText(
                       text: "Filter",
                       size: 12,
                       weight: FontWeight.w500,
+                      color: textBase,
                     ),
                   ),
                 ],
@@ -273,16 +270,13 @@ class _HotelsHomeState extends State<HotelsHome> {
       child: Container(
         constraints: const BoxConstraints(maxWidth: 340),
         decoration: BoxDecoration(
-          border: Border.all(
-            color: const Color.fromRGBO(220, 218, 218, 1),
-          ),
-          color: Colors.white,
+          color: elevatedGrey,
           borderRadius: BorderRadius.circular(16),
           boxShadow: const [
             BoxShadow(
-              color: Color(0xffDDDDDD),
-              blurRadius: 6.0,
-              spreadRadius: 2.0,
+              color:elevatedGrey,
+              blurRadius: 8.0,
+              spreadRadius: 4.0,
               offset: Offset(0.0, 0.0),
             ),
           ],
@@ -292,12 +286,7 @@ class _HotelsHomeState extends State<HotelsHome> {
             ClipRRect(
               borderRadius: const BorderRadius.only(
                   topRight: Radius.circular(16), topLeft: Radius.circular(16)),
-              child: Image.asset(
-                height: 180,
-                width: double.infinity,
-                fit: BoxFit.fitWidth,
-                "assets/images/hotel_template.jpg",
-              ),
+              child: Image.network(hotels[index].mainImageUrl)
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
@@ -314,6 +303,7 @@ class _HotelsHomeState extends State<HotelsHome> {
                           size: 16,
                           weight: FontWeight.w700,
                           overflow: TextOverflow.ellipsis,
+                          color: textBase,
                         ),
                         const SizedBox(height: 4),
                         Row(
@@ -324,7 +314,7 @@ class _HotelsHomeState extends State<HotelsHome> {
                                 softWrap: false,
                                 style: const TextStyle(
                                   fontSize: 12,
-                                  color: Colors.grey,
+                                  color: lightGreyColor,
                                   overflow: TextOverflow.ellipsis,
                                 ),
                               ),
@@ -336,9 +326,9 @@ class _HotelsHomeState extends State<HotelsHome> {
                               color: primaryColor,
                             ),
                             AppText(
-                                text: "${hotels[index].distance} km to hotel",
+                                text: hotels[index].distance != 0 ? "${hotels[index].distance.toInt()} km to hotel" : "hotel too far",
                                 size: 12,
-                                color: Colors.grey),
+                                color: lightGreyColor),
                             const SizedBox(width: 50),
                           ],
                         ),
@@ -367,7 +357,7 @@ class _HotelsHomeState extends State<HotelsHome> {
                                     .toString()} mark${hotels[index].rating
                                     .count > 1 ? "s" : ""}",
                                 size: 12,
-                                color: Colors.grey,
+                                color: lightGreyColor,
                                 overflow: TextOverflow.ellipsis,
                               ),
                             ),
@@ -382,10 +372,11 @@ class _HotelsHomeState extends State<HotelsHome> {
                         text: "190\$",
                         size: 16,
                         weight: FontWeight.w700,
+                        color: textBase,
                       ),
                       const SizedBox(height: 4),
                       AppText(
-                          text: "/per night", size: 12, color: Colors.black),
+                          text: "/per night", size: 12, color: textBase),
                     ],
                   ),
                 ],

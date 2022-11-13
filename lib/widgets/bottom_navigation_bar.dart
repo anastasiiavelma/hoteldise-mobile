@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:unicons/unicons.dart';
 
+import '../themes/colors.dart';
+
 class BottomMenu extends StatefulWidget {
   const BottomMenu({Key? key}) : super(key: key);
 
@@ -24,11 +26,11 @@ class _MyHomePageState extends State<BottomMenu>
       length: 4, // Added
       initialIndex: 0, //Added
       child: Material(
-        color: Color(0xffff5d55),
+        color: secondaryColor,
         child: TabBar(
           indicatorColor: Colors.white,
           unselectedLabelColor: Colors.white,
-          labelColor: Color(0xffffdad8),
+          // labelColor: Color(0xffffdad8),
           onTap: (index) {},
           tabs: [
             Tab(icon: Icon(UniconsLine.bed)),
