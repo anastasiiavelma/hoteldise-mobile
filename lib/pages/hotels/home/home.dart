@@ -7,7 +7,7 @@ import 'package:google_maps_webservice/places.dart';
 import 'package:hoteldise/models/hotel.dart';
 import 'package:hoteldise/pages/hotels/home/sort.dart';
 
-import '../../../themes/colors.dart';
+import '../../../themes/constants.dart';
 import '../../../widgets/bottom_navigation_bar.dart';
 import '../../../widgets/text_widget.dart';
 

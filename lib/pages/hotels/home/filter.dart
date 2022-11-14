@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../../models/popularFilterList.dart';
-import '../../../themes/colors.dart';
+import '../../../themes/constants.dart';
 import 'sliderView.dart';
 import 'rangeSliderView.dart';
 

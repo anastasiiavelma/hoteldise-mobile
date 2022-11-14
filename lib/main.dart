@@ -10,7 +10,7 @@ import 'package:loader_overlay/loader_overlay.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import '../../themes/colors.dart';
+import '../../themes/constants.dart';
 
 Future<void> main() async {
   await Hive.initFlutter();
