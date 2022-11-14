@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
 
@@ -111,6 +112,7 @@ class _HotelsHomeState extends State<HotelsHome> {
               ),
               GestureDetector(
                 onTap: () async {
+                  // var token = await FirebaseAuth.instance.currentUser?.getIdToken();
                   final Suggestion? result = await showSearch(
                     context: context,
                     delegate: AddressSearch(),
