@@ -1,8 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:hoteldise/pages/hotels/home.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:hoteldise/pages/auth/sign_in_screen.dart';
+import 'package:hoteldise/pages/auth/sign_up_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:hoteldise/pages/hotels/home/home.dart';
+import 'package:hoteldise/services/auth.dart';
+import 'package:hoteldise/utils/welcome.dart';
+import 'package:loader_overlay/loader_overlay.dart';
+import 'package:provider/provider.dart';
+import 'firebase_options.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import '../../themes/constants.dart';
 
-void main() {
-  runApp(const MaterialApp(home: HotelsHome()));
+Future<void> main() async {
+  await Hive.initFlutter();
+  await Hive.openBox('');
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
