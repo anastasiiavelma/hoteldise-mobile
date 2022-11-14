@@ -4,7 +4,6 @@ import 'package:intl/intl.dart';
 
 import 'customCalendar.dart';
 
-
 class CalendarPopupView extends StatefulWidget {
   const CalendarPopupView(
       {Key? key,

@@ -14,6 +14,7 @@ import '../../../widgets/text_widget.dart';
 import 'package:intl/intl.dart';
 
 import 'calendarPopUp.dart';
+import 'roomsAdultsPopUp.dart';
 import 'filter.dart';
 
 class HotelsHome extends StatefulWidget {
@@ -34,7 +35,15 @@ class _HotelsHomeState extends State<HotelsHome> {
   SortOption currentSortOption = sortOptions[0];
   DateTime startDate = DateTime.now();
   DateTime endDate = DateTime.now().add(const Duration(days: 5));
+  int numberOfRooms = 1;
+  int numberOfAdults = 2;
 
+  String getRoomsAdultsString(){
+      String text = "";
+      text += "$numberOfRooms ${numberOfRooms == 1 ? "Room - " : "Rooms - "}";
+      text += "$numberOfAdults ${numberOfAdults == 1 ? "Adult" : "Adults"}";
+    return text;
+  }
   @override
   void initState() {
     getAllHotels();
@@ -402,10 +411,7 @@ class _HotelsHomeState extends State<HotelsHome> {
                     ),
                     onTap: () {
                       FocusScope.of(context).requestFocus(FocusNode());
-                      // setState(() {
-                      //   isDatePopupOpen = true;
-                      // });
-                      showDemoDialog(context: context);
+                      showDatePicker(context: context);
                     },
                     child: Padding(
                       padding: const EdgeInsets.only(
@@ -425,7 +431,7 @@ class _HotelsHomeState extends State<HotelsHome> {
                           ),
                           Text(
                             '${DateFormat("dd, MMM").format(startDate)} - ${DateFormat("dd, MMM").format(endDate)}',
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontWeight: FontWeight.w500,
                               fontSize: 16,
                             ),
@@ -461,6 +467,7 @@ class _HotelsHomeState extends State<HotelsHome> {
                     ),
                     onTap: () {
                       FocusScope.of(context).requestFocus(FocusNode());
+                      showRoomsAdults(context: context);
                     },
                     child: Padding(
                       padding: const EdgeInsets.only(
@@ -480,10 +487,10 @@ class _HotelsHomeState extends State<HotelsHome> {
                             height: 8,
                           ),
                           Text(
-                            '1 Room - 2 Adults',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 16,
+                            getRoomsAdultsString().toString(),
+                             style: const TextStyle(
+                               fontWeight: FontWeight.w500,
+                               fontSize: 16,
                             ),
                           ),
                         ],
@@ -499,7 +506,7 @@ class _HotelsHomeState extends State<HotelsHome> {
     );
   }
 
-  void showDemoDialog({BuildContext? context}) {
+  void showDatePicker({BuildContext? context}) {
     showDialog<dynamic>(
       context: context!,
       builder: (BuildContext context) => CalendarPopupView(
@@ -508,6 +515,21 @@ class _HotelsHomeState extends State<HotelsHome> {
         //  maximumDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day + 10),
         initialEndDate: endDate,
         initialStartDate: startDate,
+        onApplyClick: (DateTime startData, DateTime endData) {
+          setState(() {
+            startDate = startData;
+            endDate = endData;
+          });
+        },
+        onCancelClick: () {},
+      ),
+    );
+  }
+  void showRoomsAdults({BuildContext? context}) {
+    showDialog<dynamic>(
+      context: context!,
+      builder: (BuildContext context) =>  RoomsAdultsView(
+        barrierDismissible: true,
         onApplyClick: (DateTime startData, DateTime endData) {
           setState(() {
             startDate = startData;
