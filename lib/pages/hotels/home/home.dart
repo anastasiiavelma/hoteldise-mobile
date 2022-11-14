@@ -5,8 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_webservice/places.dart';
 
 import 'package:hoteldise/models/hotel.dart';
+import 'package:hoteldise/pages/hotels/home/search/address_search.dart';
 import 'package:hoteldise/pages/hotels/home/sort.dart';
 
+import '../../../services/place_service.dart';
 import '../../../themes/constants.dart';
 import '../../../widgets/bottom_navigation_bar.dart';
 import '../../../widgets/text_widget.dart';
@@ -47,8 +49,8 @@ class _HotelsHomeState extends State<HotelsHome> {
     await db
         .collection("hotels")
         .withConverter(
-            fromFirestore: Hotel.fromFirestore,
-            toFirestore: (Hotel hotel, _) => hotel.toFirestore())
+        fromFirestore: Hotel.fromFirestore,
+        toFirestore: (Hotel hotel, _) => hotel.toFirestore())
         .get()
         .then((event) async {
       for (var doc in event.docs) {
@@ -78,7 +80,7 @@ class _HotelsHomeState extends State<HotelsHome> {
             title: AppText(
                 text: label,
                 color:
-                    label == currentSortOption.name ? primaryColor : textBase),
+                label == currentSortOption.name ? primaryColor : textBase),
             onTap: () {
               setState(() {
                 currentSortOption = sortOptions[i];
@@ -107,26 +109,55 @@ class _HotelsHomeState extends State<HotelsHome> {
               const SizedBox(
                 height: 10,
               ),
-              TextField(
-                autocorrect: false,
-                enableSuggestions: false,
-                style: const TextStyle(fontSize: 14, color: Colors.black87),
-                cursorColor: Colors.black87,
-                decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 0),
-                  filled: true,
-                  fillColor: veryLightGreyColor,
-                  enabledBorder: OutlineInputBorder(
+              GestureDetector(
+                onTap: () async {
+                  final Suggestion? result = await showSearch(
+                    context: context,
+                    delegate: AddressSearch(),
+                  );
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                  decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(14),
+                    color: veryLightGreyColor,
                   ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14),
+                  child:
+                  Row(
+                    children: [
+                      const Icon(Icons.search, color: greyColor),
+                      const SizedBox(width: 10),
+                      AppText(text: "Search for hotels", size: 14, color: greyColor)
+                    ],
                   ),
-                  prefixIcon: const Icon(Icons.search, color: greyColor),
-                  hintText: "Search for hotels",
-                  hintStyle: const TextStyle(fontSize: 14, color: greyColor),
                 ),
               ),
+              // TextField(
+              //   onTap: () async {
+              //     final Suggestion? result = await showSearch(
+              //       context: context,
+              //       delegate: AddressSearch(),
+              //     );
+              //   },
+              //   autocorrect: false,
+              //   enableSuggestions: false,
+              //   style: const TextStyle(fontSize: 14, color: Colors.black87),
+              //   cursorColor: Colors.black87,
+              //   decoration: InputDecoration(
+              //     contentPadding: const EdgeInsets.symmetric(horizontal: 0),
+              //     filled: true,
+              //     fillColor: veryLightGreyColor,
+              //     enabledBorder: OutlineInputBorder(
+              //       borderRadius: BorderRadius.circular(14),
+              //     ),
+              //     focusedBorder: OutlineInputBorder(
+              //       borderRadius: BorderRadius.circular(14),
+              //     ),
+              //     prefixIcon: const Icon(Icons.search, color: greyColor),
+              //     hintText: "Search for hotels",
+              //     hintStyle: const TextStyle(fontSize: 14, color: greyColor),
+              //   ),
+              // ),
               const SizedBox(
                 height: 20,
               ),
@@ -161,7 +192,7 @@ class _HotelsHomeState extends State<HotelsHome> {
                                         left: 20, right: 30, top: 10),
                                     child: Column(
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      CrossAxisAlignment.start,
                                       children: [
                                         Padding(
                                           padding: const EdgeInsets.symmetric(
@@ -178,10 +209,10 @@ class _HotelsHomeState extends State<HotelsHome> {
                                           child: ListTile(
                                             title: Center(
                                                 child: AppText(
-                                              text: 'CANCEL',
-                                              weight: FontWeight.w700,
-                                              color: lightGreyColor,
-                                            )),
+                                                  text: 'CANCEL',
+                                                  weight: FontWeight.w700,
+                                                  color: lightGreyColor,
+                                                )),
                                             onTap: () {
                                               Navigator.pop(context);
                                             },
@@ -338,9 +369,7 @@ class _HotelsHomeState extends State<HotelsHome> {
                                 size: 16,
                                 color: primaryColor,
                               ),
-                            for (int i = 0;
-                                i < 5 - hotel.rating.mark;
-                                i++)
+                            for (int i = 0; i < 5 - hotel.rating.mark; i++)
                               const Icon(
                                 Icons.star_border_rounded,
                                 size: 16,
@@ -350,7 +379,7 @@ class _HotelsHomeState extends State<HotelsHome> {
                             Flexible(
                               child: AppText(
                                 text:
-                                    "based on ${hotel.rating.count.toString()} mark${hotel.rating.count > 1 ? "s" : ""}",
+                                "based on ${hotel.rating.count.toString()} mark${hotel.rating.count > 1 ? "s" : ""}",
                                 size: 12,
                                 color: lightGreyColor,
                                 overflow: TextOverflow.ellipsis,
