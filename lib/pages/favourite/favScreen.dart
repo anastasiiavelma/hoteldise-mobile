@@ -63,7 +63,6 @@ class _FavScreenState extends State<FavScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: const BottomMenu(),
     );
   }
 
