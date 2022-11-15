@@ -256,7 +256,6 @@ class _HotelsHomeState extends State<HotelsHome> {
           ),
         ),
       ),
-      bottomNavigationBar: const BottomMenu(),
     );
   }
 
@@ -338,9 +337,7 @@ class _HotelsHomeState extends State<HotelsHome> {
                                 size: 16,
                                 color: primaryColor,
                               ),
-                            for (int i = 0;
-                                i < 5 - hotel.rating.mark;
-                                i++)
+                            for (int i = 0; i < 5 - hotel.rating.mark; i++)
                               const Icon(
                                 Icons.star_border_rounded,
                                 size: 16,
