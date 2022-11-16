@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:hoteldise/pages/favourite/favScreen.dart';
 import 'package:hoteldise/pages/hotels/home/home.dart';
-import 'package:hoteldise/themes/colors.dart';
 import 'package:unicons/unicons.dart';
+
+import '../../themes/constants.dart';
 
 class MenuBar extends StatefulWidget {
   @override

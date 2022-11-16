@@ -7,7 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:hoteldise/models/hotel.dart';
 
-import '../../themes/colors.dart';
+import '../../themes/constants.dart';
 import '../../widgets/bottom_navigation_bar.dart';
 import '../../widgets/text_widget.dart';
 
