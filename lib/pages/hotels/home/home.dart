@@ -2,12 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:flutter/material.dart';
 
-import 'package:google_maps_webservice/places.dart';
-
 import 'package:hoteldise/models/hotel.dart';
+import 'package:hoteldise/pages/hotels/home/search/address_search.dart';
 import 'package:hoteldise/pages/hotels/home/sort.dart';
 
-import '../../../themes/colors.dart';
+import '../../../services/place_service.dart';
+import '../../../themes/constants.dart';
 import '../../../widgets/bottom_navigation_bar.dart';
 import '../../../widgets/text_widget.dart';
 
@@ -32,16 +32,17 @@ List<SortOption> sortOptions = [
 class _HotelsHomeState extends State<HotelsHome> {
   List<Hotel> hotels = <Hotel>[];
   SortOption currentSortOption = sortOptions[0];
+  String searchValue = '';
   DateTime startDate = DateTime.now();
   DateTime endDate = DateTime.now().add(const Duration(days: 5));
 
   @override
   void initState() {
-    getAllHotels();
+    getHotels();
     super.initState();
   }
 
-  getAllHotels() async {
+  getHotels() async {
     List<Hotel> newHotels = <Hotel>[];
     FirebaseFirestore db = FirebaseFirestore.instance;
     await db
@@ -56,13 +57,13 @@ class _HotelsHomeState extends State<HotelsHome> {
       }
 
       for (int i = 0; i < newHotels.length; i++) {
-        await newHotels[i].setDistance();
-        await newHotels[i].setMainImage();
+        await newHotels[i].setExtraFields();
       }
-
+      //search filter
+      newHotels = newHotels.where((element) => element.address.address.toLowerCase().contains(searchValue.toLowerCase())).toList();
       setState(() {
         hotels = newHotels;
-        SortByMark().doSort(hotels);
+        currentSortOption.doSort(hotels);
       });
     });
   }
@@ -107,26 +108,74 @@ class _HotelsHomeState extends State<HotelsHome> {
               const SizedBox(
                 height: 10,
               ),
-              TextField(
-                autocorrect: false,
-                enableSuggestions: false,
-                style: const TextStyle(fontSize: 14, color: Colors.black87),
-                cursorColor: Colors.black87,
-                decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 0),
-                  filled: true,
-                  fillColor: veryLightGreyColor,
-                  enabledBorder: OutlineInputBorder(
+              GestureDetector(
+                onTap: () async {
+                  // var token = await FirebaseAuth.instance.currentUser?.getIdToken();
+                  final Suggestion? result = await showSearch(
+                    context: context,
+                    delegate: AddressSearch(),
+                    query: searchValue
+                  );
+                  if (result != null) {
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      setState(() {
+                        searchValue =  result.description.trim();
+                        getHotels();
+                      });
+
+                    });
+                  }
+                },
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                  decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(14),
+                    color: veryLightGreyColor,
                   ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.search, color: greyColor),
+                      const SizedBox(width: 10),
+                      Flexible(
+                        child: AppText(
+                            text: searchValue == ''
+                                ? 'Choose location'
+                                : searchValue,
+                            size: 14,
+                            color: greyColor,
+                        overflow: TextOverflow.ellipsis,),
+                      )
+                    ],
                   ),
-                  prefixIcon: const Icon(Icons.search, color: greyColor),
-                  hintText: "Search for hotels",
-                  hintStyle: const TextStyle(fontSize: 14, color: greyColor),
                 ),
               ),
+              // TextField(
+              //   onTap: () async {
+              //     final Suggestion? result = await showSearch(
+              //       context: context,
+              //       delegate: AddressSearch(),
+              //     );
+              //   },
+              //   autocorrect: false,
+              //   enableSuggestions: false,
+              //   style: const TextStyle(fontSize: 14, color: Colors.black87),
+              //   cursorColor: Colors.black87,
+              //   decoration: InputDecoration(
+              //     contentPadding: const EdgeInsets.symmetric(horizontal: 0),
+              //     filled: true,
+              //     fillColor: veryLightGreyColor,
+              //     enabledBorder: OutlineInputBorder(
+              //       borderRadius: BorderRadius.circular(14),
+              //     ),
+              //     focusedBorder: OutlineInputBorder(
+              //       borderRadius: BorderRadius.circular(14),
+              //     ),
+              //     prefixIcon: const Icon(Icons.search, color: greyColor),
+              //     hintText: "Search for hotels",
+              //     hintStyle: const TextStyle(fontSize: 14, color: greyColor),
+              //   ),
+              // ),
               const SizedBox(
                 height: 20,
               ),
@@ -281,7 +330,8 @@ class _HotelsHomeState extends State<HotelsHome> {
                 borderRadius: const BorderRadius.only(
                     topRight: Radius.circular(16),
                     topLeft: Radius.circular(16)),
-                child: Image.network(hotel.mainImageUrl)),
+                child: Image.network(hotel.mainImageUrl, fit: BoxFit.fitWidth,
+                  width: MediaQuery.of(context).size.width, height: 180,)),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               child: Row(
@@ -313,18 +363,18 @@ class _HotelsHomeState extends State<HotelsHome> {
                                 ),
                               ),
                             ),
-                            const SizedBox(width: 4),
-                            const Icon(
-                              Icons.location_on,
-                              size: 14,
-                              color: primaryColor,
-                            ),
-                            AppText(
-                                text: hotel.distance != 0
-                                    ? "${hotel.distance.toInt()} km to hotel"
-                                    : "hotel too far",
-                                size: 12,
-                                color: lightGreyColor),
+                            // const SizedBox(width: 4),
+                            // const Icon(
+                            //   Icons.location_on,
+                            //   size: 14,
+                            //   color: primaryColor,
+                            // ),
+                            // AppText(
+                            //     text: hotel.distance != 0
+                            //         ? "${hotel.distance.toInt()} km to hotel"
+                            //         : "hotel too far",
+                            //     size: 12,
+                            //     color: lightGreyColor),
                             const SizedBox(width: 50),
                           ],
                         ),

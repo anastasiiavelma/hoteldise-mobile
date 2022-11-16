@@ -3,7 +3,7 @@ import 'package:hoteldise/pages/favourite/favScreen.dart';
 import 'package:hoteldise/pages/hotels/home/home.dart';
 import 'package:unicons/unicons.dart';
 
-import '../themes/colors.dart';
+import '../themes/constants.dart';
 
 class BottomMenu extends StatefulWidget {
   const BottomMenu({Key? key}) : super(key: key);

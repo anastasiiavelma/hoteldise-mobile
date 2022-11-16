@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hoteldise/pages/auth/sign_in_screen.dart';
-import 'package:hoteldise/themes/colors.dart';
+import 'package:hoteldise/themes/constants.dart';
 import 'package:introduction_screen/introduction_screen.dart';
-import '../../themes/colors.dart';
+import '../../themes/constants.dart';
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({Key? key}) : super(key: key);

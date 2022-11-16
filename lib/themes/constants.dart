@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+const String googleAPiKey = "AIzaSyAJ229JdSZjTaOQ2AsmdS31-ih_sDd-8So";
+
 const primaryColor = Color(0xfff01591);
 const secondaryColor = Color(0xff6fc4cc);
 const backgroundColor = Color(0xFF010101);
