@@ -6,7 +6,6 @@ import 'package:hoteldise/models/hotel.dart';
 import 'package:hoteldise/pages/hotels/home/search/address_search.dart';
 import 'package:hoteldise/pages/hotels/home/sort.dart';
 
-import '../../../services/place_service.dart';
 import '../../../themes/constants.dart';
 import '../../../widgets/text_widget.dart';
 
@@ -30,7 +29,6 @@ List<SortOption> sortOptions = [
 ];
 
 class _HotelsHomeState extends State<HotelsHome> {
-  List<Hotel> allHotels = <Hotel>[];
   List<Hotel> matchedHotels = <Hotel>[];
   SortOption currentSortOption = sortOptions[0];
   String searchValue = '';
@@ -64,7 +62,6 @@ class _HotelsHomeState extends State<HotelsHome> {
       for (var doc in event.docs) {
         newHotels.add(doc.data());
       }
-      allHotels = newHotels;
 
       for (int i = 0; i < newHotels.length; i++) {
         await newHotels[i].setExtraFields();
@@ -160,32 +157,6 @@ class _HotelsHomeState extends State<HotelsHome> {
                   ),
                 ),
               ),
-              // TextField(
-              //   onTap: () async {
-              //     final Suggestion? result = await showSearch(
-              //       context: context,
-              //       delegate: AddressSearch(),
-              //     );
-              //   },
-              //   autocorrect: false,
-              //   enableSuggestions: false,
-              //   style: const TextStyle(fontSize: 14, color: Colors.black87),
-              //   cursorColor: Colors.black87,
-              //   decoration: InputDecoration(
-              //     contentPadding: const EdgeInsets.symmetric(horizontal: 0),
-              //     filled: true,
-              //     fillColor: veryLightGreyColor,
-              //     enabledBorder: OutlineInputBorder(
-              //       borderRadius: BorderRadius.circular(14),
-              //     ),
-              //     focusedBorder: OutlineInputBorder(
-              //       borderRadius: BorderRadius.circular(14),
-              //     ),
-              //     prefixIcon: const Icon(Icons.search, color: greyColor),
-              //     hintText: "Search for hotels",
-              //     hintStyle: const TextStyle(fontSize: 14, color: greyColor),
-              //   ),
-              // ),
               const SizedBox(
                 height: 20,
               ),
@@ -560,7 +531,7 @@ class _HotelsHomeState extends State<HotelsHome> {
       builder: (BuildContext context) => CalendarPopupView(
         barrierDismissible: true,
         minimumDate: DateTime.now(),
-        //  maximumDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day + 10),
+        maximumDate: DateTime.now().add(const Duration(days: 365)),
         initialEndDate: endDate,
         initialStartDate: startDate,
         onApplyClick: (DateTime startData, DateTime endData) {
