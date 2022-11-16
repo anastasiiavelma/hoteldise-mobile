@@ -112,15 +112,15 @@ class _HotelsHomeState extends State<HotelsHome> {
               GestureDetector(
                 onTap: () async {
                   // var token = await FirebaseAuth.instance.currentUser?.getIdToken();
-                  final Suggestion? result = await showSearch(
+                  final String? result = await showSearch(
                     context: context,
-                    delegate: AddressSearch(),
-                    query: searchValue
+                      query: searchValue,
+                    delegate: AddressSearch(searchValue),
                   );
                   if (result != null) {
                     WidgetsBinding.instance.addPostFrameCallback((_) {
                       setState(() {
-                        searchValue =  result.description.trim();
+                        searchValue =  result;
                         getHotels();
                       });
 
