@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:hoteldise/themes/constants.dart';
+import 'package:hoteldise/widgets/text_widget.dart';
 
 import '../../../../services/place_service.dart';
 
 class AddressSearch extends SearchDelegate<Suggestion> {
+  ListView? list;
 
   @override
   List<Widget> buildActions(BuildContext context) {
@@ -25,38 +28,56 @@ class AddressSearch extends SearchDelegate<Suggestion> {
     return IconButton(
       icon: const Icon(Icons.arrow_back),
       onPressed: () {
-        Navigator.of(context).pop();
+        close(context, Suggestion(null, query));
       },
     );
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    var placeProvider = PlaceApiProvider();
     return FutureBuilder(
-        // We will put the api call here
-        future: placeProvider.fetchSuggestions(query, 'en'),
+        future: PlaceApiProvider().fetchSuggestions(query, 'en'),
         builder: (context, snapshot) {
           if (query == '') {
+            list = null;
             return Container();
           } else if (snapshot.hasData) {
-            return ListView.builder(
-              itemBuilder: (context, index) => ListTile(
-                // we will display the data returned from our future here
-                title: Text((snapshot.data as List)[index]),
-                onTap: () {
-                  close(context, (snapshot.data as List)[index]);
-                },
-              ),
-              itemCount: (snapshot.data as List).length,
+            List<Suggestion> suggestionList = snapshot.data as List<Suggestion>;
+            list = ListView.builder(
+              itemBuilder: (context, index) {
+                if (index != suggestionList.length) {
+                  return ListTile(
+                      onTap: () {
+                        close(context, suggestionList[index]);
+                      },
+                      title: AppText(
+                          text: suggestionList[index].description,
+                          weight: FontWeight.bold,
+                          color: textBase));
+                } else {
+                  return getBasicText(context);
+                }
+              },
+              itemCount: suggestionList.length + 1,
             );
+            return list!;
+          } else {
+            return const Center(child: Text('Loading...'));
           }
-          return Container(child: Text('ddded'),);
         });
+  }
+
+  ListTile getBasicText(BuildContext context) {
+    return ListTile(
+      title: AppText(text: 'Direct search: $query', color: textBase),
+      onTap: () {
+        close(context, Suggestion(null, query));
+      },
+    );
   }
 
   @override
   Widget buildResults(BuildContext context) {
-    return Container();
+    return list != null ? list! : Container();
   }
 }

@@ -1,9 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
-
-import 'package:google_maps_webservice/places.dart';
 
 import 'package:hoteldise/models/hotel.dart';
 import 'package:hoteldise/pages/hotels/home/search/address_search.dart';
@@ -35,23 +32,24 @@ List<SortOption> sortOptions = [
 class _HotelsHomeState extends State<HotelsHome> {
   List<Hotel> hotels = <Hotel>[];
   SortOption currentSortOption = sortOptions[0];
+  String searchValue = '';
   DateTime startDate = DateTime.now();
   DateTime endDate = DateTime.now().add(const Duration(days: 5));
 
   @override
   void initState() {
-    getAllHotels();
+    getHotels();
     super.initState();
   }
 
-  getAllHotels() async {
+  getHotels() async {
     List<Hotel> newHotels = <Hotel>[];
     FirebaseFirestore db = FirebaseFirestore.instance;
     await db
         .collection("hotels")
         .withConverter(
-        fromFirestore: Hotel.fromFirestore,
-        toFirestore: (Hotel hotel, _) => hotel.toFirestore())
+            fromFirestore: Hotel.fromFirestore,
+            toFirestore: (Hotel hotel, _) => hotel.toFirestore())
         .get()
         .then((event) async {
       for (var doc in event.docs) {
@@ -59,13 +57,13 @@ class _HotelsHomeState extends State<HotelsHome> {
       }
 
       for (int i = 0; i < newHotels.length; i++) {
-        await newHotels[i].setDistance();
-        await newHotels[i].setMainImage();
+        await newHotels[i].setExtraFields();
       }
-
+      //search filter
+      newHotels = newHotels.where((element) => element.address.address.toLowerCase().contains(searchValue.toLowerCase())).toList();
       setState(() {
         hotels = newHotels;
-        SortByMark().doSort(hotels);
+        currentSortOption.doSort(hotels);
       });
     });
   }
@@ -81,7 +79,7 @@ class _HotelsHomeState extends State<HotelsHome> {
             title: AppText(
                 text: label,
                 color:
-                label == currentSortOption.name ? primaryColor : textBase),
+                    label == currentSortOption.name ? primaryColor : textBase),
             onTap: () {
               setState(() {
                 currentSortOption = sortOptions[i];
@@ -116,20 +114,38 @@ class _HotelsHomeState extends State<HotelsHome> {
                   final Suggestion? result = await showSearch(
                     context: context,
                     delegate: AddressSearch(),
+                    query: searchValue
                   );
+                  if (result != null) {
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      setState(() {
+                        searchValue =  result.description.trim();
+                        getHotels();
+                      });
+
+                    });
+                  }
                 },
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(14),
                     color: veryLightGreyColor,
                   ),
-                  child:
-                  Row(
+                  child: Row(
                     children: [
                       const Icon(Icons.search, color: greyColor),
                       const SizedBox(width: 10),
-                      AppText(text: "Search for hotels", size: 14, color: greyColor)
+                      Flexible(
+                        child: AppText(
+                            text: searchValue == ''
+                                ? 'Choose location'
+                                : searchValue,
+                            size: 14,
+                            color: greyColor,
+                        overflow: TextOverflow.ellipsis,),
+                      )
                     ],
                   ),
                 ),
@@ -194,7 +210,7 @@ class _HotelsHomeState extends State<HotelsHome> {
                                         left: 20, right: 30, top: 10),
                                     child: Column(
                                       crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Padding(
                                           padding: const EdgeInsets.symmetric(
@@ -211,10 +227,10 @@ class _HotelsHomeState extends State<HotelsHome> {
                                           child: ListTile(
                                             title: Center(
                                                 child: AppText(
-                                                  text: 'CANCEL',
-                                                  weight: FontWeight.w700,
-                                                  color: lightGreyColor,
-                                                )),
+                                              text: 'CANCEL',
+                                              weight: FontWeight.w700,
+                                              color: lightGreyColor,
+                                            )),
                                             onTap: () {
                                               Navigator.pop(context);
                                             },
@@ -315,7 +331,8 @@ class _HotelsHomeState extends State<HotelsHome> {
                 borderRadius: const BorderRadius.only(
                     topRight: Radius.circular(16),
                     topLeft: Radius.circular(16)),
-                child: Image.network(hotel.mainImageUrl)),
+                child: Image.network(hotel.mainImageUrl, fit: BoxFit.fitWidth,
+                  width: MediaQuery.of(context).size.width, height: 180,)),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               child: Row(
@@ -347,18 +364,18 @@ class _HotelsHomeState extends State<HotelsHome> {
                                 ),
                               ),
                             ),
-                            const SizedBox(width: 4),
-                            const Icon(
-                              Icons.location_on,
-                              size: 14,
-                              color: primaryColor,
-                            ),
-                            AppText(
-                                text: hotel.distance != 0
-                                    ? "${hotel.distance.toInt()} km to hotel"
-                                    : "hotel too far",
-                                size: 12,
-                                color: lightGreyColor),
+                            // const SizedBox(width: 4),
+                            // const Icon(
+                            //   Icons.location_on,
+                            //   size: 14,
+                            //   color: primaryColor,
+                            // ),
+                            // AppText(
+                            //     text: hotel.distance != 0
+                            //         ? "${hotel.distance.toInt()} km to hotel"
+                            //         : "hotel too far",
+                            //     size: 12,
+                            //     color: lightGreyColor),
                             const SizedBox(width: 50),
                           ],
                         ),
@@ -381,7 +398,7 @@ class _HotelsHomeState extends State<HotelsHome> {
                             Flexible(
                               child: AppText(
                                 text:
-                                "based on ${hotel.rating.count.toString()} mark${hotel.rating.count > 1 ? "s" : ""}",
+                                    "based on ${hotel.rating.count.toString()} mark${hotel.rating.count > 1 ? "s" : ""}",
                                 size: 12,
                                 color: lightGreyColor,
                                 overflow: TextOverflow.ellipsis,
