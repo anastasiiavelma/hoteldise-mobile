@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:hoteldise/models/hotel.dart';
 
 import '../../themes/constants.dart';
-import '../../widgets/bottom_navigation_bar.dart';
 import '../../widgets/text_widget.dart';
 
 class FavScreen extends StatefulWidget {

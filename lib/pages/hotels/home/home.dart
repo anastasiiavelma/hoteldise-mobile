@@ -8,7 +8,6 @@ import 'package:hoteldise/pages/hotels/home/sort.dart';
 
 import '../../../services/place_service.dart';
 import '../../../themes/constants.dart';
-import '../../../widgets/bottom_navigation_bar.dart';
 import '../../../widgets/text_widget.dart';
 
 import 'package:intl/intl.dart';
@@ -30,7 +29,8 @@ List<SortOption> sortOptions = [
 ];
 
 class _HotelsHomeState extends State<HotelsHome> {
-  List<Hotel> hotels = <Hotel>[];
+  List<Hotel> allHotels = <Hotel>[];
+  List<Hotel> matchedHotels = <Hotel>[];
   SortOption currentSortOption = sortOptions[0];
   String searchValue = '';
   DateTime startDate = DateTime.now();
@@ -55,6 +55,7 @@ class _HotelsHomeState extends State<HotelsHome> {
       for (var doc in event.docs) {
         newHotels.add(doc.data());
       }
+      allHotels = newHotels;
 
       for (int i = 0; i < newHotels.length; i++) {
         await newHotels[i].setExtraFields();
@@ -62,8 +63,8 @@ class _HotelsHomeState extends State<HotelsHome> {
       //search filter
       newHotels = newHotels.where((element) => element.address.address.toLowerCase().contains(searchValue.toLowerCase())).toList();
       setState(() {
-        hotels = newHotels;
-        currentSortOption.doSort(hotels);
+        matchedHotels = newHotels;
+        currentSortOption.doSort(matchedHotels);
       });
     });
   }
@@ -84,7 +85,7 @@ class _HotelsHomeState extends State<HotelsHome> {
               setState(() {
                 currentSortOption = sortOptions[i];
               });
-              sortOptions[i].doSort(hotels);
+              sortOptions[i].doSort(matchedHotels);
               Navigator.pop(context);
             },
             contentPadding: EdgeInsets.zero,
@@ -288,12 +289,12 @@ class _HotelsHomeState extends State<HotelsHome> {
               Flexible(
                 child: ListView.separated(
                   scrollDirection: Axis.vertical,
-                  itemCount: hotels.length + 1,
+                  itemCount: matchedHotels.length + 1,
                   itemBuilder: (context, index) {
-                    if (index == hotels.length) {
+                    if (index == matchedHotels.length) {
                       return const SizedBox(height: 0);
                     } else {
-                      return getHotelCard(hotels[index]);
+                      return getHotelCard(matchedHotels[index]);
                     }
                   },
                   separatorBuilder: (BuildContext context, int index) {

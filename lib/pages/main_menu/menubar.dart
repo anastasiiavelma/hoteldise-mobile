@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:hoteldise/pages/favourite/favScreen.dart';
 import 'package:hoteldise/pages/hotels/home/home.dart';
 import 'package:unicons/unicons.dart';
@@ -7,8 +6,10 @@ import 'package:unicons/unicons.dart';
 import '../../themes/constants.dart';
 
 class MenuBar extends StatefulWidget {
+  const MenuBar({Key? key}) : super(key: key);
+
   @override
-  _MenuBarState createState() => _MenuBarState();
+  State<MenuBar> createState() => _MenuBarState();
 }
 
 class _MenuBarState extends State<MenuBar> {
@@ -24,58 +25,33 @@ class _MenuBarState extends State<MenuBar> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
-      ),
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          color: secondaryColor,
-          boxShadow: [
-            BoxShadow(
-              blurRadius: 20,
-              color: Colors.black.withOpacity(.1),
-            )
-          ],
+    return DefaultTabController(
+      length: _widgetOptions.length,
+      initialIndex: _selectedIndex,
+      child: Scaffold(
+        body: Center(
+          child: _widgetOptions.elementAt(_selectedIndex),
         ),
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8),
-            child: GNav(
-              rippleColor: Colors.grey[300]!,
-              hoverColor: Colors.grey[100]!,
-              gap: 8,
-              activeColor: Colors.white,
-              iconSize: 24,
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-              duration: const Duration(milliseconds: 400),
-              tabBackgroundColor: primaryColor,
-              color: Colors.white,
-              tabs: const [
-                GButton(
-                  icon: UniconsLine.bed,
-                  text: 'Home',
-                ),
-                GButton(
-                  icon: UniconsLine.heart_alt,
-                  text: 'Likes',
-                ),
-                GButton(
-                  icon: UniconsLine.user,
-                  text: 'Profile',
-                ),
-                GButton(
-                  icon: UniconsLine.setting,
-                  text: 'Settings',
-                ),
-              ],
-              selectedIndex: _selectedIndex,
-              onTabChange: (index) {
-                setState(() {
-                  _selectedIndex = index;
-                });
-              },
-            ),
+        bottomNavigationBar: BottomAppBar(
+          color: secondaryColor,
+          child: TabBar(
+            indicatorColor: Colors.white,
+            unselectedLabelColor: Colors.white,
+            onTap: (index) {
+              setState(() {
+                _selectedIndex = index;
+              });
+            },
+            tabs: const [
+              Tab(
+                icon: Icon(UniconsLine.bed),
+              ),
+              Tab(
+                icon: Icon(Icons.favorite),
+              ),
+              Tab(icon: Icon(Icons.account_box)),
+              Tab(icon: Icon(Icons.settings_rounded)),
+            ],
           ),
         ),
       ),

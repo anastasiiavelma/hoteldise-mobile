@@ -1,7 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:hoteldise/themes/constants.dart';
 import 'package:hoteldise/widgets/text_widget.dart';
 
+import '../../../../models/hotel.dart';
 import '../../../../services/place_service.dart';
 
 class AddressSearch extends SearchDelegate<Suggestion> {
