@@ -4,10 +4,15 @@ import 'package:hoteldise/themes/constants.dart';
 import 'package:hoteldise/widgets/text_widget.dart';
 
 import '../../../../models/hotel.dart';
-import '../../../../services/place_service.dart';
 
-class AddressSearch extends SearchDelegate<Suggestion> {
+class AddressSearch extends SearchDelegate<String> {
+  late String prevSearch;
   ListView? list;
+  List<Hotel> hotels = [];
+
+  AddressSearch(this.prevSearch) {
+    getHotels();
+  }
 
   @override
   List<Widget> buildActions(BuildContext context) {
@@ -30,56 +35,74 @@ class AddressSearch extends SearchDelegate<Suggestion> {
     return IconButton(
       icon: const Icon(Icons.arrow_back),
       onPressed: () {
-        close(context, Suggestion(null, query));
+        close(context, prevSearch);
       },
     );
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    return FutureBuilder(
-        future: PlaceApiProvider().fetchSuggestions(query, 'en'),
-        builder: (context, snapshot) {
-          if (query == '') {
-            list = null;
-            return Container();
-          } else if (snapshot.hasData) {
-            List<Suggestion> suggestionList = snapshot.data as List<Suggestion>;
-            list = ListView.builder(
-              itemBuilder: (context, index) {
-                if (index != suggestionList.length) {
-                  return ListTile(
-                      onTap: () {
-                        close(context, suggestionList[index]);
-                      },
-                      title: AppText(
-                          text: suggestionList[index].description,
-                          weight: FontWeight.bold,
-                          color: textBase));
-                } else {
-                  return getBasicText(context);
-                }
-              },
-              itemCount: suggestionList.length + 1,
-            );
-            return list!;
-          } else {
-            return const Center(child: Text('Loading...'));
-          }
-        });
+    return Builder(builder: (context) {
+      if (query == '') {
+        list = null;
+        return Container();
+      } else {
+        List<String> suggestionList = hotels
+            .map((e) => e.address.address)
+            .where((el) => el.toLowerCase().contains(query.toLowerCase()))
+            .toList();
+        if (suggestionList.isNotEmpty) {
+          list = ListView.builder(
+            itemBuilder: (context, index) {
+              if (index != suggestionList.length) {
+                return ListTile(
+                    onTap: () {
+                      close(context, suggestionList[index]);
+                    },
+                    title: AppText(
+                        text: suggestionList[index],
+                        weight: FontWeight.bold,
+                        color: textBase));
+              } else {
+                return getBasicText(context);
+              }
+            },
+            itemCount: suggestionList.length + 1,
+          );
+          return list!;
+        }
+        list = null;
+        return Center(child: AppText(text: 'Nothing found', color: textBase,));
+      }
+    });
   }
 
   ListTile getBasicText(BuildContext context) {
     return ListTile(
       title: AppText(text: 'Direct search: $query', color: textBase),
       onTap: () {
-        close(context, Suggestion(null, query));
+        close(context, query);
       },
     );
   }
 
   @override
   Widget buildResults(BuildContext context) {
-    return list != null ? list! : Container();
+    return list != null ? list! : Center(child: AppText(text: 'Nothing found', color: textBase,));
+  }
+
+  void getHotels() async {
+    FirebaseFirestore db = FirebaseFirestore.instance;
+    await db
+        .collection("hotels")
+        .withConverter(
+            fromFirestore: Hotel.fromFirestore,
+            toFirestore: (Hotel hotel, _) => hotel.toFirestore())
+        .get()
+        .then((event) async {
+      for (var doc in event.docs) {
+        hotels.add(doc.data());
+      }
+    });
   }
 }
