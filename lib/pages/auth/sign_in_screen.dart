@@ -7,7 +7,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hoteldise/utils/welcome.dart';
 import 'package:unicons/unicons.dart';
 import 'package:hoteldise/pages/auth/sign_up_screen.dart';
-import '../../themes/colors.dart';
+import '../../themes/constants.dart';
 import 'package:provider/provider.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:form_field_validator/form_field_validator.dart';
@@ -41,7 +41,7 @@ class _SignInScreenState extends State<SignInScreen> {
       await auth.signInWithEmailAndPassword(
           email: emailController.text, password: passwordController.text);
       context.loaderOverlay.hide();
-      Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+      Navigator.pushNamedAndRemoveUntil(context, '/main', (route) => false);
     } catch (e) {
       CustomToast(message: 'No user or incorrect password').show();
     } finally {
@@ -54,7 +54,7 @@ class _SignInScreenState extends State<SignInScreen> {
     AuthBase? auth = Provider.of<AuthBase>(context, listen: false);
     try {
       await auth.signInWithGoogle();
-      Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+      Navigator.pushNamedAndRemoveUntil(context, '/main', (route) => false);
     } catch (e) {
       CustomToast(message: "Something went wrong").show();
     } finally {

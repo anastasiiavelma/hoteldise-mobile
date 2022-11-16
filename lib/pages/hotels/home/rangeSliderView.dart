@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../themes/colors.dart';
+import '../../../themes/constants.dart';
 
 class RangeSliderView extends StatefulWidget {
   const RangeSliderView({Key? key, this.values, this.onChangeRangeValues})

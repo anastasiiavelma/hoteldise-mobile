@@ -73,6 +73,11 @@ class Hotel {
     };
   }
 
+  setExtraFields() async {
+    // await setDistance();
+    await setMainImage();
+  }
+
   Future<void> setDistance() async{
     await getDistance(LatLng(address.geopoint.latitude, address.geopoint.longitude))
         .then((value) {

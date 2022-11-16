@@ -1,51 +1,46 @@
 import 'dart:math';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geocoding/geocoding.dart';
 
+import '../themes/constants.dart';
+
 Future<Position> getUserCurrentLocation() async {
-  await Geolocator.requestPermission().then((value){
-  }).onError((error, stackTrace) async {
-    await Geolocator.requestPermission();
-    print("ERROR"+error.toString());
-  });
+  // await Geolocator.requestPermission().then((value){
+  // }).onError((error, stackTrace) async {
+  //   await Geolocator.requestPermission();
+  //   print("ERROR"+error.toString());
+  // });
   return await Geolocator.getCurrentPosition(
       forceAndroidLocationManager: true, desiredAccuracy: LocationAccuracy.low);
 }
 
-Future<double> getDistance(LatLng endLocation) async {
+Future<double> getDistance(LatLng hotelLocation) async {
   var permission = await Geolocator.checkPermission();
   if (permission == LocationPermission.denied) {
     permission = await Geolocator.requestPermission();
     if (permission == LocationPermission.denied) {
+      debugPrint("Geolocation permission is denied");
       return 0;
     }
   }
 
-
-
   // List<Placemark> newPlace = await placemarkFromCoordinates(endLocation.latitude, endLocation.longitude);
 
-
-  late LatLng startLocation;
+  late LatLng userLocation;
   await getUserCurrentLocation().then((value) {
-    startLocation = LatLng(value.latitude, value.longitude);
+    userLocation = LatLng(value.latitude, value.longitude);
   });
-  PolylinePoints polylinePoints = PolylinePoints();
-
-  String googleAPiKey = "AIzaSyA3w26GDz9eip4VBKgwijXcvg1YBh_tp3c";
-
-  Set<Marker> markers = {}; //markers for google map
-  Map<PolylineId, Polyline> polylines = {}; //polylines to show direction
 
   List<LatLng> polylineCoordinates = [];
 
-  PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
+  PolylineResult result = await PolylinePoints().getRouteBetweenCoordinates(
     googleAPiKey,
-    PointLatLng(startLocation.latitude, startLocation.longitude),
-    PointLatLng(endLocation.latitude, endLocation.longitude),
+    PointLatLng(userLocation.latitude, userLocation.longitude),
+    PointLatLng(hotelLocation.latitude, hotelLocation.longitude),
     travelMode: TravelMode.driving,
   );
 
@@ -70,6 +65,7 @@ Future<double> getDistance(LatLng endLocation) async {
   return totalDistance;
 }
 
+//it will return distance in KM
 double calculateDistanceBetweenPoints(lat1, lon1, lat2, lon2) {
   var p = 0.017453292519943295;
   var a = 0.5 -
@@ -78,4 +74,3 @@ double calculateDistanceBetweenPoints(lat1, lon1, lat2, lon2) {
   return 12742 * asin(sqrt(a));
 }
 
-//it will return distance in KM

@@ -3,14 +3,15 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hoteldise/pages/auth/sign_in_screen.dart';
 import 'package:hoteldise/pages/auth/sign_up_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:hoteldise/pages/favourite/favScreen.dart';
 import 'package:hoteldise/pages/hotels/home/home.dart';
+import 'package:hoteldise/pages/main_menu/menubar.dart';
 import 'package:hoteldise/services/auth.dart';
-import 'package:hoteldise/utils/welcome.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import '../../themes/colors.dart';
+import '../../themes/constants.dart';
 
 Future<void> main() async {
   await Hive.initFlutter();
@@ -47,10 +48,12 @@ class _MyAppState extends State<MyApp> {
             title: "HotelDise",
             initialRoute: '/',
             routes: {
+              '/favourites': (context) => const FavScreen(),
               '/home': (context) => const HotelsHome(),
+              '/main': (context) => const MenuBar(),
               '/signIn': (context) => const SignInScreen(),
               '/signUp': (context) => const SignUpScreen(),
-              '/': (context) => const HotelsHome(),
+              '/': (context) => const MenuBar(),
             },
             theme: ThemeData.dark(),
           )),
