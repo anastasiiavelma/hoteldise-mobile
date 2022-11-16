@@ -45,7 +45,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           email: emailController.text, password: passwordController.text);
       if (user != null) {
         await Firestore().addUser(user);
-        Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+        Navigator.pushNamedAndRemoveUntil(context, '/main', (route) => false);
       }
     } catch (e) {
       CustomToast(message: 'enter correct field').show();

@@ -305,7 +305,6 @@ class _HotelsHomeState extends State<HotelsHome> {
           ),
         ),
       ),
-      bottomNavigationBar: const BottomMenu(),
     );
   }
 

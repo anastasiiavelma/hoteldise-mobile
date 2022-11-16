@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:hoteldise/pages/favourite/favScreen.dart';
+import 'package:hoteldise/pages/hotels/home/home.dart';
 import 'package:unicons/unicons.dart';
 
 import '../themes/constants.dart';
@@ -22,24 +24,34 @@ class _MyHomePageState extends State<BottomMenu>
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
+    return MaterialApp(
+        home: DefaultTabController(
       length: 4, // Added
       initialIndex: 0, //Added
-      child: Material(
-        color: secondaryColor,
-        child: TabBar(
-          indicatorColor: Colors.white,
-          unselectedLabelColor: Colors.white,
-          // labelColor: Color(0xffffdad8),
-          onTap: (index) {},
-          tabs: [
-            Tab(icon: Icon(UniconsLine.bed)),
-            Tab(icon: Icon(Icons.favorite)),
-            Tab(icon: Icon(Icons.account_box)),
-            Tab(icon: Icon(Icons.settings_rounded)),
-          ],
+      child: Scaffold(
+        bottomNavigationBar: BottomAppBar(
+          color: secondaryColor,
+          child: TabBar(
+            indicatorColor: Colors.white,
+            unselectedLabelColor: Colors.white,
+            // labelColor: Color(0xffffdad8),
+            onTap: (index) {},
+            tabs: const [
+              Tab(
+                icon: Icon(UniconsLine.bed),
+              ),
+              Tab(
+                icon: Icon(Icons.favorite),
+              ),
+              Tab(icon: Icon(Icons.account_box)),
+              Tab(icon: Icon(Icons.settings_rounded)),
+            ],
+          ),
+        ),
+        body: const TabBarView(
+          children: [HotelsHome(), FavScreen(), FavScreen(), FavScreen()],
         ),
       ),
-    );
+    ));
   }
 }
