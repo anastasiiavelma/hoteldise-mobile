@@ -10,18 +10,19 @@ import 'package:hoteldise/models/room_type.dart';
 import '../services/geolocation.dart';
 
 class Hotel {
-  Hotel(
-      {required this.createdAt,
-      required this.rooms,
-      required this.averageCost,
-      required this.siteLink,
-      required this.photosUrls,
-      required this.address,
-      required this.rating,
-      required this.adminId,
-      required this.comments,
-      required this.name,
-      required this.description});
+  Hotel({
+    required this.createdAt,
+    required this.rooms,
+    required this.averageCost,
+    required this.siteLink,
+    required this.photosUrls,
+    required this.address,
+    required this.rating,
+    required this.adminId,
+    required this.comments,
+    required this.name,
+    required this.description,
+  });
 
   final String name;
   final Address address;
@@ -36,6 +37,7 @@ class Hotel {
   final int averageCost;
   double distance = 0;
   String mainImageUrl = "";
+  String hotelId = "";
 
   factory Hotel.fromFirestore(
     DocumentSnapshot<Map<String, dynamic>> snapshot,
@@ -73,15 +75,18 @@ class Hotel {
     };
   }
 
-  Future<void> setDistance() async{
-    await getDistance(LatLng(address.geopoint.latitude, address.geopoint.longitude))
+  Future<void> setDistance() async {
+    await getDistance(
+            LatLng(address.geopoint.latitude, address.geopoint.longitude))
         .then((value) {
       distance = value;
     });
   }
 
   Future<void> setMainImage() async {
-    mainImageUrl =  await FirebaseStorage.instance.ref().child(photosUrls[0]).getDownloadURL();
+    mainImageUrl = await FirebaseStorage.instance
+        .ref()
+        .child(photosUrls[0])
+        .getDownloadURL();
   }
-
 }

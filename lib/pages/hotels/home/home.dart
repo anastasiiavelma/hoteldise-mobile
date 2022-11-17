@@ -1,20 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 import 'package:flutter/material.dart';
-
-import 'package:google_maps_webservice/places.dart';
-
 import 'package:hoteldise/models/hotel.dart';
 import 'package:hoteldise/pages/hotels/home/sort.dart';
-
+import 'package:hoteldise/widgets/hotel_card.dart';
 import '../../../themes/colors.dart';
-import '../../../widgets/bottom_navigation_bar.dart';
 import '../../../widgets/text_widget.dart';
-
 import 'package:intl/intl.dart';
-
 import 'calendarPopUp.dart';
 import 'filter.dart';
+import 'package:hoteldise/services/auth.dart';
+import 'package:provider/provider.dart';
 
 class HotelsHome extends StatefulWidget {
   const HotelsHome({Key? key}) : super(key: key);
@@ -53,6 +48,7 @@ class _HotelsHomeState extends State<HotelsHome> {
         .then((event) async {
       for (var doc in event.docs) {
         newHotels.add(doc.data());
+        newHotels.last.hotelId = doc.reference.id;
       }
 
       for (int i = 0; i < newHotels.length; i++) {
@@ -97,6 +93,7 @@ class _HotelsHomeState extends State<HotelsHome> {
 
   @override
   Widget build(BuildContext context) {
+    AuthBase Auth = Provider.of<AuthBase>(context);
     return Scaffold(
       backgroundColor: backgroundColor,
       body: SafeArea(
@@ -244,7 +241,10 @@ class _HotelsHomeState extends State<HotelsHome> {
                     if (index == hotels.length) {
                       return const SizedBox(height: 0);
                     } else {
-                      return getHotelCard(hotels[index]);
+                      return HotelCard(
+                        hotel: hotels[index],
+                        Auth: Auth,
+                      );
                     }
                   },
                   separatorBuilder: (BuildContext context, int index) {
@@ -254,126 +254,6 @@ class _HotelsHomeState extends State<HotelsHome> {
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget getHotelCard(Hotel hotel) {
-    return Center(
-      child: Container(
-        constraints: const BoxConstraints(maxWidth: 340),
-        decoration: BoxDecoration(
-          color: elevatedGrey,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: const [
-            BoxShadow(
-              color: elevatedGrey,
-              blurRadius: 8.0,
-              spreadRadius: 4.0,
-              offset: Offset(0.0, 0.0),
-            ),
-          ],
-        ),
-        child: Column(
-          children: [
-            ClipRRect(
-                borderRadius: const BorderRadius.only(
-                    topRight: Radius.circular(16),
-                    topLeft: Radius.circular(16)),
-                child: Image.network(hotel.mainImageUrl)),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Flexible(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        AppText(
-                          text: hotel.name,
-                          size: 16,
-                          weight: FontWeight.w700,
-                          overflow: TextOverflow.ellipsis,
-                          color: textBase,
-                        ),
-                        const SizedBox(height: 4),
-                        Row(
-                          children: [
-                            Flexible(
-                              child: Text(
-                                hotel.address.address,
-                                softWrap: false,
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  color: lightGreyColor,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 4),
-                            const Icon(
-                              Icons.location_on,
-                              size: 14,
-                              color: primaryColor,
-                            ),
-                            AppText(
-                                text: hotel.distance != 0
-                                    ? "${hotel.distance.toInt()} km to hotel"
-                                    : "hotel too far",
-                                size: 12,
-                                color: lightGreyColor),
-                            const SizedBox(width: 50),
-                          ],
-                        ),
-                        const SizedBox(height: 4),
-                        Row(
-                          children: [
-                            for (int i = 0; i < hotel.rating.mark; i++)
-                              const Icon(
-                                Icons.star_rounded,
-                                size: 16,
-                                color: primaryColor,
-                              ),
-                            for (int i = 0; i < 5 - hotel.rating.mark; i++)
-                              const Icon(
-                                Icons.star_border_rounded,
-                                size: 16,
-                                color: primaryColor,
-                              ),
-                            const SizedBox(width: 4),
-                            Flexible(
-                              child: AppText(
-                                text:
-                                    "based on ${hotel.rating.count.toString()} mark${hotel.rating.count > 1 ? "s" : ""}",
-                                size: 12,
-                                color: lightGreyColor,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  Column(
-                    children: [
-                      AppText(
-                        text: "${hotel.averageCost}\$",
-                        size: 16,
-                        weight: FontWeight.w700,
-                        color: textBase,
-                      ),
-                      const SizedBox(height: 4),
-                      AppText(text: "/per night", size: 12, color: textBase),
-                    ],
-                  ),
-                ],
-              ),
-            )
-          ],
         ),
       ),
     );
@@ -422,7 +302,7 @@ class _HotelsHomeState extends State<HotelsHome> {
                           ),
                           Text(
                             '${DateFormat("dd, MMM").format(startDate)} - ${DateFormat("dd, MMM").format(endDate)}',
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontWeight: FontWeight.w500,
                               fontSize: 16,
                             ),
@@ -476,7 +356,7 @@ class _HotelsHomeState extends State<HotelsHome> {
                           const SizedBox(
                             height: 8,
                           ),
-                          Text(
+                          const Text(
                             '1 Room - 2 Adults',
                             style: TextStyle(
                               fontWeight: FontWeight.w500,
