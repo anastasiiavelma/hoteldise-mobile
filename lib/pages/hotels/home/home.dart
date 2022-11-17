@@ -37,12 +37,13 @@ class _HotelsHomeState extends State<HotelsHome> {
   int numberOfRooms = 1;
   int numberOfAdults = 2;
 
-  String getRoomsAdultsString(){
-      String text = "";
-      text += "$numberOfRooms ${numberOfRooms == 1 ? "Room - " : "Rooms - "}";
-      text += "$numberOfAdults ${numberOfAdults == 1 ? "Adult" : "Adults"}";
+  String getRoomsAdultsString() {
+    String text = "";
+    text += "$numberOfRooms ${numberOfRooms == 1 ? "Room - " : "Rooms - "}";
+    text += "$numberOfAdults ${numberOfAdults == 1 ? "Adult" : "Adults"}";
     return text;
   }
+
   @override
   void initState() {
     getHotels();
@@ -67,7 +68,11 @@ class _HotelsHomeState extends State<HotelsHome> {
         await newHotels[i].setExtraFields();
       }
       //search filter
-      newHotels = newHotels.where((element) => element.address.address.toLowerCase().contains(searchValue.toLowerCase())).toList();
+      newHotels = newHotels
+          .where((element) => element.address.address
+              .toLowerCase()
+              .contains(searchValue.toLowerCase()))
+          .toList();
       setState(() {
         matchedHotels = newHotels;
         currentSortOption.doSort(matchedHotels);
@@ -120,16 +125,15 @@ class _HotelsHomeState extends State<HotelsHome> {
                   // var token = await FirebaseAuth.instance.currentUser?.getIdToken();
                   final String? result = await showSearch(
                     context: context,
-                      query: searchValue,
+                    query: searchValue,
                     delegate: AddressSearch(searchValue),
                   );
                   if (result != null) {
                     WidgetsBinding.instance.addPostFrameCallback((_) {
                       setState(() {
-                        searchValue =  result;
+                        searchValue = result;
                         getHotels();
                       });
-
                     });
                   }
                 },
@@ -142,17 +146,34 @@ class _HotelsHomeState extends State<HotelsHome> {
                   ),
                   child: Row(
                     children: [
-                      const Icon(Icons.search, color: greyColor),
-                      const SizedBox(width: 10),
-                      Flexible(
-                        child: AppText(
-                            text: searchValue == ''
-                                ? 'Choose location'
-                                : searchValue,
-                            size: 14,
-                            color: greyColor,
-                        overflow: TextOverflow.ellipsis,),
-                      )
+                      Expanded(
+                        child: Row(children: [
+                          const Icon(Icons.search, color: greyColor),
+                          const SizedBox(width: 10),
+                          AppText(
+                              text: searchValue == ''
+                                  ? 'Choose location'
+                                  : searchValue,
+                              size: 14,
+                              color: greyColor,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                        ]),
+                      ),
+                      if (searchValue != '')
+                        IconButton(
+                            padding: EdgeInsets.zero,
+                            constraints: const BoxConstraints(),
+                            onPressed: () {
+                              setState(() {
+                                searchValue = '';
+                                getHotels();
+                              });
+                            },
+                            icon: const Icon(
+                              Icons.close,
+                              color: greyColor,
+                            ))
                     ],
                   ),
                 ),
@@ -311,8 +332,12 @@ class _HotelsHomeState extends State<HotelsHome> {
                 borderRadius: const BorderRadius.only(
                     topRight: Radius.circular(16),
                     topLeft: Radius.circular(16)),
-                child: Image.network(hotel.mainImageUrl, fit: BoxFit.fitWidth,
-                  width: MediaQuery.of(context).size.width, height: 180,)),
+                child: Image.network(
+                  hotel.mainImageUrl,
+                  fit: BoxFit.fitWidth,
+                  width: MediaQuery.of(context).size.width,
+                  height: 180,
+                )),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               child: Row(
@@ -507,9 +532,9 @@ class _HotelsHomeState extends State<HotelsHome> {
                           ),
                           Text(
                             getRoomsAdultsString().toString(),
-                             style: const TextStyle(
-                               fontWeight: FontWeight.w500,
-                               fontSize: 16,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 16,
                             ),
                           ),
                         ],
@@ -544,10 +569,11 @@ class _HotelsHomeState extends State<HotelsHome> {
       ),
     );
   }
+
   void showRoomsAdults({BuildContext? context}) {
     showDialog<dynamic>(
       context: context!,
-      builder: (BuildContext context) =>  RoomsAdultsView(
+      builder: (BuildContext context) => RoomsAdultsView(
         barrierDismissible: true,
         onApplyClick: (DateTime startData, DateTime endData) {
           setState(() {
