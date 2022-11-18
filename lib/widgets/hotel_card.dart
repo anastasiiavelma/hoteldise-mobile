@@ -54,15 +54,11 @@ class _HotelCardState extends State<HotelCard> {
   void _toggleFavourite() async {
     try {
       if (_isFavourite) {
-        setState(() {
-          _isFavourite = false;
-        });
+        _isFavourite = false;
         await Firestore().deletePlaceFromFavourites(
             widget.Auth.currentUser!.uid, widget.hotel.hotelId);
       } else {
-        setState(() {
-          _isFavourite = true;
-        });
+        _isFavourite = true;
         await Firestore().addPlaceToFavourites(
             widget.Auth.currentUser!.uid, widget.hotel.hotelId);
       }
@@ -99,7 +95,9 @@ class _HotelCardState extends State<HotelCard> {
                       fit: BoxFit.cover,
                       image: NetworkImage(widget.hotel.mainImageUrl))),
               child: IconButton(
-                  onPressed: () => _isHeartLoading ? null : _toggleFavourite(),
+                  onPressed: () => setState(() {
+                        _isHeartLoading ? null : _toggleFavourite();
+                      }),
                   iconSize: 40,
                   icon: _isFavourite
                       ? Icon(

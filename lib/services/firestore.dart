@@ -10,6 +10,7 @@ class Firestore {
     Timestamp timestamp = Timestamp.fromDate(DateTime.now());
 
     final newUser = {
+      "_id": user.uid,
       "email": user.email!,
       "timeStamp": timestamp,
       "favourites": [],
