@@ -10,6 +10,7 @@ class Firestore {
     Timestamp timestamp = Timestamp.fromDate(DateTime.now());
 
     final newUser = {
+      "_id": user.uid,
       "email": user.email!,
       "timeStamp": timestamp,
       "favourites": [],
@@ -38,5 +39,25 @@ class Firestore {
         .doc(userId)
         .get()
         .then((doc) => doc['favourites']);
+  }
+
+  Future addPlaceToFavourites(String userId, String placeId) async {
+    List<dynamic> newFavourites = await getUserFavourites(userId);
+    newFavourites.add(placeId);
+    return _fStore
+        .collection('users')
+        .doc(userId)
+        .update({'favourites': newFavourites});
+  }
+
+  Future deletePlaceFromFavourites(String userId, String placeId) async {
+    List<dynamic> currentFavourites = await getUserFavourites(userId);
+    List<dynamic> newFavourites =
+        currentFavourites.where((item) => item != placeId).toList();
+
+    return _fStore
+        .collection('users')
+        .doc(userId)
+        .update({'favourites': newFavourites});
   }
 }

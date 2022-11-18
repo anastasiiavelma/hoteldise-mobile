@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:hoteldise/models/hotel.dart';
 import 'package:hoteldise/pages/hotels/home/search/address_search.dart';
 import 'package:hoteldise/pages/hotels/home/sort.dart';
+import 'package:hoteldise/services/auth.dart';
+import 'package:hoteldise/widgets/hotel_card.dart';
+import 'package:provider/provider.dart';
 
 import '../../../services/place_service.dart';
 import '../../../themes/constants.dart';
@@ -54,6 +57,7 @@ class _HotelsHomeState extends State<HotelsHome> {
         .then((event) async {
       for (var doc in event.docs) {
         newHotels.add(doc.data());
+        newHotels.last.hotelId = doc.reference.id;
       }
       allHotels = newHotels;
 
@@ -61,7 +65,11 @@ class _HotelsHomeState extends State<HotelsHome> {
         await newHotels[i].setExtraFields();
       }
       //search filter
-      newHotels = newHotels.where((element) => element.address.address.toLowerCase().contains(searchValue.toLowerCase())).toList();
+      newHotels = newHotels
+          .where((element) => element.address.address
+              .toLowerCase()
+              .contains(searchValue.toLowerCase()))
+          .toList();
       setState(() {
         matchedHotels = newHotels;
         currentSortOption.doSort(matchedHotels);
@@ -99,6 +107,7 @@ class _HotelsHomeState extends State<HotelsHome> {
 
   @override
   Widget build(BuildContext context) {
+    AuthBase Auth = Provider.of<AuthBase>(context);
     return Scaffold(
       backgroundColor: backgroundColor,
       body: SafeArea(
@@ -114,16 +123,15 @@ class _HotelsHomeState extends State<HotelsHome> {
                   // var token = await FirebaseAuth.instance.currentUser?.getIdToken();
                   final String? result = await showSearch(
                     context: context,
-                      query: searchValue,
+                    query: searchValue,
                     delegate: AddressSearch(searchValue),
                   );
                   if (result != null) {
                     WidgetsBinding.instance.addPostFrameCallback((_) {
                       setState(() {
-                        searchValue =  result;
+                        searchValue = result;
                         getHotels();
                       });
-
                     });
                   }
                 },
@@ -140,12 +148,13 @@ class _HotelsHomeState extends State<HotelsHome> {
                       const SizedBox(width: 10),
                       Flexible(
                         child: AppText(
-                            text: searchValue == ''
-                                ? 'Choose location'
-                                : searchValue,
-                            size: 14,
-                            color: greyColor,
-                        overflow: TextOverflow.ellipsis,),
+                          text: searchValue == ''
+                              ? 'Choose location'
+                              : searchValue,
+                          size: 14,
+                          color: greyColor,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       )
                     ],
                   ),
@@ -294,7 +303,10 @@ class _HotelsHomeState extends State<HotelsHome> {
                     if (index == matchedHotels.length) {
                       return const SizedBox(height: 0);
                     } else {
-                      return getHotelCard(matchedHotels[index]);
+                      return HotelCard(
+                        hotel: matchedHotels[index],
+                        Auth: Auth,
+                      );
                     }
                   },
                   separatorBuilder: (BuildContext context, int index) {
@@ -304,127 +316,6 @@ class _HotelsHomeState extends State<HotelsHome> {
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget getHotelCard(Hotel hotel) {
-    return Center(
-      child: Container(
-        constraints: const BoxConstraints(maxWidth: 340),
-        decoration: BoxDecoration(
-          color: elevatedGrey,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: const [
-            BoxShadow(
-              color: elevatedGrey,
-              blurRadius: 8.0,
-              spreadRadius: 4.0,
-              offset: Offset(0.0, 0.0),
-            ),
-          ],
-        ),
-        child: Column(
-          children: [
-            ClipRRect(
-                borderRadius: const BorderRadius.only(
-                    topRight: Radius.circular(16),
-                    topLeft: Radius.circular(16)),
-                child: Image.network(hotel.mainImageUrl, fit: BoxFit.fitWidth,
-                  width: MediaQuery.of(context).size.width, height: 180,)),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Flexible(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        AppText(
-                          text: hotel.name,
-                          size: 16,
-                          weight: FontWeight.w700,
-                          overflow: TextOverflow.ellipsis,
-                          color: textBase,
-                        ),
-                        const SizedBox(height: 4),
-                        Row(
-                          children: [
-                            Flexible(
-                              child: Text(
-                                hotel.address.address,
-                                softWrap: false,
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  color: lightGreyColor,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            ),
-                            // const SizedBox(width: 4),
-                            // const Icon(
-                            //   Icons.location_on,
-                            //   size: 14,
-                            //   color: primaryColor,
-                            // ),
-                            // AppText(
-                            //     text: hotel.distance != 0
-                            //         ? "${hotel.distance.toInt()} km to hotel"
-                            //         : "hotel too far",
-                            //     size: 12,
-                            //     color: lightGreyColor),
-                            const SizedBox(width: 50),
-                          ],
-                        ),
-                        const SizedBox(height: 4),
-                        Row(
-                          children: [
-                            for (int i = 0; i < hotel.rating.mark; i++)
-                              const Icon(
-                                Icons.star_rounded,
-                                size: 16,
-                                color: primaryColor,
-                              ),
-                            for (int i = 0; i < 5 - hotel.rating.mark; i++)
-                              const Icon(
-                                Icons.star_border_rounded,
-                                size: 16,
-                                color: primaryColor,
-                              ),
-                            const SizedBox(width: 4),
-                            Flexible(
-                              child: AppText(
-                                text:
-                                    "based on ${hotel.rating.count.toString()} mark${hotel.rating.count > 1 ? "s" : ""}",
-                                size: 12,
-                                color: lightGreyColor,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  Column(
-                    children: [
-                      AppText(
-                        text: "${hotel.averageCost}\$",
-                        size: 16,
-                        weight: FontWeight.w700,
-                        color: textBase,
-                      ),
-                      const SizedBox(height: 4),
-                      AppText(text: "/per night", size: 12, color: textBase),
-                    ],
-                  ),
-                ],
-              ),
-            )
-          ],
         ),
       ),
     );

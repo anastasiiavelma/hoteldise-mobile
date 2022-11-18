@@ -36,6 +36,7 @@ class Hotel {
   final int averageCost;
   double distance = 0;
   String mainImageUrl = "";
+  String hotelId = "";
 
   factory Hotel.fromFirestore(
     DocumentSnapshot<Map<String, dynamic>> snapshot,
@@ -78,15 +79,18 @@ class Hotel {
     await setMainImage();
   }
 
-  Future<void> setDistance() async{
-    await getDistance(LatLng(address.geopoint.latitude, address.geopoint.longitude))
+  Future<void> setDistance() async {
+    await getDistance(
+            LatLng(address.geopoint.latitude, address.geopoint.longitude))
         .then((value) {
       distance = value;
     });
   }
 
   Future<void> setMainImage() async {
-    mainImageUrl =  await FirebaseStorage.instance.ref().child(photosUrls[0]).getDownloadURL();
+    mainImageUrl = await FirebaseStorage.instance
+        .ref()
+        .child(photosUrls[0])
+        .getDownloadURL();
   }
-
 }
