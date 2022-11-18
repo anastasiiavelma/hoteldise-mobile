@@ -1,14 +1,12 @@
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
-
-import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:hoteldise/models/hotel.dart';
-
+import 'package:hoteldise/services/auth.dart';
+import 'package:hoteldise/services/firestore.dart';
+import 'package:hoteldise/widgets/hotel_card.dart';
+import 'package:hoteldise/widgets/loader.dart';
 import '../../themes/constants.dart';
-import '../../widgets/text_widget.dart';
+import 'package:provider/provider.dart';
 
 class FavScreen extends StatefulWidget {
   const FavScreen({Key? key}) : super(key: key);
@@ -18,176 +16,107 @@ class FavScreen extends StatefulWidget {
 }
 
 class _FavScreenState extends State<FavScreen> {
-  List<Hotel> hotels = <Hotel>[];
+  List<Hotel> _favourites = [];
+  bool _isLoading = true;
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: backgroundColor,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 18),
-          child: Column(
-            children: [
-              const SizedBox(
-                height: 23,
-              ),
-              const Text(
-                'Favourites',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 23,
-                  letterSpacing: 1.2,
-                ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              Flexible(
-                child: ListView.separated(
-                  scrollDirection: Axis.vertical,
-                  itemCount: hotels.length + 1,
-                  itemBuilder: (context, index) {
-                    if (index == hotels.length) {
-                      return const SizedBox(height: 0);
-                    } else
-                      return _buildIToteltem(index);
-                  },
-                  separatorBuilder: (BuildContext context, int index) {
-                    return const SizedBox(height: 20);
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+  getHotels(List<dynamic> ids) async {
+    List<Hotel> newHotels = <Hotel>[];
+    FirebaseFirestore db = FirebaseFirestore.instance;
+    await db
+        .collection("hotels")
+        .where(FieldPath.documentId, whereIn: ids)
+        .withConverter(
+            fromFirestore: Hotel.fromFirestore,
+            toFirestore: (Hotel hotel, _) => hotel.toFirestore())
+        .get()
+        .then((event) async {
+      for (var doc in event.docs) {
+        newHotels.add(doc.data());
+        newHotels.last.hotelId = doc.reference.id;
+      }
+      for (int i = 0; i < newHotels.length; i++) {
+        await newHotels[i].setExtraFields();
+      }
+      _favourites = newHotels;
+    });
   }
 
-  Widget _buildIToteltem(int index) {
-    return Center(
-      child: Container(
-        constraints: const BoxConstraints(maxWidth: 340),
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: const Color.fromRGBO(220, 218, 218, 1),
+  Widget build(BuildContext context) {
+    AuthBase Auth = Provider.of<AuthBase>(context);
+    Firestore().getUserFavourites(Auth.currentUser!.uid).then((value) {
+      getHotels(value);
+    }).whenComplete(() => setState(() {
+          _isLoading = false;
+        }));
+    if (_isLoading) {
+      return Loader();
+    }
+    return Scaffold(
+        backgroundColor: backgroundColor, body: _buildBody(context, Auth));
+  }
+
+  Widget _buildBody(BuildContext context, AuthBase Auth) {
+    if (_favourites == 0) {
+      return Center(
+          child: Column(
+        children: [
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 70),
+            child: Text(
+              "Do not any favourites",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 24,
+              ),
+            ),
           ),
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: const [
-            BoxShadow(
-              color: Color(0xffDDDDDD),
-              blurRadius: 6.0,
-              spreadRadius: 2.0,
-              offset: Offset(0.0, 0.0),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8.0),
+            child: Image.asset(
+              'assets/images/empty.png',
+              width: 300,
+              fit: BoxFit.cover,
             ),
-          ],
-        ),
+          )
+        ],
+      ));
+    }
+    return Center(
         child: Column(
-          children: [
-            ClipRRect(
-              borderRadius: const BorderRadius.only(
-                  topRight: Radius.circular(16), topLeft: Radius.circular(16)),
-              child: Image.asset(
-                height: 180,
-                width: double.infinity,
-                fit: BoxFit.fitWidth,
-                "assets/images/hotel_template.jpg",
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Flexible(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        AppText(
-                          text: hotels[index].name,
-                          size: 16,
-                          weight: FontWeight.w700,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        const SizedBox(height: 4),
-                        Row(
-                          children: [
-                            Flexible(
-                              child: Text(
-                                hotels[index].address.address,
-                                softWrap: false,
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.grey,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 4),
-                            const Icon(
-                              Icons.location_on,
-                              size: 14,
-                              color: primaryColor,
-                            ),
-                            AppText(
-                                text: "2 km to city",
-                                size: 12,
-                                color: Colors.grey),
-                          ],
-                        ),
-                        const SizedBox(height: 4),
-                        Row(
-                          children: [
-                            for (int i = 0; i < hotels[index].rating.mark; i++)
-                              const Icon(
-                                Icons.star_rounded,
-                                size: 16,
-                                color: primaryColor,
-                              ),
-                            for (int i = 0;
-                                i < 5 - hotels[index].rating.mark;
-                                i++)
-                              const Icon(
-                                Icons.star_border_rounded,
-                                size: 16,
-                                color: primaryColor,
-                              ),
-                            const SizedBox(width: 4),
-                            Flexible(
-                              child: AppText(
-                                text:
-                                    "based on ${hotels[index].rating.count.toString()} mark${hotels[index].rating.count > 1 ? "s" : ""}",
-                                size: 12,
-                                color: Colors.grey,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  Column(
-                    children: [
-                      AppText(
-                        text: "190\$",
-                        size: 16,
-                        weight: FontWeight.w700,
-                      ),
-                      const SizedBox(height: 4),
-                      AppText(
-                          text: "/per night", size: 12, color: Colors.black),
-                    ],
-                  ),
-                ],
-              ),
-            )
-          ],
+      children: [
+        const SizedBox(
+          height: 70.0,
         ),
-      ),
-    );
+        const Text(
+          "Favourites",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 24,
+          ),
+        ),
+        const SizedBox(
+          height: 20.0,
+        ),
+        Flexible(
+          child: ListView.separated(
+            scrollDirection: Axis.vertical,
+            itemCount: _favourites.length + 1,
+            itemBuilder: (context, index) {
+              if (index == _favourites.length) {
+                return const SizedBox(height: 0);
+              } else {
+                return HotelCard(
+                  hotel: _favourites[index],
+                  Auth: Auth,
+                );
+              }
+            },
+            separatorBuilder: (BuildContext context, int index) {
+              return const SizedBox(height: 20);
+            },
+          ),
+        ),
+      ],
+    ));
   }
 }

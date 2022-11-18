@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:hoteldise/models/hotel.dart';
 import 'package:hoteldise/models/user.dart';
 import 'package:hoteldise/services/auth.dart';
 
