@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:hoteldise/models/hotel.dart';
 import 'package:hoteldise/services/auth.dart';
 import 'package:hoteldise/services/firestore.dart';
