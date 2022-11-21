@@ -195,7 +195,7 @@ class _HotelCardState extends State<HotelCard> {
                         color: textBase,
                       ),
                       const SizedBox(height: 4),
-                      AppText(text: "/per night", size: 12, color: textBase),
+                      AppText(text: "/avg per night", size: 12, color: textBase),
                     ],
                   ),
                 ],

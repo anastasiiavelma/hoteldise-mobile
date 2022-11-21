@@ -6,13 +6,11 @@ import 'package:hoteldise/models/hotel.dart';
 import 'package:hoteldise/pages/hotels/home/search/address_search.dart';
 import 'package:hoteldise/pages/hotels/home/sort.dart';
 import 'package:hoteldise/services/auth.dart';
-import 'package:hoteldise/services/firestore.dart';
 import 'package:hoteldise/widgets/hotel_card.dart';
 import 'package:provider/provider.dart';
 
-import '../../../models/Facility_option.dart';
-import '../../../models/user.dart';
 import '../../../themes/constants.dart';
+import '../../../widgets/loader.dart';
 import '../../../widgets/text_widget.dart';
 
 import 'package:intl/intl.dart';
@@ -44,6 +42,7 @@ class _HotelsHomeState extends State<HotelsHome> {
   int numberOfAdults = 2;
   RangeValues costRange = const RangeValues(0, 1000);
   List<String> facilities = [];
+  bool hotelsLoaded = false;
 
   String getRoomsAdultsString() {
     String text = "";
@@ -59,6 +58,7 @@ class _HotelsHomeState extends State<HotelsHome> {
   }
 
   getHotels() async {
+    hotelsLoaded = false;
     FirebaseFirestore db = FirebaseFirestore.instance;
 
     //getting hotel instances
@@ -84,13 +84,6 @@ class _HotelsHomeState extends State<HotelsHome> {
             facilities.every((f) => r.facilities!.contains(f))))
         .toList();
 
-    // //
-    // newHotels = newHotels
-    //     .where((h) =>
-    //     h.rooms.any((r) =>
-    //     ))
-    //     .toList();
-
     //search filter
     newHotels = newHotels
         .where((element) => element.address.address
@@ -104,10 +97,13 @@ class _HotelsHomeState extends State<HotelsHome> {
     }
 
     //setting new hotels and doing sort
-    setState(() {
-      matchedHotels = newHotels;
-      currentSortOption.doSort(matchedHotels);
-    });
+    if (mounted) {
+      setState(() {
+        matchedHotels = newHotels;
+        currentSortOption.doSort(matchedHotels);
+        hotelsLoaded = true;
+      });
+    }
   }
 
   List<Material> getSortListItems() {
@@ -312,6 +308,8 @@ class _HotelsHomeState extends State<HotelsHome> {
               const SizedBox(
                 height: 12,
               ),
+              hotelsLoaded == false ?
+              const Loader() :
               Flexible(
                 child: ListView.separated(
                   scrollDirection: Axis.vertical,
