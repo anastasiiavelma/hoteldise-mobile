@@ -14,12 +14,14 @@ class FiltersScreen extends StatefulWidget {
 class _FiltersScreenState extends State<FiltersScreen> {
   RangeValues _values = const RangeValues(100, 600);
   double distValue = 50.0;
-  List<PopularFilterListData> popularFilterListData = PopularFilterListData.popularFList;
+  List<PopularFilterListData> popularFilterListData =
+      PopularFilterListData.popularFList;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.white, // Colors.grey, // HotelAppTheme.buildLightTheme().backgroundColor,
+      color: Colors.white,
+      // Colors.grey, // HotelAppTheme.buildLightTheme().backgroundColor,
       child: Scaffold(
         backgroundColor: Colors.transparent,
         body: Column(
@@ -28,17 +30,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
             Expanded(
               child: SingleChildScrollView(
                 child: Column(
-                  children: <Widget>[
-                    priceBarFilter(),
-                    const Divider(
-                      height: 1,
-                    ),
-                    popularFilter(),
-                    const Divider(
-                      height: 1,
-                    ),
-                    distanceViewUI()
-                  ],
+                  children: <Widget>[priceBarFilter(), popularFilter()],
                 ),
               ),
             ),
@@ -51,7 +43,8 @@ class _FiltersScreenState extends State<FiltersScreen> {
               child: Container(
                 height: 48,
                 decoration: BoxDecoration(
-                  color: primaryColor, //HotelAppTheme.buildLightTheme().primaryColor,
+                  color: secondaryColor,
+                  //HotelAppTheme.buildLightTheme().primaryColor,
                   borderRadius: const BorderRadius.all(Radius.circular(24.0)),
                   boxShadow: <BoxShadow>[
                     BoxShadow(
@@ -91,7 +84,8 @@ class _FiltersScreenState extends State<FiltersScreen> {
   Widget getAppBarUI() {
     return Container(
       decoration: BoxDecoration(
-        color: primaryColor, // Colors.white, //HotelAppTheme.buildLightTheme().backgroundColor,
+        color: secondaryColor,
+        // Colors.white, //HotelAppTheme.buildLightTheme().backgroundColor,
         boxShadow: <BoxShadow>[
           BoxShadow(
               color: Colors.grey.withOpacity(0.2),
@@ -153,7 +147,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
         Padding(
           padding: const EdgeInsets.all(16.0),
           child: Text(
-            'Price (for 1 night)',
+            'Price for a night',
             textAlign: TextAlign.left,
             style: TextStyle(
                 color: Colors.black, // Colors.grey
@@ -181,9 +175,9 @@ class _FiltersScreenState extends State<FiltersScreen> {
       children: <Widget>[
         Padding(
           padding:
-          const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 8),
+              const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 8),
           child: Text(
-            'Popular filters',
+            'Facilities',
             textAlign: TextAlign.left,
             style: TextStyle(
                 color: Colors.black, // Colors.grey
@@ -211,7 +205,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
       children: <Widget>[
         Padding(
           padding:
-          const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 8),
+              const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 8),
           child: Text(
             'Distance from city center',
             textAlign: TextAlign.left,
@@ -264,7 +258,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
                                 ? Icons.check_box
                                 : Icons.check_box_outline_blank,
                             color: date.isSelected
-                                ? primaryColor
+                                ? secondaryColor
                                 : Colors.grey.withOpacity(0.6),
                           ),
                           const SizedBox(
@@ -272,6 +266,9 @@ class _FiltersScreenState extends State<FiltersScreen> {
                           ),
                           Text(
                             date.titleTxt,
+                            style: TextStyle(
+                                color: Colors.black, // Colors.grey
+                                fontWeight: FontWeight.normal),
                           ),
                         ],
                       ),

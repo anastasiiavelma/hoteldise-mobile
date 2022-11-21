@@ -6,16 +6,18 @@ import 'package:hoteldise/models/hotel.dart';
 import 'package:hoteldise/pages/hotels/home/search/address_search.dart';
 import 'package:hoteldise/pages/hotels/home/sort.dart';
 import 'package:hoteldise/services/auth.dart';
+import 'package:hoteldise/services/firestore.dart';
 import 'package:hoteldise/widgets/hotel_card.dart';
 import 'package:provider/provider.dart';
 
-import '../../../services/place_service.dart';
+import '../../../models/user.dart';
 import '../../../themes/constants.dart';
 import '../../../widgets/text_widget.dart';
 
 import 'package:intl/intl.dart';
 
 import 'calendarPopUp.dart';
+import 'roomsAdultsPopUp.dart';
 import 'filter.dart';
 
 class HotelsHome extends StatefulWidget {
@@ -32,12 +34,20 @@ List<SortOption> sortOptions = [
 ];
 
 class _HotelsHomeState extends State<HotelsHome> {
-  List<Hotel> allHotels = <Hotel>[];
   List<Hotel> matchedHotels = <Hotel>[];
   SortOption currentSortOption = sortOptions[0];
   String searchValue = '';
   DateTime startDate = DateTime.now();
   DateTime endDate = DateTime.now().add(const Duration(days: 5));
+  int numberOfRooms = 1;
+  int numberOfAdults = 2;
+
+  String getRoomsAdultsString() {
+    String text = "";
+    text += "$numberOfRooms ${numberOfRooms == 1 ? "Room - " : "Rooms - "}";
+    text += "$numberOfAdults ${numberOfAdults == 1 ? "Adult" : "Adults"}";
+    return text;
+  }
 
   @override
   void initState() {
@@ -46,8 +56,10 @@ class _HotelsHomeState extends State<HotelsHome> {
   }
 
   getHotels() async {
-    List<Hotel> newHotels = <Hotel>[];
     FirebaseFirestore db = FirebaseFirestore.instance;
+
+    //getting hotel instances
+    List<Hotel> newHotels = <Hotel>[];
     await db
         .collection("hotels")
         .withConverter(
@@ -57,23 +69,25 @@ class _HotelsHomeState extends State<HotelsHome> {
         .then((event) async {
       for (var doc in event.docs) {
         newHotels.add(doc.data());
-        newHotels.last.hotelId = doc.reference.id;
       }
-      allHotels = newHotels;
+    });
 
-      for (int i = 0; i < newHotels.length; i++) {
-        await newHotels[i].setExtraFields();
-      }
-      //search filter
-      newHotels = newHotels
-          .where((element) => element.address.address
-              .toLowerCase()
-              .contains(searchValue.toLowerCase()))
-          .toList();
-      setState(() {
-        matchedHotels = newHotels;
-        currentSortOption.doSort(matchedHotels);
-      });
+    //setting extra fields
+    for (int i = 0; i < newHotels.length; i++) {
+      await newHotels[i].setExtraFields();
+    }
+
+    //search filter
+    newHotels = newHotels
+        .where((element) => element.address.address
+            .toLowerCase()
+            .contains(searchValue.toLowerCase()))
+        .toList();
+
+    //setting new hotels and doing sort
+    setState(() {
+      matchedHotels = newHotels;
+      currentSortOption.doSort(matchedHotels);
     });
   }
 
@@ -120,7 +134,6 @@ class _HotelsHomeState extends State<HotelsHome> {
               ),
               GestureDetector(
                 onTap: () async {
-                  // var token = await FirebaseAuth.instance.currentUser?.getIdToken();
                   final String? result = await showSearch(
                     context: context,
                     query: searchValue,
@@ -144,52 +157,42 @@ class _HotelsHomeState extends State<HotelsHome> {
                   ),
                   child: Row(
                     children: [
-                      const Icon(Icons.search, color: greyColor),
-                      const SizedBox(width: 10),
-                      Flexible(
-                        child: AppText(
-                          text: searchValue == ''
-                              ? 'Choose location'
-                              : searchValue,
-                          size: 14,
-                          color: greyColor,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      )
+                      Expanded(
+                        child: Row(children: [
+                          const Icon(Icons.search, color: greyColor),
+                          const SizedBox(width: 10),
+                          AppText(
+                            text: searchValue == ''
+                                ? 'Choose location'
+                                : searchValue,
+                            size: 14,
+                            color: greyColor,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ]),
+                      ),
+                      if (searchValue != '')
+                        IconButton(
+                            padding: EdgeInsets.zero,
+                            constraints: const BoxConstraints(),
+                            onPressed: () {
+                              setState(() {
+                                searchValue = '';
+                                getHotels();
+                              });
+                            },
+                            icon: const Icon(
+                              Icons.close,
+                              color: greyColor,
+                            ))
                     ],
                   ),
                 ),
               ),
-              // TextField(
-              //   onTap: () async {
-              //     final Suggestion? result = await showSearch(
-              //       context: context,
-              //       delegate: AddressSearch(),
-              //     );
-              //   },
-              //   autocorrect: false,
-              //   enableSuggestions: false,
-              //   style: const TextStyle(fontSize: 14, color: Colors.black87),
-              //   cursorColor: Colors.black87,
-              //   decoration: InputDecoration(
-              //     contentPadding: const EdgeInsets.symmetric(horizontal: 0),
-              //     filled: true,
-              //     fillColor: veryLightGreyColor,
-              //     enabledBorder: OutlineInputBorder(
-              //       borderRadius: BorderRadius.circular(14),
-              //     ),
-              //     focusedBorder: OutlineInputBorder(
-              //       borderRadius: BorderRadius.circular(14),
-              //     ),
-              //     prefixIcon: const Icon(Icons.search, color: greyColor),
-              //     hintText: "Search for hotels",
-              //     hintStyle: const TextStyle(fontSize: 14, color: greyColor),
-              //   ),
-              // ),
               const SizedBox(
                 height: 20,
               ),
-              getTimeDateUI(),
+              // getTimeDateUI(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -341,10 +344,7 @@ class _HotelsHomeState extends State<HotelsHome> {
                     ),
                     onTap: () {
                       FocusScope.of(context).requestFocus(FocusNode());
-                      // setState(() {
-                      //   isDatePopupOpen = true;
-                      // });
-                      showDemoDialog(context: context);
+                      showDatePicker(context: context);
                     },
                     child: Padding(
                       padding: const EdgeInsets.only(
@@ -364,7 +364,7 @@ class _HotelsHomeState extends State<HotelsHome> {
                           ),
                           Text(
                             '${DateFormat("dd, MMM").format(startDate)} - ${DateFormat("dd, MMM").format(endDate)}',
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontWeight: FontWeight.w500,
                               fontSize: 16,
                             ),
@@ -400,6 +400,7 @@ class _HotelsHomeState extends State<HotelsHome> {
                     ),
                     onTap: () {
                       FocusScope.of(context).requestFocus(FocusNode());
+                      showRoomsAdults(context: context);
                     },
                     child: Padding(
                       padding: const EdgeInsets.only(
@@ -419,8 +420,8 @@ class _HotelsHomeState extends State<HotelsHome> {
                             height: 8,
                           ),
                           Text(
-                            '1 Room - 2 Adults',
-                            style: TextStyle(
+                            getRoomsAdultsString().toString(),
+                            style: const TextStyle(
                               fontWeight: FontWeight.w500,
                               fontSize: 16,
                             ),
@@ -438,15 +439,31 @@ class _HotelsHomeState extends State<HotelsHome> {
     );
   }
 
-  void showDemoDialog({BuildContext? context}) {
+  void showDatePicker({BuildContext? context}) {
     showDialog<dynamic>(
       context: context!,
       builder: (BuildContext context) => CalendarPopupView(
         barrierDismissible: true,
         minimumDate: DateTime.now(),
-        //  maximumDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day + 10),
+        maximumDate: DateTime.now().add(const Duration(days: 365)),
         initialEndDate: endDate,
         initialStartDate: startDate,
+        onApplyClick: (DateTime startData, DateTime endData) {
+          setState(() {
+            startDate = startData;
+            endDate = endData;
+          });
+        },
+        onCancelClick: () {},
+      ),
+    );
+  }
+
+  void showRoomsAdults({BuildContext? context}) {
+    showDialog<dynamic>(
+      context: context!,
+      builder: (BuildContext context) => RoomsAdultsView(
+        barrierDismissible: true,
         onApplyClick: (DateTime startData, DateTime endData) {
           setState(() {
             startDate = startData;

@@ -4,7 +4,6 @@ import 'package:intl/intl.dart';
 
 import 'customCalendar.dart';
 
-
 class CalendarPopupView extends StatefulWidget {
   const CalendarPopupView(
       {Key? key,
@@ -191,7 +190,7 @@ class _CalendarPopupViewState extends State<CalendarPopupView>
                               child: Container(
                                 height: 48,
                                 decoration: BoxDecoration(
-                                  color: primaryColor, // HotelAppTheme.buildLightTheme().primaryColor,
+                                  color: secondaryColor, // HotelAppTheme.buildLightTheme().primaryColor,
                                   borderRadius: const BorderRadius.all(
                                       Radius.circular(24.0)),
                                   boxShadow: <BoxShadow>[

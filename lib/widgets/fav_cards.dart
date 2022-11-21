@@ -47,7 +47,6 @@ class _FavCardsState extends State<FavCards> {
           .then((event) async {
         for (var doc in event.docs) {
           newHotels.add(doc.data());
-          newHotels.last.hotelId = doc.reference.id;
         }
         for (int i = 0; i < newHotels.length; i++) {
           await newHotels[i].setExtraFields();

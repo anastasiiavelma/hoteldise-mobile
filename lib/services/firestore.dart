@@ -54,11 +54,24 @@ class Firestore {
   Future deletePlaceFromFavourites(String userId, String placeId) async {
     List<dynamic> currentFavourites = await getUserFavourites(userId);
     List<dynamic> newFavourites =
-        currentFavourites.where((item) => item != placeId).toList();
+    currentFavourites.where((item) => item != placeId).toList();
 
     return _fStore
         .collection('users')
         .doc(userId)
         .update({'favourites': newFavourites});
+  }
+
+  Future<List<dynamic>> getUsersBookedRooms() async {
+    List<dynamic> bookedRooms = [];
+    await _fStore
+        .collection('users')
+        .get()
+        .then((snapshot) {
+          for (var user in snapshot.docs) {
+            bookedRooms.add(user["bookedRooms"]);
+          }
+    });
+    return bookedRooms;
   }
 }
