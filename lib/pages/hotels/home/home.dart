@@ -77,9 +77,6 @@ class _HotelsHomeState extends State<HotelsHome> {
       await newHotels[i].setExtraFields();
     }
 
-    //getting user instances
-    List<dynamic> users = await Firestore().getUsersBookedRooms();
-
     //search filter
     newHotels = newHotels
         .where((element) => element.address.address
@@ -195,7 +192,7 @@ class _HotelsHomeState extends State<HotelsHome> {
               const SizedBox(
                 height: 20,
               ),
-              getTimeDateUI(),
+              // getTimeDateUI(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
