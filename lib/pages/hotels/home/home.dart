@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:hoteldise/models/hotel.dart';
 import 'package:hoteldise/pages/hotels/home/search/address_search.dart';
 import 'package:hoteldise/pages/hotels/home/sort.dart';
+import 'package:hoteldise/services/auth.dart';
+import 'package:hoteldise/widgets/hotel_card.dart';
+import 'package:provider/provider.dart';
 
 import '../../../themes/constants.dart';
 import '../../../widgets/text_widget.dart';
@@ -62,6 +65,7 @@ class _HotelsHomeState extends State<HotelsHome> {
         .then((event) async {
       for (var doc in event.docs) {
         newHotels.add(doc.data());
+        newHotels.last.hotelId = doc.reference.id;
       }
 
       for (int i = 0; i < newHotels.length; i++) {
@@ -110,6 +114,7 @@ class _HotelsHomeState extends State<HotelsHome> {
 
   @override
   Widget build(BuildContext context) {
+    AuthBase Auth = Provider.of<AuthBase>(context);
     return Scaffold(
       backgroundColor: backgroundColor,
       body: SafeArea(
@@ -295,7 +300,10 @@ class _HotelsHomeState extends State<HotelsHome> {
                     if (index == matchedHotels.length) {
                       return const SizedBox(height: 0);
                     } else {
-                      return getHotelCard(matchedHotels[index]);
+                      return HotelCard(
+                        hotel: matchedHotels[index],
+                        Auth: Auth,
+                      );
                     }
                   },
                   separatorBuilder: (BuildContext context, int index) {

@@ -36,6 +36,7 @@ dependencies:
   flutter_google_places: ^0.3.0
   http: ^0.13.5
   google_nav_bar: ^5.0.6
+  eva_icons_flutter: ^3.1.0
 
 dev_dependencies:
   flutter_test:
@@ -56,6 +57,7 @@ flutter:
   assets:
     - assets/icons/
     - assets/images/
+    - assets/images/empty.png
   fonts:
     - family: MyFlutterApp
       fonts:
