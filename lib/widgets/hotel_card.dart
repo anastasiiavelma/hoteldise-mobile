@@ -74,14 +74,14 @@ class _HotelCardState extends State<HotelCard> {
         decoration: BoxDecoration(
           color: elevatedGrey,
           borderRadius: BorderRadius.circular(16),
-          boxShadow: const [
-            BoxShadow(
-              color: elevatedGrey,
-              blurRadius: 8.0,
-              spreadRadius: 4.0,
-              offset: Offset(0.0, 0.0),
-            ),
-          ],
+          // boxShadow: const [
+          //   BoxShadow(
+          //     color: elevatedGrey,
+          //     blurRadius: 4.0,
+          //     spreadRadius: 2.0,
+          //     offset: Offset(0.0, 0.0),
+          //   ),
+          // ],
         ),
         child: Column(
           children: [
