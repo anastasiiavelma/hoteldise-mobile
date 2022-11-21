@@ -10,6 +10,7 @@ import 'package:hoteldise/services/firestore.dart';
 import 'package:hoteldise/widgets/hotel_card.dart';
 import 'package:provider/provider.dart';
 
+import '../../../models/Facility_option.dart';
 import '../../../models/user.dart';
 import '../../../themes/constants.dart';
 import '../../../widgets/text_widget.dart';
@@ -41,6 +42,8 @@ class _HotelsHomeState extends State<HotelsHome> {
   DateTime endDate = DateTime.now().add(const Duration(days: 5));
   int numberOfRooms = 1;
   int numberOfAdults = 2;
+  RangeValues costRange = const RangeValues(0, 1000);
+  List<String> facilities = [];
 
   String getRoomsAdultsString() {
     String text = "";
@@ -72,10 +75,21 @@ class _HotelsHomeState extends State<HotelsHome> {
       }
     });
 
-    //setting extra fields
-    for (int i = 0; i < newHotels.length; i++) {
-      await newHotels[i].setExtraFields();
-    }
+    //with at least one empty room, in cost range
+    newHotels = newHotels
+        .where((h) => h.rooms.any((r) =>
+            r.numOfFreeSuchRooms > 0 &&
+            r.price.price >= costRange.start &&
+            r.price.price <= costRange.end &&
+            facilities.every((f) => r.facilities!.contains(f))))
+        .toList();
+
+    // //
+    // newHotels = newHotels
+    //     .where((h) =>
+    //     h.rooms.any((r) =>
+    //     ))
+    //     .toList();
 
     //search filter
     newHotels = newHotels
@@ -83,6 +97,11 @@ class _HotelsHomeState extends State<HotelsHome> {
             .toLowerCase()
             .contains(searchValue.toLowerCase()))
         .toList();
+
+    //setting extra fields
+    for (int i = 0; i < newHotels.length; i++) {
+      await newHotels[i].setExtraFields();
+    }
 
     //setting new hotels and doing sort
     setState(() {
@@ -275,12 +294,7 @@ class _HotelsHomeState extends State<HotelsHome> {
                     ),
                     onPressed: () {
                       FocusScope.of(context).requestFocus(FocusNode());
-                      Navigator.push<dynamic>(
-                        context,
-                        MaterialPageRoute<dynamic>(
-                            builder: (BuildContext context) => FiltersScreen(),
-                            fullscreenDialog: true),
-                      );
+                      openFiltersAdGetResult(context);
                     },
                     icon: const Icon(
                       Icons.filter_alt_rounded,
@@ -322,6 +336,26 @@ class _HotelsHomeState extends State<HotelsHome> {
         ),
       ),
     );
+  }
+
+  Future<void> openFiltersAdGetResult(BuildContext context) async {
+    // Navigator.push returns a Future that completes after calling
+    // Navigator.pop on the Selection Screen.
+    final result = await Navigator.push<dynamic>(
+      context,
+      MaterialPageRoute<dynamic>(
+          builder: (BuildContext context) =>
+              FiltersScreen(costRange: costRange, facilities: facilities),
+          fullscreenDialog: true),
+    );
+    // When a BuildContext is used from a StatefulWidget, the mounted property
+    // must be checked after an asynchronous gap.
+    if (!mounted || result == null) return;
+    setState(() {
+      costRange = result[0];
+      facilities = result[1];
+      getHotels();
+    });
   }
 
   Widget getTimeDateUI() {

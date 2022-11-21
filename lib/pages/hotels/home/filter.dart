@@ -8,12 +8,16 @@ import 'sliderView.dart';
 import 'rangeSliderView.dart';
 
 class FiltersScreen extends StatefulWidget {
+  FiltersScreen({required this.costRange, required this.facilities});
+
+  RangeValues costRange;
+  List<String> facilities;
+
   @override
   _FiltersScreenState createState() => _FiltersScreenState();
 }
 
 class _FiltersScreenState extends State<FiltersScreen> {
-  RangeValues _values = const RangeValues(0, 1000);
   double distValue = 50.0;
   List<FacilityOption> facilityOptions = [];
 
@@ -27,7 +31,8 @@ class _FiltersScreenState extends State<FiltersScreen> {
   void getFacilities() async {
     List<String> facilities = await FacilitiesService().getFacilities();
     for (String facility in facilities) {
-      facilityOptions.add(FacilityOption(title: facility));
+      facilityOptions.add(FacilityOption(
+          title: facility, isSelected: widget.facilities.contains(facility)));
     }
     setState(() {
       facilityOptions;
@@ -77,7 +82,13 @@ class _FiltersScreenState extends State<FiltersScreen> {
                     borderRadius: const BorderRadius.all(Radius.circular(24.0)),
                     highlightColor: Colors.transparent,
                     onTap: () {
-                      Navigator.pop(context);
+                      Navigator.pop(context, [
+                        widget.costRange,
+                        facilityOptions
+                            .where((el) => el.isSelected == true)
+                            .map((e) => e.title)
+                            .toList()
+                      ]);
                     },
                     child: const Center(
                       child: Text(
@@ -173,9 +184,9 @@ class _FiltersScreenState extends State<FiltersScreen> {
           ),
         ),
         RangeSliderView(
-          values: _values,
+          values: widget.costRange,
           onChangeRangeValues: (RangeValues values) {
-            _values = values;
+            widget.costRange = values;
           },
         ),
         const SizedBox(
