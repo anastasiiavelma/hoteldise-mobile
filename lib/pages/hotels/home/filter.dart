@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hoteldise/services/facilities_service.dart';
 
-import '../../../models/popularFilterList.dart';
+import '../../../models/Facility_option.dart';
 import '../../../themes/constants.dart';
 import 'sliderView.dart';
 import 'rangeSliderView.dart';
@@ -12,10 +13,26 @@ class FiltersScreen extends StatefulWidget {
 }
 
 class _FiltersScreenState extends State<FiltersScreen> {
-  RangeValues _values = const RangeValues(100, 600);
+  RangeValues _values = const RangeValues(0, 1000);
   double distValue = 50.0;
-  List<PopularFilterListData> popularFilterListData =
-      PopularFilterListData.popularFList;
+  List<FacilityOption> facilityOptions = [];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    getFacilities();
+    super.initState();
+  }
+
+  void getFacilities() async {
+    List<String> facilities = await FacilitiesService().getFacilities();
+    for (String facility in facilities) {
+      facilityOptions.add(FacilityOption(title: facility));
+    }
+    setState(() {
+      facilityOptions;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -232,11 +249,11 @@ class _FiltersScreenState extends State<FiltersScreen> {
     final List<Widget> noList = <Widget>[];
     int count = 0;
     const int columnCount = 2;
-    for (int i = 0; i < popularFilterListData.length / columnCount; i++) {
+    for (int i = 0; i < facilityOptions.length / columnCount; i++) {
       final List<Widget> listUI = <Widget>[];
       for (int i = 0; i < columnCount; i++) {
         try {
-          final PopularFilterListData date = popularFilterListData[count];
+          final FacilityOption date = facilityOptions[count];
           listUI.add(Expanded(
             child: Row(
               children: <Widget>[
@@ -265,7 +282,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
                             width: 4,
                           ),
                           Text(
-                            date.titleTxt,
+                            date.title,
                             style: TextStyle(
                                 color: Colors.black, // Colors.grey
                                 fontWeight: FontWeight.normal),
@@ -278,7 +295,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
               ],
             ),
           ));
-          if (count < popularFilterListData.length - 1) {
+          if (count < facilityOptions.length - 1) {
             count += 1;
           } else {
             break;
