@@ -10,7 +10,7 @@ class RoomsAdultsView extends StatefulWidget {
         this.onCancelClick,
         this.barrierDismissible = true,
       }
-      )
+  )
 : super(key: key);
 
   final bool barrierDismissible;
@@ -24,8 +24,8 @@ class RoomsAdultsView extends StatefulWidget {
 class RoomsAdultsViewState extends State<RoomsAdultsView>
     with TickerProviderStateMixin {
   AnimationController? animationController;
-  DateTime? startDate;
-  DateTime? endDate;
+  int? numberOfRooms;
+  int? numberOfAdults;
 
   @override
   void initState() {

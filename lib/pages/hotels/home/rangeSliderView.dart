@@ -40,7 +40,7 @@ class _RangeSliderViewState extends State<RangeSliderView> {
                     child: Text(
                       '\$${_values!.start.round()}',
                       textAlign: TextAlign.center,
-                      style: TextStyle(
+                      style: const TextStyle(
                           color: Colors.black, // Colors.grey
                           fontWeight: FontWeight.normal),
                     ),
