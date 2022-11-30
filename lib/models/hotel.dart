@@ -10,6 +10,21 @@ import 'package:hoteldise/models/room_type.dart';
 import '../services/geolocation.dart';
 
 class Hotel {
+  final String name;
+  final Address address;
+  final Rating rating;
+  final String siteLink;
+  final DateTime createdAt;
+  final String adminId;
+  final List<RoomType> rooms;
+  final String description;
+  final List<String> photosUrls;
+  final List<HotelComment> comments;
+  final int averageCost;
+  double? distance;
+  String mainImageUrl = "";
+  final String hotelId;
+
   Hotel({
     required this.hotelId,
     required this.createdAt,
@@ -23,21 +38,6 @@ class Hotel {
     required this.comments,
     required this.name,
     required this.description});
-
-  final String name;
-  final Address address;
-  final Rating rating;
-  final String siteLink;
-  final DateTime createdAt;
-  final String adminId;
-  final List<RoomType> rooms;
-  final String description;
-  final List<String> photosUrls;
-  final List<HotelComment> comments;
-  final int averageCost;
-  double distance = 0;
-  String mainImageUrl = "";
-  final String hotelId;
 
   factory Hotel.fromFirestore(DocumentSnapshot<Map<String, dynamic>> snapshot,
       SnapshotOptions? options,) {

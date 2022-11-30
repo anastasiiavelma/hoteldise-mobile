@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:hoteldise/models/hotel.dart';
 import 'package:hoteldise/services/auth.dart';
@@ -64,6 +66,17 @@ class _HotelCardState extends State<HotelCard> {
     } on FirebaseException catch (e) {
       CustomToast();
     }
+  }
+
+  Widget getDistancePart()
+  {
+    assert(widget.hotel.distance != null);
+    return AppText(
+        text: widget.hotel.distance != 0
+            ? "${widget.hotel.distance?.toInt()} km to hotel"
+            : "hotel too far",
+        size: 12,
+        color: lightGreyColor);
   }
 
   @override
@@ -145,13 +158,7 @@ class _HotelCardState extends State<HotelCard> {
                             //   size: 14,
                             //   color: primaryColor,
                             // ),
-                            // AppText(
-                            //     text: hotel.distance != 0
-                            //         ? "${hotel.distance.toInt()} km to hotel"
-                            //         : "hotel too far",
-                            //     size: 12,
-                            //     color: lightGreyColor),
-                            const SizedBox(width: 50),
+                            // getDistancePart()
                           ],
                         ),
                         const SizedBox(height: 4),
