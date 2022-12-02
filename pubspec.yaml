@@ -37,6 +37,8 @@ dependencies:
   http: ^0.13.5
   google_nav_bar: ^5.0.6
   eva_icons_flutter: ^3.1.0
+  image_picker: ^0.8.6
+  uuid: ^3.0.7
 
 dev_dependencies:
   flutter_test:

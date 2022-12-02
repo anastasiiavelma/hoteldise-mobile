@@ -6,7 +6,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:hoteldise/pages/favourite/favScreen.dart';
 import 'package:hoteldise/pages/hotels/home/home.dart';
 import 'package:hoteldise/pages/main_menu/menubar.dart';
+import 'package:hoteldise/pages/profile/profile_screen.dart';
 import 'package:hoteldise/services/auth.dart';
+import 'package:hoteldise/utils/welcome.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
@@ -49,11 +51,12 @@ class _MyAppState extends State<MyApp> {
             initialRoute: '/',
             routes: {
               '/favourites': (context) => const FavScreen(),
+              '/profile': (context) => const ProfileScreen(),
               '/home': (context) => const HotelsHome(),
               '/main': (context) => const MenuBar(),
               '/signIn': (context) => const SignInScreen(),
               '/signUp': (context) => const SignUpScreen(),
-              '/': (context) => const MenuBar(),
+              '/': (context) => const WelcomeScreen(),
             },
             theme: ThemeData.dark(),
           )),

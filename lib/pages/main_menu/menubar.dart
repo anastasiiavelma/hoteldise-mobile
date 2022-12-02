@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hoteldise/pages/favourite/favScreen.dart';
 import 'package:hoteldise/pages/hotels/home/home.dart';
+import 'package:hoteldise/pages/profile/profile_screen.dart';
 import 'package:unicons/unicons.dart';
 
 import '../../themes/constants.dart';
@@ -17,7 +18,7 @@ class _MenuBarState extends State<MenuBar> {
   static const List<Widget> _widgetOptions = <Widget>[
     HotelsHome(),
     FavScreen(),
-    FavScreen(),
+    ProfileScreen(),
     FavScreen(),
   ];
 
