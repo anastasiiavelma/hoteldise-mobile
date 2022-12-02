@@ -317,16 +317,17 @@ class _HotelsHomeState extends State<HotelsHome> {
                   itemBuilder: (context, index) {
                     if (index == matchedHotels.length) {
                       return const SizedBox(height: 0);
-                    } else {
-                      return HotelCard(
-                        hotel: matchedHotels[index],
-                        Auth: Auth,
-                      );
+                    }
+                    else {
+                        return HotelCard(
+                          hotel: matchedHotels[index],
+                          Auth: Auth,
+                        );
                     }
                   },
                   separatorBuilder: (BuildContext context, int index) {
                     return const SizedBox(height: 20);
-                  },
+                  }
                 ),
               ),
             ],
@@ -354,6 +355,9 @@ class _HotelsHomeState extends State<HotelsHome> {
       facilities = result[1];
       getHotels();
     });
+  }
+  Future<void> openHotelPage(BuildContext context) async{
+
   }
 
   Widget getTimeDateUI() {
