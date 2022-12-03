@@ -207,7 +207,6 @@ class _HotelsHomeState extends State<HotelsHome> {
               const SizedBox(
                 height: 20,
               ),
-              // getTimeDateUI(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -356,9 +355,6 @@ class _HotelsHomeState extends State<HotelsHome> {
       getHotels();
     });
   }
-  Future<void> openHotelPage(BuildContext context) async{
-
-  }
 
   Widget getTimeDateUI() {
     return Padding(
@@ -474,7 +470,6 @@ class _HotelsHomeState extends State<HotelsHome> {
       ),
     );
   }
-
   void showDatePicker({BuildContext? context}) {
     showDialog<dynamic>(
       context: context!,
@@ -494,7 +489,6 @@ class _HotelsHomeState extends State<HotelsHome> {
       ),
     );
   }
-
   void showRoomsAdults({BuildContext? context}) {
     showDialog<dynamic>(
       context: context!,
