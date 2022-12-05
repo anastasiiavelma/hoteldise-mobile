@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hoteldise/pages/favourite/favScreen.dart';
 import 'package:hoteldise/pages/hotels/home/home.dart';
 import 'package:hoteldise/pages/profile/profile_screen.dart';
+import 'package:hoteldise/pages/settings/support.dart';
 import 'package:unicons/unicons.dart';
 
 import '../../themes/constants.dart';
@@ -19,7 +20,7 @@ class _MenuBarState extends State<MenuBar> {
     HotelsHome(),
     FavScreen(),
     ProfileScreen(),
-    FavScreen(),
+    SupportScreen(),
   ];
 
   @override
@@ -46,10 +47,10 @@ class _MenuBarState extends State<MenuBar> {
                 icon: Icon(UniconsLine.bed),
               ),
               Tab(
-                icon: Icon(Icons.favorite),
+                icon: Icon(UniconsLine.heart),
               ),
-              Tab(icon: Icon(Icons.account_box)),
-              Tab(icon: Icon(Icons.settings_rounded)),
+              Tab(icon: Icon(UniconsLine.user_circle)),
+              Tab(icon: Icon(UniconsLine.envelope_question)),
             ],
           ),
         ),
