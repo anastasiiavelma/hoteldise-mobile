@@ -51,7 +51,7 @@ class _MyAppState extends State<MyApp> {
           ),
           child: MaterialApp(
             title: "HotelDise",
-            initialRoute: '/', // '/'
+            initialRoute: '/hotelPage', // '/'
             routes: {
               '/favourites': (context) => const FavScreen(),
               '/profile': (context) => const ProfileScreen(),
