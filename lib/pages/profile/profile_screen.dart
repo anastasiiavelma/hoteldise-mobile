@@ -56,7 +56,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       });
     }
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: backgroundColor,
       resizeToAvoidBottomInset: false,
       body: Container(
           alignment: Alignment.center,
@@ -166,11 +166,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             actions: <Widget>[
               ElevatedButton(
-                child: const Text("Add"),
+                child: Text("Add"),
                 style: ElevatedButton.styleFrom(
-                    backgroundColor: primaryColor,
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 15, horizontal: 30)),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 15, horizontal: 30),
+                  //!! surfaceTintColor: primaryColor,
+                ),
                 onPressed: () {
                   if (username != '') {
                     Auth.updateUserName(username).then((value) {
