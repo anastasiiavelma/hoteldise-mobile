@@ -85,7 +85,7 @@ class HotelPageState extends State<HotelPage> with TickerProviderStateMixin{
                     Container(
                       padding: const EdgeInsets.only(left: 10, top: 15),
                       width: double.infinity,
-                      height: 341,
+                      height: 351,
                       color: backgroundColor,
                       child: ListView(
                         children: [
@@ -113,57 +113,83 @@ class HotelPageState extends State<HotelPage> with TickerProviderStateMixin{
                         ],
                       ),
                     ),
-                    Positioned(
-                      bottom: 0,
-                      left: 0,
+                    Container(
+                      width: double.infinity,
+                      color: backgroundColor,
                       child: Container(
-                        width: double.infinity,
-                        color: Colors.transparent,
-                        child: Container(
-                          height: 80,
-                          decoration: BoxDecoration(
-                              color: Colors.grey.shade800,
-                              borderRadius: const BorderRadius.only(
-                                topLeft: Radius.circular(40),
-                                topRight: Radius.circular(40),
-                              )
-                          ),
-                          child: Column(
-                            children: [
-                              const SizedBox(height: 10,),
-                              Container(
-                                padding: const EdgeInsets.only(left: 15, right: 15),
-                                height: 40,
-                                width: double.infinity,
-                                child: ListView.builder(
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  itemCount: items.length,
-                                  scrollDirection: Axis.horizontal,
-                                  itemBuilder: (ctx, index) {
-                                  return Container(
+                        height: 70,
+                        decoration: BoxDecoration(
+                            color: Colors.grey.shade800,
+                            borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(40),
+                              topRight: Radius.circular(40),
+                            )
+                        ),
+                        child: Column(
+                          children: [
+                            const SizedBox(height: 10,),
+                            Container(
+                              padding: const EdgeInsets.only(left: 15, right: 15),
+                              height: 40,
+                              width: double.infinity,
+                              child: Row(
+                                children: [
+                                  Container(
                                     margin: const EdgeInsets.only(left: 10, right: 10),
-                                    width: double.infinity,
+                                    width: 100,
                                     height: 20,
                                     decoration: BoxDecoration(
-                                      color: Colors.grey[800],
+                                      color: Colors.grey.shade800,
                                     ),
-                                    child: Center(
-                                      child: Text(
-                                        items[index],
-                                        style: const TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w500,
-                                        ),
+                                    child: const Text("Overview",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w500,
+                                        color: textBase,
                                       ),
                                     ),
-                                  );
-                                },),
+                                  ),
+                                  Container(
+                                    margin: const EdgeInsets.only(left: 10, right: 10),
+                                    width: 100,
+                                    height: 20,
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey.shade800,
+                                    ),
+                                    child: const Text("Rooms",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w500,
+                                        color: textBase,
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                    margin: const EdgeInsets.only(left: 10, right: 10),
+                                    width: 100,
+                                    height: 20,
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey.shade800,
+                                    ),
+                                    child: const Text("Reviews",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w500,
+                                        color: textBase,
+                                      ),
+                                    ),
+                                  )
+                                ],
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
+
                     // Positioned(
                     //   left: 20,
                     //   top: 200,
