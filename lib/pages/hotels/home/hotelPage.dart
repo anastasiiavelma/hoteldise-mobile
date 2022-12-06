@@ -46,198 +46,135 @@ class HotelPageState extends State<HotelPage> with TickerProviderStateMixin{
     const String image = "assets/images/hotel_template.jpg";
     String hotelName = "Hotel Name";
     String hotelMark = "5.0";
-    int reviewCount = 21;
-    String hotelAddress = "Stege, Denmark";
     int matchedPlaces = 3;
+    String lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque elementum volutpat porta. Nulla in nisl egestas, euismod ante vel, pulvinar erat. Duis varius ut ante et vulputate. Ut non porta diam. Aliquam convallis iaculis nunc et placerat. Nunc malesuada nisi accumsan diam viverra, vitae placerat magna commodo. Duis sit amet purus at lectus convallis pharetra dignissim id nisi. Duis hendrerit justo sed enim finibus, id tincidunt odio rutrum. Aliquam erat volutpat. Nulla dictum sollicitudin ante, eu luctus tortor aliquam vel. Pellentesque iaculis augue nisl, eu ultricies neque pellentesque vitae. Nam leo sapien, porttitor nec diam in, efficitur congue mi. Nam nibh mi, rutrum nec suscipit at, tincidunt sed nulla. Phasellus nibh turpis, maximus ac volutpat sed, varius sed lorem. Praesent luctus eros ac pellentesque condimentum. Sed viverra cursus velit, luctus lacinia orci placerat sed. Vestibulum mollis diam purus, nec vulputate erat mollis id. Aliquam in est dapibus, porta magna sit amet, cursus tortor. Etiam lobortis sed arcu sed cursus. Nam et lacus ut est vestibulum semper. Donec semper tincidunt magna id posuere. Sed ac sodales arcu. Donec urna lorem, luctus sed finibus nec, feugiat vitae sem. Nulla facilisi. Morbi pulvinar accumsan dui et vehicula. Mauris pharetra tellus est, vestibulum mattis. Aliquam in est dapibus, porta magna sit amet, cursus tortor. Etiam lobortis sed arcu sed cursus. Nam et lacus ut est vestibulum semper. Donec semper tincidunt magna id posuere. Sed ac sodales arcu. Donec urna lorem, luctus sed finibus nec, feugiat vitae sem. Nulla facilisi. Morbi pulvinar accumsan dui et vehicula. Mauris pharetra tellus est, vestibulum mattis.";
     bool _isFavourite = true;
+    List<String> items = ["Overview", "Rooms", "Review"];
 
     return SafeArea(
         child: Scaffold(
+          backgroundColor: backgroundColor,
+            appBar: AppBar(
+              foregroundColor: textBase,
+              backgroundColor: backgroundColor,
+              //Colors.transparent
+              elevation: 0,
+              centerTitle: true,
+              leading: IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () {},
+              ),
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.favorite),
+                  color: Colors.pink[200],
+                  onPressed: () {},
+                )
+              ],
+            ),
             body: Stack(
+              clipBehavior: Clip.none,
               children: [
-                Container(
-                    height: 400,
-                    foregroundDecoration: const BoxDecoration(
-                      color: Colors.black26
-                    ),
-                    child: Image.asset(image,
+                Column(
+                  children: [
+                    Image.asset(
+                      image,
                       fit: BoxFit.cover,
-                    )
-                ),
-                SingleChildScrollView(
-                  padding: const EdgeInsets.only(top: 16.0, bottom: 20.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 250,),
-                       Padding(
-                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                         child: Text(hotelName,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 28.0,
-                            fontWeight: FontWeight.bold,
-                          ),
-                         ),
-                       ),
-                      Row(
-                        children: <Widget>[
-                          const SizedBox(width: 16,),
+                      height: 300,
+                    ),
+                    Container(
+                      padding: const EdgeInsets.only(left: 10, top: 15),
+                      width: double.infinity,
+                      height: 341,
+                      color: backgroundColor,
+                      child: ListView(
+                        children: [
                           Container(
-                            padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
-                            decoration: BoxDecoration(
-                              color: Colors.grey,
-                              borderRadius: BorderRadius.circular(20)
+                            padding: const EdgeInsets.only(left: 3),
+                            child: const Text( "Overview",
+                              style: TextStyle(
+                                color: textBase,
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold
+                              ),
                             ),
-                            child: const Text("8.4 / 85 reviews", style: TextStyle(color: Colors.white, fontSize: 14),)
                           ),
-                          const Spacer(),
+                          Container(
+                            padding: const EdgeInsets.only(top: 15, right: 10),
+                            child:  Text( lorem,
+                              style: const TextStyle(
+                                  color: textBase,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.normal
+                              ),
+                              textAlign: TextAlign.justify,
+                            ),
+                          ),
                         ],
                       ),
-                      Container(
-                        padding: const EdgeInsets.all(16.0),
-                        color: backgroundColor, // Colors.white
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        children: const [
-                                          Icon(Icons.star, color: primaryColor,),
-                                          Icon(Icons.star, color: primaryColor,),
-                                          Icon(Icons.star, color: primaryColor,),
-                                          Icon(Icons.star, color: primaryColor,),
-                                          Icon(Icons.star_border, color: primaryColor,),
-                                        ],
-                                      ),
-                                      const Text.rich(
-                                          TextSpan(
-                                              children: [
-                                                WidgetSpan(child: Icon(Icons.location_on, size: 16.0, color: Colors.grey,), ),
-                                                TextSpan(text: "8 km to centerum"),
-                                              ],
-                                              style: TextStyle(
-                                                  color: Colors.grey,
-                                                  fontSize: 12.0,
-                                              )
-                                          )
-                                      )
-                                    ],
-                                  ),
-                                ),
-                                Column(
-                                  children: const [
-                                    Text("\$ 200 ",
-                                      style: TextStyle(
-                                        color: primaryColor,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 20.0,
+                    ),
+                    Positioned(
+                      bottom: 0,
+                      left: 0,
+                      child: Container(
+                        width: double.infinity,
+                        color: Colors.transparent,
+                        child: Container(
+                          height: 80,
+                          decoration: BoxDecoration(
+                              color: Colors.grey.shade800,
+                              borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(40),
+                                topRight: Radius.circular(40),
+                              )
+                          ),
+                          child: Column(
+                            children: [
+                              const SizedBox(height: 10,),
+                              Container(
+                                padding: const EdgeInsets.only(left: 15, right: 15),
+                                height: 40,
+                                width: double.infinity,
+                                child: ListView.builder(
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemCount: items.length,
+                                  scrollDirection: Axis.horizontal,
+                                  itemBuilder: (ctx, index) {
+                                  return Container(
+                                    margin: const EdgeInsets.only(left: 10, right: 10),
+                                    width: double.infinity,
+                                    height: 20,
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey[800],
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        items[index],
+                                        style: const TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w500,
+                                        ),
                                       ),
                                     ),
-                                    Text("/per night",
-                                      style: TextStyle(
-                                        color: Colors.grey,
-
-                                        fontSize: 12.0,
-                                      ),
-                                    )
-                                  ],
-                                )
-                              ],
-                            ),
-                            const SizedBox(height: 20,),
-                            SizedBox(
-                              width: double.infinity,
-                              child: ElevatedButton(
-                                child: const Text("Book Now", style: TextStyle(
-                                    fontWeight: FontWeight.normal
-                                  ),
-                                ),
-                                onPressed: () {},
+                                  );
+                                },),
                               ),
-                            ),
-                            const SizedBox(height: 30,),
-                            Text("Description".toUpperCase(),
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 14.0,
-                              ),
-                            ),
-                            const SizedBox(height: 10.0,),
-                            const Text(
-                              "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum quam tortor, vehicula a nunc tincidunt, faucibus consequat sapien. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque auctor ac diam mattis mattis. Donec vestibulum dictum maximus. Vestibulum a nunc varius, placerat nulla ut, pretium ante. Praesent accumsan, erat in posuere placerat, tellus mi molestie est, sit amet tincidunt velit sem eu sem. Proin laoreet vitae libero non lacinia.",
-                              textAlign: TextAlign.justify,
-                              style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 14.0,
-                              ),
-                            ),
-                            const SizedBox(height: 10,),
-                            const Text(
-                              "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum quam tortor, vehicula a nunc tincidunt, faucibus consequat sapien. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque auctor ac diam mattis mattis. Donec vestibulum dictum maximus. Vestibulum a nunc varius, placerat nulla ut, pretium ante. Praesent accumsan, erat in posuere placerat, tellus mi molestie est, sit amet tincidunt velit sem eu sem. Proin laoreet vitae libero non lacinia.",
-                              textAlign: TextAlign.justify,
-                              style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 14.0,
-                              ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      )
-                    ],
-                  ),
-                ),
-                Positioned(
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  child: AppBar(
-                    backgroundColor: Colors.transparent,
-                    elevation: 0,
-                    title: const Text("Detail",
-                      style: TextStyle(
-                        fontSize: 17.0,
-                        fontWeight: FontWeight.normal,
-
                       ),
                     ),
-                    centerTitle: true,
-                    leading: const Icon(Icons.arrow_back),
-                    actions: [ _isFavourite ?
-                      IconButton(
-                        icon: const Icon(Icons.favorite),
-                        color: Colors.pink[200],
-                        onPressed: () {},
-                      )
-                        :
-                      IconButton(
-                        icon: const Icon(Icons.favorite_border),
-                        color: Colors.grey[300],
-                        onPressed: () {},
-                      )
-                    ],
-                  ),
+                    // Positioned(
+                    //   left: 20,
+                    //   top: 200,
+                    //   child: Container(
+                    //     child: Text("HELLO"),
+                    //   ),
+                    // )
+                  ],
                 ),
-                // Align(
-                //   alignment: Alignment.bottomLeft,
-                //   child: BottomNavigationBar(
-                //     items: [
-                //       BottomNavigationBarItem(icon: Icon(Icons.search)),
-                //       BottomNavigationBarItem(icon: Icon(Icons.favorite_border)),
-                //       BottomNavigationBarItem(icon: Icon(Icons.settings)),
-                //     ],
-                //   ),
-                // )
               ],
-            )
-        )
-    );
+            )));
   }
 
   // void _toggleFavourite() async {
@@ -255,6 +192,7 @@ class HotelPageState extends State<HotelPage> with TickerProviderStateMixin{
   //     CustomToast();
   //   }
   // }
+
 }
 
 
