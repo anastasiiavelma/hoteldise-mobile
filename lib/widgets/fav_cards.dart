@@ -50,6 +50,7 @@ class _FavCardsState extends State<FavCards> {
         }
         for (int i = 0; i < newHotels.length; i++) {
           await newHotels[i].setExtraFields();
+          newHotels[i].isFavourite = true;
         }
         _favourites = newHotels;
       });

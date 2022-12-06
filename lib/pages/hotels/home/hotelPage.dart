@@ -176,23 +176,6 @@ class HotelPageState extends State<HotelPage> with TickerProviderStateMixin{
               ],
             )));
   }
-
-  // void _toggleFavourite() async {
-  //   try {
-  //     if (_isFavourite) {
-  //       _isFavourite = false;
-  //       await Firestore().deletePlaceFromFavourites(
-  //           widget.Auth.currentUser!.uid, widget.hotel.hotelId);
-  //     } else {
-  //       _isFavourite = true;
-  //       await Firestore().addPlaceToFavourites(
-  //           widget.Auth.currentUser!.uid, widget.hotel.hotelId);
-  //     }
-  //   } on FirebaseException catch (e) {
-  //     CustomToast();
-  //   }
-  // }
-
 }
 
 
