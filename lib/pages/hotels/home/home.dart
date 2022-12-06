@@ -9,6 +9,7 @@ import 'package:hoteldise/services/auth.dart';
 import 'package:hoteldise/widgets/hotel_card.dart';
 import 'package:provider/provider.dart';
 
+import '../../../services/firestore.dart';
 import '../../../themes/constants.dart';
 import '../../../widgets/loader.dart';
 import '../../../widgets/text_widget.dart';
@@ -53,11 +54,11 @@ class _HotelsHomeState extends State<HotelsHome> {
 
   @override
   void initState() {
-    getHotels();
+    getHotels(context);
     super.initState();
   }
 
-  getHotels() async {
+  getHotels(BuildContext context) async {
     hotelsLoaded = false;
     FirebaseFirestore db = FirebaseFirestore.instance;
 
@@ -91,8 +92,16 @@ class _HotelsHomeState extends State<HotelsHome> {
             .contains(searchValue.toLowerCase()))
         .toList();
 
+    //getting user favourites
+    AuthBase Auth = Provider.of<AuthBase>(context, listen: false);
+    List favourites = [];
+    await Firestore().fetchUser(Auth.currentUser!.uid).then((user) {
+      favourites = user!.favourites;
+    });
+
     //setting extra fields
     for (int i = 0; i < newHotels.length; i++) {
+      await newHotels[i].setFavourites(favourites);
       await newHotels[i].setExtraFields();
     }
 
@@ -158,7 +167,7 @@ class _HotelsHomeState extends State<HotelsHome> {
                     WidgetsBinding.instance.addPostFrameCallback((_) {
                       setState(() {
                         searchValue = result;
-                        getHotels();
+                        getHotels(context);
                       });
                     });
                   }
@@ -193,7 +202,7 @@ class _HotelsHomeState extends State<HotelsHome> {
                             onPressed: () {
                               setState(() {
                                 searchValue = '';
-                                getHotels();
+                                getHotels(context);
                               });
                             },
                             icon: const Icon(
@@ -352,7 +361,7 @@ class _HotelsHomeState extends State<HotelsHome> {
     setState(() {
       costRange = result[0];
       facilities = result[1];
-      getHotels();
+      getHotels(context);
     });
   }
 

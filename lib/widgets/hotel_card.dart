@@ -26,7 +26,6 @@ class HotelCard extends StatefulWidget {
 
 class _HotelCardState extends State<HotelCard> {
   List _favourites = [];
-  bool _isFavourite = false;
   bool _isHeartLoading = true;
   //Hotel hotel = widget.hotel;
 
@@ -39,13 +38,6 @@ class _HotelCardState extends State<HotelCard> {
         _favourites = user!.favourites;
         _isHeartLoading = false;
       });
-
-      if (_favourites.contains(widget.hotel.hotelId)) {
-        setState(() {
-          _isFavourite = true;
-          _isHeartLoading = false;
-        });
-      }
     }).catchError((e) {
       setState(() {
         _isHeartLoading = false;
@@ -55,12 +47,16 @@ class _HotelCardState extends State<HotelCard> {
 
   void _toggleFavourite() async {
     try {
-      if (_isFavourite) {
-        _isFavourite = false;
+      if (widget.hotel.isFavourite!) {
+        setState(() {
+          widget.hotel.isFavourite = false;
+        });
         await Firestore().deletePlaceFromFavourites(
             widget.Auth.currentUser!.uid, widget.hotel.hotelId);
       } else {
-        _isFavourite = true;
+        setState(() {
+          widget.hotel.isFavourite = true;
+        });
         await Firestore().addPlaceToFavourites(
             widget.Auth.currentUser!.uid, widget.hotel.hotelId);
       }
@@ -74,7 +70,13 @@ class _HotelCardState extends State<HotelCard> {
     return GestureDetector(
         onTap: () {
           FocusScope.of(context).requestFocus(FocusNode());
-          openSomePage();
+          Navigator.push<dynamic>(
+            context,
+            MaterialPageRoute<dynamic>(
+                builder: (BuildContext context) =>
+                    HotelPage(hotel: widget.hotel),
+                fullscreenDialog: true),
+          );
         // FocusScope.of(context).requestFocus(FocusNode());
         // openHotelPage(widget.hotel);
         },
@@ -100,7 +102,7 @@ class _HotelCardState extends State<HotelCard> {
                           _isHeartLoading ? null : _toggleFavourite();
                         }),
                     iconSize: 40,
-                    icon: _isFavourite
+                    icon: widget.hotel.isFavourite!
                         ? Icon(
                             EvaIcons.heart,
                             color: Colors.pink[200],

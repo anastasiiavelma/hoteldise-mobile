@@ -51,7 +51,7 @@ class _MyAppState extends State<MyApp> {
           ),
           child: MaterialApp(
             title: "HotelDise",
-            initialRoute: '/hotelPage', // '/'
+            initialRoute: '/main', // '/'
             routes: {
               '/favourites': (context) => const FavScreen(),
               '/profile': (context) => const ProfileScreen(),
@@ -59,7 +59,7 @@ class _MyAppState extends State<MyApp> {
               '/main': (context) => const MenuBar(),
               '/signIn': (context) => const SignInScreen(),
               '/signUp': (context) => const SignUpScreen(),
-              '/hotelPage': (context) => const HotelPage(),
+              // '/hotelPage': (context) => const HotelPage(),
               '/': (context) => const WelcomeScreen(),
             },
             theme: ThemeData.dark(),
