@@ -113,79 +113,81 @@ class HotelPageState extends State<HotelPage> with TickerProviderStateMixin{
                         ],
                       ),
                     ),
-                    Container(
-                      width: double.infinity,
-                      color: backgroundColor,
+                    Flexible(
                       child: Container(
-                        height: 70,
-                        decoration: BoxDecoration(
-                            color: Colors.grey.shade800,
-                            borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(40),
-                              topRight: Radius.circular(40),
-                            )
-                        ),
-                        child: Column(
-                          children: [
-                            const SizedBox(height: 10,),
-                            Container(
-                              padding: const EdgeInsets.only(left: 15, right: 15),
-                              height: 40,
-                              width: double.infinity,
-                              child: Row(
-                                children: [
-                                  Container(
-                                    margin: const EdgeInsets.only(left: 10, right: 10),
-                                    width: 100,
-                                    height: 20,
-                                    decoration: BoxDecoration(
-                                      color: Colors.grey.shade800,
-                                    ),
-                                    child: const Text("Overview",
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w500,
-                                        color: textBase,
+                        width: double.infinity,
+                        color: backgroundColor,
+                        child: Container(
+                          height: 70,
+                          decoration: BoxDecoration(
+                              color: Colors.grey.shade800,
+                              borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(40),
+                                topRight: Radius.circular(40),
+                              )
+                          ),
+                          child: Column(
+                            children: [
+                              const SizedBox(height: 10,),
+                              Container(
+                                padding: const EdgeInsets.only(left: 15, right: 15),
+                                height: 40,
+                                width: double.infinity,
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      margin: const EdgeInsets.only(left: 10, right: 10),
+                                      width: 100,
+                                      height: 20,
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey.shade800,
+                                      ),
+                                      child: const Text("Overview",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w500,
+                                          color: textBase,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  Container(
-                                    margin: const EdgeInsets.only(left: 10, right: 10),
-                                    width: 100,
-                                    height: 20,
-                                    decoration: BoxDecoration(
-                                      color: Colors.grey.shade800,
-                                    ),
-                                    child: const Text("Rooms",
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w500,
-                                        color: textBase,
+                                    Container(
+                                      margin: const EdgeInsets.only(left: 10, right: 10),
+                                      width: 100,
+                                      height: 20,
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey.shade800,
+                                      ),
+                                      child: const Text("Rooms",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w500,
+                                          color: textBase,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  Container(
-                                    margin: const EdgeInsets.only(left: 10, right: 10),
-                                    width: 100,
-                                    height: 20,
-                                    decoration: BoxDecoration(
-                                      color: Colors.grey.shade800,
-                                    ),
-                                    child: const Text("Reviews",
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w500,
-                                        color: textBase,
+                                    Container(
+                                      margin: const EdgeInsets.only(left: 10, right: 10),
+                                      width: 100,
+                                      height: 20,
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey.shade800,
                                       ),
-                                    ),
-                                  )
-                                ],
+                                      child: const Text("Reviews",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w500,
+                                          color: textBase,
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),
