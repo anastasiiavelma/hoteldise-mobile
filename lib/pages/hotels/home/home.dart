@@ -316,28 +316,26 @@ class _HotelsHomeState extends State<HotelsHome> {
               const SizedBox(
                 height: 12,
               ),
-              hotelsLoaded == false ?
-              const Loader() :
-              Flexible(
-                child: ListView.separated(
-                  scrollDirection: Axis.vertical,
-                  itemCount: matchedHotels.length + 1,
-                  itemBuilder: (context, index) {
-                    if (index == matchedHotels.length) {
-                      return const SizedBox(height: 0);
-                    }
-                    else {
-                        return HotelCard(
-                          hotel: matchedHotels[index],
-                          Auth: Auth,
-                        );
-                    }
-                  },
-                  separatorBuilder: (BuildContext context, int index) {
-                    return const SizedBox(height: 20);
-                  }
-                ),
-              ),
+              hotelsLoaded == false
+                  ? const Loader()
+                  : Flexible(
+                      child: ListView.separated(
+                          scrollDirection: Axis.vertical,
+                          itemCount: matchedHotels.length + 1,
+                          itemBuilder: (context, index) {
+                            if (index == matchedHotels.length) {
+                              return const SizedBox(height: 0);
+                            } else {
+                              return HotelCard(
+                                hotel: matchedHotels[index],
+                                Auth: Auth,
+                              );
+                            }
+                          },
+                          separatorBuilder: (BuildContext context, int index) {
+                            return const SizedBox(height: 20);
+                          }),
+                    ),
             ],
           ),
         ),
@@ -479,6 +477,7 @@ class _HotelsHomeState extends State<HotelsHome> {
       ),
     );
   }
+
   void showDatePicker({BuildContext? context}) {
     showDialog<dynamic>(
       context: context!,
@@ -498,6 +497,7 @@ class _HotelsHomeState extends State<HotelsHome> {
       ),
     );
   }
+
   void showRoomsAdults({BuildContext? context}) {
     showDialog<dynamic>(
       context: context!,

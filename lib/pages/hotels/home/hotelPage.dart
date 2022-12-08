@@ -1,4 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:hoteldise/models/rating.dart';
+import 'package:hoteldise/pages/hotels/home/home.dart';
+import 'package:hoteldise/services/auth.dart';
+import 'package:hoteldise/services/firestore.dart';
+import 'package:provider/provider.dart';
+import 'package:hoteldise/widgets/star_icon_button.dart';
 import '/../../themes/constants.dart';
 import '/../models/hotel.dart';
 //import 'package:hoteldise/services/auth.dart';
@@ -7,23 +15,30 @@ import '/../models/hotel.dart';
 class HotelPage extends StatefulWidget {
   const HotelPage(
       {Key? key,
-        this.onApplyClick,
-        this.onCancelClick,
-        this.barrierDismissible = true,
-        this.hotel // required this.hotel
-      }  ) : super(key: key);
+      this.onApplyClick,
+      this.onCancelClick,
+      this.barrierDismissible = true,
+      this.hotel, // required this.hotel
+      required this.context})
+      : super(key: key);
 
   final Hotel? hotel;
   final bool barrierDismissible;
   final Function(DateTime, DateTime)? onApplyClick;
   final Function()? onCancelClick;
+  final BuildContext context;
 
   @override
   State<HotelPage> createState() => HotelPageState();
 }
 
-class HotelPageState extends State<HotelPage> with TickerProviderStateMixin{
+class HotelPageState extends State<HotelPage> with TickerProviderStateMixin {
   AnimationController? animationController;
+
+  Map<String, dynamic> _placeRating = {"mark": 0, "count": 0};
+  bool _isRatingSending = false;
+  int filledStars = 0;
+  late AuthBase Auth;
 
   @override
   void initState() {
@@ -31,6 +46,43 @@ class HotelPageState extends State<HotelPage> with TickerProviderStateMixin{
         duration: const Duration(milliseconds: 400), vsync: this);
     animationController?.forward();
     super.initState();
+    setState(() {
+      _placeRating = jsonDecode(widget.hotel!.rating.toString());
+    });
+    setState(() {
+      Auth = Provider.of<AuthBase>(widget.context);
+    });
+    Firestore()
+        .getUserRatingForPlace(Auth.currentUser!.uid, widget.hotel!.hotelId)
+        .then((value) => setState(() {
+              filledStars = value;
+            }));
+  }
+
+  void updateRating(int newRating) async {
+    setState(() {
+      _isRatingSending = true;
+    });
+    if (newRating != filledStars) {
+      int oldUserRating = filledStars;
+      setState(() {
+        filledStars = newRating;
+      });
+      Map<String, dynamic> newPlaceRating = await Firestore().updatePlaceRating(
+          oldUserRating: oldUserRating,
+          newUserRating: newRating,
+          oldMark: _placeRating['mark'].toDouble(),
+          hotelId: widget.hotel!.hotelId,
+          usersCount: _placeRating['users']);
+      await Firestore().updateUserPlaceRating(
+          Auth.currentUser!.uid, widget.hotel!.hotelId, newRating);
+      setState(() {
+        _placeRating = newPlaceRating;
+      });
+    }
+    setState(() {
+      _isRatingSending = false;
+    });
   }
 
   @override
@@ -41,19 +93,17 @@ class HotelPageState extends State<HotelPage> with TickerProviderStateMixin{
 
   @override
   Widget build(BuildContext context) {
-    //AuthBase Auth = Provider.of<AuthBase>(context);
-
     const String image = "assets/images/hotel_template.jpg";
     String hotelName = "Hotel Name";
-    String hotelMark = "5.0";
     int matchedPlaces = 3;
-    String lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque elementum volutpat porta. Nulla in nisl egestas, euismod ante vel, pulvinar erat. Duis varius ut ante et vulputate. Ut non porta diam. Aliquam convallis iaculis nunc et placerat. Nunc malesuada nisi accumsan diam viverra, vitae placerat magna commodo. Duis sit amet purus at lectus convallis pharetra dignissim id nisi. Duis hendrerit justo sed enim finibus, id tincidunt odio rutrum. Aliquam erat volutpat. Nulla dictum sollicitudin ante, eu luctus tortor aliquam vel. Pellentesque iaculis augue nisl, eu ultricies neque pellentesque vitae. Nam leo sapien, porttitor nec diam in, efficitur congue mi. Nam nibh mi, rutrum nec suscipit at, tincidunt sed nulla. Phasellus nibh turpis, maximus ac volutpat sed, varius sed lorem. Praesent luctus eros ac pellentesque condimentum. Sed viverra cursus velit, luctus lacinia orci placerat sed. Vestibulum mollis diam purus, nec vulputate erat mollis id. Aliquam in est dapibus, porta magna sit amet, cursus tortor. Etiam lobortis sed arcu sed cursus. Nam et lacus ut est vestibulum semper. Donec semper tincidunt magna id posuere. Sed ac sodales arcu. Donec urna lorem, luctus sed finibus nec, feugiat vitae sem. Nulla facilisi. Morbi pulvinar accumsan dui et vehicula. Mauris pharetra tellus est, vestibulum mattis. Aliquam in est dapibus, porta magna sit amet, cursus tortor. Etiam lobortis sed arcu sed cursus. Nam et lacus ut est vestibulum semper. Donec semper tincidunt magna id posuere. Sed ac sodales arcu. Donec urna lorem, luctus sed finibus nec, feugiat vitae sem. Nulla facilisi. Morbi pulvinar accumsan dui et vehicula. Mauris pharetra tellus est, vestibulum mattis.";
+    String lorem =
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque elementum volutpat porta. Nulla in nisl egestas, euismod ante vel, pulvinar erat. Duis varius ut ante et vulputate. Ut non porta diam. Aliquam convallis iaculis nunc et placerat. Nunc malesuada nisi accumsan diam viverra, vitae placerat magna commodo. Duis sit amet purus at lectus convallis pharetra dignissim id nisi. Duis hendrerit justo sed enim finibus, id tincidunt odio rutrum. Aliquam erat volutpat. Nulla dictum sollicitudin ante, eu luctus tortor aliquam vel. Pellentesque iaculis augue nisl, eu ultricies neque pellentesque vitae. Nam leo sapien, porttitor nec diam in, efficitur congue mi. Nam nibh mi, rutrum nec suscipit at, tincidunt sed nulla. Phasellus nibh turpis, maximus ac volutpat sed, varius sed lorem. Praesent luctus eros ac pellentesque condimentum. Sed viverra cursus velit, luctus lacinia orci placerat sed. Vestibulum mollis diam purus, nec vulputate erat mollis id. Aliquam in est dapibus, porta magna sit amet, cursus tortor. Etiam lobortis sed arcu sed cursus. Nam et lacus ut est vestibulum semper. Donec semper tincidunt magna id posuere. Sed ac sodales arcu. Donec urna lorem, luctus sed finibus nec, feugiat vitae sem. Nulla facilisi. Morbi pulvinar accumsan dui et vehicula. Mauris pharetra tellus est, vestibulum mattis. Aliquam in est dapibus, porta magna sit amet, cursus tortor. Etiam lobortis sed arcu sed cursus. Nam et lacus ut est vestibulum semper. Donec semper tincidunt magna id posuere. Sed ac sodales arcu. Donec urna lorem, luctus sed finibus nec, feugiat vitae sem. Nulla facilisi. Morbi pulvinar accumsan dui et vehicula. Mauris pharetra tellus est, vestibulum mattis.";
     bool _isFavourite = true;
     List<String> items = ["Overview", "Rooms", "Review"];
 
     return SafeArea(
         child: Scaffold(
-          backgroundColor: backgroundColor,
+            backgroundColor: backgroundColor,
             appBar: AppBar(
               foregroundColor: textBase,
               backgroundColor: backgroundColor,
@@ -62,7 +112,11 @@ class HotelPageState extends State<HotelPage> with TickerProviderStateMixin{
               centerTitle: true,
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => const HotelsHome()),
+                  );
+                },
               ),
               actions: [
                 IconButton(
@@ -82,6 +136,15 @@ class HotelPageState extends State<HotelPage> with TickerProviderStateMixin{
                       fit: BoxFit.cover,
                       height: 300,
                     ),
+                    Column(children: [
+                      const Text("Rating",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.yellow,
+                          )),
+                      _buildRatingStars(filledStars)
+                    ]),
                     Container(
                       padding: const EdgeInsets.only(left: 10, top: 15),
                       width: double.infinity,
@@ -91,22 +154,22 @@ class HotelPageState extends State<HotelPage> with TickerProviderStateMixin{
                         children: [
                           Container(
                             padding: const EdgeInsets.only(left: 3),
-                            child: const Text( "Overview",
+                            child: const Text(
+                              "Overview",
                               style: TextStyle(
-                                color: textBase,
-                                fontSize: 22,
-                                fontWeight: FontWeight.bold
-                              ),
+                                  color: textBase,
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold),
                             ),
                           ),
                           Container(
                             padding: const EdgeInsets.only(top: 15, right: 10),
-                            child:  Text( lorem,
+                            child: Text(
+                              lorem,
                               style: const TextStyle(
                                   color: textBase,
                                   fontSize: 18,
-                                  fontWeight: FontWeight.normal
-                              ),
+                                  fontWeight: FontWeight.normal),
                               textAlign: TextAlign.justify,
                             ),
                           ),
@@ -124,25 +187,29 @@ class HotelPageState extends State<HotelPage> with TickerProviderStateMixin{
                               borderRadius: const BorderRadius.only(
                                 topLeft: Radius.circular(40),
                                 topRight: Radius.circular(40),
-                              )
-                          ),
+                              )),
                           child: Column(
                             children: [
-                              const SizedBox(height: 10,),
+                              const SizedBox(
+                                height: 10,
+                              ),
                               Container(
-                                padding: const EdgeInsets.only(left: 15, right: 15),
+                                padding:
+                                    const EdgeInsets.only(left: 15, right: 15),
                                 height: 40,
                                 width: double.infinity,
                                 child: Row(
                                   children: [
                                     Container(
-                                      margin: const EdgeInsets.only(left: 10, right: 10),
+                                      margin: const EdgeInsets.only(
+                                          left: 10, right: 10),
                                       width: 100,
                                       height: 20,
                                       decoration: BoxDecoration(
                                         color: Colors.grey.shade800,
                                       ),
-                                      child: const Text("Overview",
+                                      child: const Text(
+                                        "Overview",
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                           fontSize: 18,
@@ -152,13 +219,15 @@ class HotelPageState extends State<HotelPage> with TickerProviderStateMixin{
                                       ),
                                     ),
                                     Container(
-                                      margin: const EdgeInsets.only(left: 10, right: 10),
+                                      margin: const EdgeInsets.only(
+                                          left: 10, right: 10),
                                       width: 100,
                                       height: 20,
                                       decoration: BoxDecoration(
                                         color: Colors.grey.shade800,
                                       ),
-                                      child: const Text("Rooms",
+                                      child: const Text(
+                                        "Rooms",
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                           fontSize: 18,
@@ -168,13 +237,15 @@ class HotelPageState extends State<HotelPage> with TickerProviderStateMixin{
                                       ),
                                     ),
                                     Container(
-                                      margin: const EdgeInsets.only(left: 10, right: 10),
+                                      margin: const EdgeInsets.only(
+                                          left: 10, right: 10),
                                       width: 100,
                                       height: 20,
                                       decoration: BoxDecoration(
                                         color: Colors.grey.shade800,
                                       ),
-                                      child: const Text("Reviews",
+                                      child: const Text(
+                                        "Reviews",
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                           fontSize: 18,
@@ -204,22 +275,37 @@ class HotelPageState extends State<HotelPage> with TickerProviderStateMixin{
               ],
             )));
   }
+
+  Widget _buildRatingStars(int filledStars) {
+    List<StarIconButton> filledStarsList = [];
+    List<StarIconButton> outlinedStarsList = [];
+    for (int i = 1; i <= filledStars; i++) {
+      filledStarsList.add(StarIconButton(
+          isFilled: true,
+          isDisabled: _isRatingSending,
+          onPressed: () => updateRating(i)));
+    }
+    for (int i = filledStars + 1; i <= 5; i++) {
+      outlinedStarsList.add(StarIconButton(
+          isFilled: false,
+          isDisabled: _isRatingSending,
+          onPressed: () => updateRating(i)));
+    }
+    return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [...filledStarsList, ...outlinedStarsList]);
+  }
 }
 
-
-
-class ColorBox extends StatelessWidget{
+class ColorBox extends StatelessWidget {
   const ColorBox({super.key});
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
       height: 50,
-      decoration: BoxDecoration(
-          color: Colors.red,
-          border: Border.all()
-      ),
+      decoration: BoxDecoration(color: Colors.red, border: Border.all()),
     );
   }
 }
