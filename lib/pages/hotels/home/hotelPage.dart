@@ -1,5 +1,6 @@
 import 'dart:convert';
-
+import 'package:hoteldise/utils/toast.dart';
+import 'package:hoteldise/widgets/comments.dart';
 import 'package:flutter/material.dart';
 import 'package:hoteldise/models/rating.dart';
 import 'package:hoteldise/pages/hotels/home/home.dart';
@@ -13,20 +14,22 @@ import '/../models/hotel.dart';
 //import 'package:provider/provider.dart';
 
 class HotelPage extends StatefulWidget {
+  final String imagePath;
+  final Hotel? hotel;
+  final bool barrierDismissible;
+  final Function(DateTime, DateTime)? onApplyClick;
+  final Function()? onCancelClick;
+  final BuildContext context;
+
   const HotelPage(
       {Key? key,
       this.onApplyClick,
       this.onCancelClick,
       this.barrierDismissible = true,
       this.hotel, // required this.hotel
-      required this.context})
+      required this.context,
+      required this.imagePath})
       : super(key: key);
-
-  final Hotel? hotel;
-  final bool barrierDismissible;
-  final Function(DateTime, DateTime)? onApplyClick;
-  final Function()? onCancelClick;
-  final BuildContext context;
 
   @override
   State<HotelPage> createState() => HotelPageState();
@@ -34,6 +37,9 @@ class HotelPage extends StatefulWidget {
 
 class HotelPageState extends State<HotelPage> with TickerProviderStateMixin {
   AnimationController? animationController;
+  final TextEditingController _textFieldController = TextEditingController();
+  String commentText = '';
+  List<dynamic> comments = [];
 
   Map<String, dynamic> _placeRating = {"mark": 0, "count": 0};
   bool _isRatingSending = false;
@@ -57,6 +63,12 @@ class HotelPageState extends State<HotelPage> with TickerProviderStateMixin {
         .then((value) => setState(() {
               filledStars = value;
             }));
+    Firestore().getPlaceComments(widget.hotel!.hotelId).then((value) {
+      print(value);
+      setState(() {
+        comments = value;
+      });
+    });
   }
 
   void updateRating(int newRating) async {
@@ -129,151 +141,202 @@ class HotelPageState extends State<HotelPage> with TickerProviderStateMixin {
             body: Stack(
               clipBehavior: Clip.none,
               children: [
-                Column(
-                  children: [
-                    Image.asset(
-                      image,
-                      fit: BoxFit.cover,
-                      height: 300,
+                Column(children: [
+                  Image.asset(
+                    image,
+                    fit: BoxFit.cover,
+                    height: 300,
+                  ),
+                  Column(children: [
+                    const Text("Rating",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.yellow,
+                        )),
+                    _buildRatingStars(filledStars)
+                  ]),
+                  Container(
+                    padding: const EdgeInsets.only(left: 10, top: 15),
+                    width: double.infinity,
+                    height: 351,
+                    color: backgroundColor,
+                    child: ListView(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.only(left: 3),
+                          child: const Text(
+                            "Overview",
+                            style: TextStyle(
+                                color: textBase,
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.only(top: 15, right: 10),
+                          child: Text(
+                            lorem,
+                            style: const TextStyle(
+                                color: textBase,
+                                fontSize: 18,
+                                fontWeight: FontWeight.normal),
+                            textAlign: TextAlign.justify,
+                          ),
+                        ),
+                      ],
                     ),
-                    Column(children: [
-                      const Text("Rating",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.yellow,
-                          )),
-                      _buildRatingStars(filledStars)
-                    ]),
-                    Container(
-                      padding: const EdgeInsets.only(left: 10, top: 15),
+                  ),
+                  Flexible(
+                    child: Container(
                       width: double.infinity,
-                      height: 351,
                       color: backgroundColor,
-                      child: ListView(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.only(left: 3),
-                            child: const Text(
-                              "Overview",
-                              style: TextStyle(
-                                  color: textBase,
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          Container(
-                            padding: const EdgeInsets.only(top: 15, right: 10),
-                            child: Text(
-                              lorem,
-                              style: const TextStyle(
-                                  color: textBase,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.normal),
-                              textAlign: TextAlign.justify,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Flexible(
                       child: Container(
-                        width: double.infinity,
-                        color: backgroundColor,
-                        child: Container(
-                          height: 70,
-                          decoration: BoxDecoration(
-                              color: Colors.grey.shade800,
-                              borderRadius: const BorderRadius.only(
-                                topLeft: Radius.circular(40),
-                                topRight: Radius.circular(40),
-                              )),
-                          child: Column(
-                            children: [
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              Container(
-                                padding:
-                                    const EdgeInsets.only(left: 15, right: 15),
-                                height: 40,
-                                width: double.infinity,
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      margin: const EdgeInsets.only(
-                                          left: 10, right: 10),
-                                      width: 100,
-                                      height: 20,
-                                      decoration: BoxDecoration(
-                                        color: Colors.grey.shade800,
-                                      ),
-                                      child: const Text(
-                                        "Overview",
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w500,
-                                          color: textBase,
-                                        ),
+                        height: 70,
+                        decoration: BoxDecoration(
+                            color: Colors.grey.shade800,
+                            borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(40),
+                              topRight: Radius.circular(40),
+                            )),
+                        child: Column(
+                          children: [
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Container(
+                              padding:
+                                  const EdgeInsets.only(left: 15, right: 15),
+                              height: 40,
+                              width: double.infinity,
+                              child: Row(
+                                children: [
+                                  Container(
+                                    margin: const EdgeInsets.only(
+                                        left: 10, right: 10),
+                                    width: 100,
+                                    height: 20,
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey.shade800,
+                                    ),
+                                    child: const Text(
+                                      "Overview",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w500,
+                                        color: textBase,
                                       ),
                                     ),
-                                    Container(
-                                      margin: const EdgeInsets.only(
-                                          left: 10, right: 10),
-                                      width: 100,
-                                      height: 20,
-                                      decoration: BoxDecoration(
-                                        color: Colors.grey.shade800,
-                                      ),
-                                      child: const Text(
-                                        "Rooms",
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w500,
-                                          color: textBase,
-                                        ),
+                                  ),
+                                  Container(
+                                    margin: const EdgeInsets.only(
+                                        left: 10, right: 10),
+                                    width: 100,
+                                    height: 20,
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey.shade800,
+                                    ),
+                                    child: const Text(
+                                      "Rooms",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w500,
+                                        color: textBase,
                                       ),
                                     ),
-                                    Container(
-                                      margin: const EdgeInsets.only(
-                                          left: 10, right: 10),
-                                      width: 100,
-                                      height: 20,
-                                      decoration: BoxDecoration(
-                                        color: Colors.grey.shade800,
+                                  ),
+                                  Container(
+                                    margin: const EdgeInsets.only(
+                                        left: 10, right: 10),
+                                    width: 100,
+                                    height: 20,
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey.shade800,
+                                    ),
+                                    child: const Text(
+                                      "Reviews",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w500,
+                                        color: textBase,
                                       ),
-                                      child: const Text(
-                                        "Reviews",
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w500,
-                                          color: textBase,
-                                        ),
-                                      ),
-                                    )
-                                  ],
-                                ),
+                                    ),
+                                  )
+                                ],
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
-
-                    // Positioned(
-                    //   left: 20,
-                    //   top: 200,
-                    //   child: Container(
-                    //     child: Text("HELLO"),
-                    //   ),
-                    // )
-                  ],
-                ),
+                  ),
+                  // Positioned(
+                  //   left: 20,
+                  //   top: 200,
+                  //   child: Container(
+                  //     child: Text("HELLO"),
+                  //   ),
+                  // )
+                  ElevatedButton(
+                      child: Text("Add comment"),
+                      style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 15, horizontal: 30)),
+                      onPressed: () => _showPopup())
+                ]),
+                ...comments.map((item) => Comment(
+                      commentText: item['comment'],
+                      imagePath: item['avatarUrl'],
+                    ))
               ],
             )));
+  }
+
+  Future _showPopup() async {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text("Add your comment"),
+            content: TextField(
+              onChanged: (value) {
+                commentText = value;
+              },
+              controller: _textFieldController,
+              decoration: const InputDecoration(hintText: "Comment"),
+            ),
+            actions: <Widget>[
+              ElevatedButton(
+                child: const Text("Add"),
+                style: ElevatedButton.styleFrom(
+                    padding:
+                        EdgeInsets.symmetric(vertical: 15, horizontal: 30)),
+                onPressed: () {
+                  if (commentText != '') {
+                    Firestore()
+                        .addComment(
+                            comment: commentText,
+                            hotel_id: widget.hotel!.hotelId,
+                            user_email: Auth.currentUser!.email ?? '',
+                            user_id: Auth.currentUser!.uid)
+                        .then((value) => CustomToast(
+                                color: Colors.green,
+                                message: "Your comment added")
+                            .show());
+                  }
+                  _textFieldController.clear();
+                  setState(() {
+                    commentText = '';
+                  });
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          );
+        });
   }
 
   Widget _buildRatingStars(int filledStars) {

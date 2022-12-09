@@ -141,4 +141,32 @@ class Firestore {
         .update({'rating': newRating});
     return newRating;
   }
+
+  Future<void> addComment(
+      {required String comment,
+      required String user_id,
+      required String user_email,
+      required String hotel_id}) async {
+    _fStore.collection('comments').doc().set({
+      'user_id': user_id,
+      'hotel_id': hotel_id,
+      'comment': comment,
+      'user_email': user_email,
+      'timeStamp': Timestamp.fromDate(DateTime.now()),
+    });
+  }
+
+  Future<List<dynamic>> getPlaceComments(String hotel_id) async {
+    return await _fStore
+        .collection('comments')
+        .where('hotel_id', isEqualTo: hotel_id)
+        .orderBy('timeStamp', descending: true)
+        .get()
+        .then((snapshot) => snapshot.docs.map((doc) {
+              return {
+                'comment': doc['comment'],
+                'avatarUrl': 'assets/images/user_placeholder.jpg'
+              };
+            }).toList());
+  }
 }
