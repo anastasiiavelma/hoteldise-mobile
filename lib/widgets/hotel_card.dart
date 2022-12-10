@@ -8,7 +8,7 @@ import 'package:hoteldise/themes/constants.dart';
 import 'package:hoteldise/utils/toast.dart';
 import '../../../widgets/text_widget.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
-import '../pages/hotels/home/hotelPage.dart';
+import '../pages/hotels/hotel_page/hotelPage.dart';
 
 class HotelCard extends StatefulWidget {
   final AuthBase Auth;
