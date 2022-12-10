@@ -87,7 +87,6 @@ class HotelPageState extends State<HotelPage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-            backgroundColor: backgroundColor,
             body: Stack(
               children: [
                 Container(
@@ -147,8 +146,8 @@ class HotelPageState extends State<HotelPage> with TickerProviderStateMixin {
                                               child: ReadMoreText(
                                             widget.hotel.address.address,
                                             trimLines: 3,
-                                            trimCollapsedText: 'Read More',
-                                            trimExpandedText: 'Read Less',
+                                            trimCollapsedText: 'Show More',
+                                            trimExpandedText: 'Show Less',
                                             trimMode: TrimMode.Line,
                                             style: const TextStyle(
                                                 fontSize: 12,
@@ -215,8 +214,8 @@ class HotelPageState extends State<HotelPage> with TickerProviderStateMixin {
                             ReadMoreText(
                               widget.hotel.description,
                               trimLines: 3,
-                              trimCollapsedText: 'Read More',
-                              trimExpandedText: 'Read Less',
+                              trimCollapsedText: 'Show More',
+                              trimExpandedText: 'Show Less',
                               trimMode: TrimMode.Line,
                               style: const TextStyle(
                                   fontSize: 14, color: textBase),
@@ -313,32 +312,37 @@ class HotelPageState extends State<HotelPage> with TickerProviderStateMixin {
                     ],
                   ),
                 ),
-                AppBar(
-                  backgroundColor: Colors.transparent,
-                  elevation: 0,
-                  centerTitle: true,
-                  leading: IconButton(
-                      icon: const Icon(Icons.arrow_back),
-                      onPressed: () => {Navigator.pop(context)}),
-                  actions: [
-                    IconButton(
-                        onPressed: () => setState(() {
-                              _toggleFavourite(Provider.of<AuthBase>(context,
-                                  listen: false));
-                            }),
-                        iconSize: 40,
-                        icon: widget.hotel.isFavourite!
-                            ? Icon(
-                                Icons.favorite,
-                                size: 28,
-                                color: Colors.pink[200],
-                              )
-                            : Icon(
-                                Icons.favorite_border,
-                                size: 28,
-                                color: Colors.grey[300],
-                              )),
-                  ],
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  child: AppBar(
+                    backgroundColor: Colors.transparent,
+                    elevation: 0,
+                    centerTitle: true,
+                    leading: IconButton(
+                        icon: const Icon(Icons.arrow_back),
+                        onPressed: () => {Navigator.pop(context)}),
+                    actions: [
+                      IconButton(
+                          onPressed: () => setState(() {
+                                _toggleFavourite(Provider.of<AuthBase>(context,
+                                    listen: false));
+                              }),
+                          iconSize: 40,
+                          icon: widget.hotel.isFavourite!
+                              ? Icon(
+                                  Icons.favorite,
+                                  size: 28,
+                                  color: Colors.pink[200],
+                                )
+                              : Icon(
+                                  Icons.favorite_border,
+                                  size: 28,
+                                  color: Colors.grey[300],
+                                )),
+                    ],
+                  ),
                 ),
               ],
             )));
