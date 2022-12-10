@@ -9,14 +9,11 @@ import 'package:hoteldise/services/auth.dart';
 import 'package:hoteldise/widgets/hotel_card.dart';
 import 'package:provider/provider.dart';
 
+import '../../../services/firestore.dart';
 import '../../../themes/constants.dart';
 import '../../../widgets/loader.dart';
 import '../../../widgets/text_widget.dart';
 
-import 'package:intl/intl.dart';
-
-import 'calendarPopUp.dart';
-import 'roomsAdultsPopUp.dart';
 import 'filter.dart';
 
 class HotelsHome extends StatefulWidget {
@@ -53,11 +50,11 @@ class _HotelsHomeState extends State<HotelsHome> {
 
   @override
   void initState() {
-    getHotels();
+    getHotels(context);
     super.initState();
   }
 
-  getHotels() async {
+  getHotels(BuildContext context) async {
     hotelsLoaded = false;
     FirebaseFirestore db = FirebaseFirestore.instance;
 
@@ -78,7 +75,7 @@ class _HotelsHomeState extends State<HotelsHome> {
     //with at least one empty room, in cost range
     newHotels = newHotels
         .where((h) => h.rooms.any((r) =>
-            r.numOfFreeSuchRooms > 0 &&
+            // r.numOfFreeSuchRooms > 0 &&
             r.price.price >= costRange.start &&
             r.price.price <= costRange.end &&
             facilities.every((f) => r.facilities!.contains(f))))
@@ -91,8 +88,16 @@ class _HotelsHomeState extends State<HotelsHome> {
             .contains(searchValue.toLowerCase()))
         .toList();
 
+    //getting user favourites
+    AuthBase Auth = Provider.of<AuthBase>(context, listen: false);
+    List favourites = [];
+    await Firestore().fetchUser(Auth.currentUser!.uid).then((user) {
+      favourites = user!.favourites;
+    });
+
     //setting extra fields
     for (int i = 0; i < newHotels.length; i++) {
+      await newHotels[i].setFavourites(favourites);
       await newHotels[i].setExtraFields();
     }
 
@@ -158,7 +163,7 @@ class _HotelsHomeState extends State<HotelsHome> {
                     WidgetsBinding.instance.addPostFrameCallback((_) {
                       setState(() {
                         searchValue = result;
-                        getHotels();
+                        getHotels(context);
                       });
                     });
                   }
@@ -193,7 +198,7 @@ class _HotelsHomeState extends State<HotelsHome> {
                             onPressed: () {
                               setState(() {
                                 searchValue = '';
-                                getHotels();
+                                getHotels(context);
                               });
                             },
                             icon: const Icon(
@@ -207,7 +212,6 @@ class _HotelsHomeState extends State<HotelsHome> {
               const SizedBox(
                 height: 20,
               ),
-              // getTimeDateUI(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -317,16 +321,17 @@ class _HotelsHomeState extends State<HotelsHome> {
                   itemBuilder: (context, index) {
                     if (index == matchedHotels.length) {
                       return const SizedBox(height: 0);
-                    } else {
-                      return HotelCard(
-                        hotel: matchedHotels[index],
-                        Auth: Auth,
-                      );
+                    }
+                    else {
+                        return HotelCard(
+                          hotel: matchedHotels[index],
+                          Auth: Auth,
+                        );
                     }
                   },
                   separatorBuilder: (BuildContext context, int index) {
                     return const SizedBox(height: 20);
-                  },
+                  }
                 ),
               ),
             ],
@@ -352,158 +357,7 @@ class _HotelsHomeState extends State<HotelsHome> {
     setState(() {
       costRange = result[0];
       facilities = result[1];
-      getHotels();
+      getHotels(context);
     });
-  }
-
-  Widget getTimeDateUI() {
-    return Padding(
-      padding: const EdgeInsets.only(left: 18, bottom: 16),
-      child: Row(
-        children: <Widget>[
-          Expanded(
-            child: Row(
-              children: <Widget>[
-                Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    focusColor: Colors.transparent,
-                    highlightColor: Colors.transparent,
-                    hoverColor: Colors.transparent,
-                    splashColor: Colors.grey.withOpacity(0.2),
-                    borderRadius: const BorderRadius.all(
-                      Radius.circular(4.0),
-                    ),
-                    onTap: () {
-                      FocusScope.of(context).requestFocus(FocusNode());
-                      showDatePicker(context: context);
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                          left: 8, right: 8, top: 4, bottom: 4),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text('Choose date',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 16,
-                                color: Colors.grey.withOpacity(0.8),
-                              )),
-                          const SizedBox(
-                            height: 8,
-                          ),
-                          Text(
-                            '${DateFormat("dd, MMM").format(startDate)} - ${DateFormat("dd, MMM").format(endDate)}',
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(right: 8),
-            child: Container(
-              width: 1,
-              height: 42,
-              color: Colors.grey.withOpacity(0.8),
-            ),
-          ),
-          Expanded(
-            child: Row(
-              children: <Widget>[
-                Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    focusColor: Colors.transparent,
-                    highlightColor: Colors.transparent,
-                    hoverColor: Colors.transparent,
-                    splashColor: Colors.grey.withOpacity(0.2),
-                    borderRadius: const BorderRadius.all(
-                      Radius.circular(4.0),
-                    ),
-                    onTap: () {
-                      FocusScope.of(context).requestFocus(FocusNode());
-                      showRoomsAdults(context: context);
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                          left: 8, right: 8, top: 4, bottom: 4),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            'Number of Rooms',
-                            style: TextStyle(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 16,
-                                color: Colors.grey.withOpacity(0.8)),
-                          ),
-                          const SizedBox(
-                            height: 8,
-                          ),
-                          Text(
-                            getRoomsAdultsString().toString(),
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void showDatePicker({BuildContext? context}) {
-    showDialog<dynamic>(
-      context: context!,
-      builder: (BuildContext context) => CalendarPopupView(
-        barrierDismissible: true,
-        minimumDate: DateTime.now(),
-        maximumDate: DateTime.now().add(const Duration(days: 365)),
-        initialEndDate: endDate,
-        initialStartDate: startDate,
-        onApplyClick: (DateTime startData, DateTime endData) {
-          setState(() {
-            startDate = startData;
-            endDate = endData;
-          });
-        },
-        onCancelClick: () {},
-      ),
-    );
-  }
-
-  void showRoomsAdults({BuildContext? context}) {
-    showDialog<dynamic>(
-      context: context!,
-      builder: (BuildContext context) => RoomsAdultsView(
-        barrierDismissible: true,
-        onApplyClick: (DateTime startData, DateTime endData) {
-          setState(() {
-            startDate = startData;
-            endDate = endData;
-          });
-        },
-        onCancelClick: () {},
-      ),
-    );
   }
 }

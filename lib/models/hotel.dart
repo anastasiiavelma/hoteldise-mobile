@@ -36,6 +36,7 @@ class Hotel {
   final List<HotelComment> comments;
   final int averageCost;
   double distance = 0;
+  bool? isFavourite;
   String mainImageUrl = "";
   final String hotelId;
 
@@ -49,28 +50,28 @@ class Hotel {
         createdAt: (data['createdAt'] as Timestamp).toDate(),
         siteLink: data['siteLink'],
         adminId: data['adminId'],
-        address: Address.fromJson(data!['address']),
+        address: Address.fromJson(data['address']),
         rating: Rating.fromJson(data['rating']),
-        photosUrls: List.from(data?['photosUrls']),
+        photosUrls: List.from(data['photosUrls']),
         comments: List<HotelComment>.from(
-            data?['comments'].map((model) => HotelComment.fromJson(model))),
+            data['comments'].map((model) => HotelComment.fromJson(model))),
         rooms: List<RoomType>.from(
-            data?['rooms'].map((model) => RoomType.fromJson(model))),
+            data['rooms'].map((model) => RoomType.fromJson(model))),
         averageCost: data['averageCost'].toInt());
   }
 
   //not done
   Map<String, dynamic> toFirestore() {
     return {
-      if (name != null) "name": name,
-      if (description != null) "description": description,
-      if (createdAt != null) "createdAt": createdAt,
-      if (siteLink != null) "siteKink": siteLink,
-      if (adminId != null) "adminId": adminId,
-      if (address != null) "address": address,
-      if (rating != null) "rating": rating,
-      if (photosUrls != null) "photos_urls": photosUrls,
-      if (comments != null) "comments": comments,
+      "name": name,
+      "description": description,
+      "createdAt": createdAt,
+      "siteKink": siteLink,
+      "adminId": adminId,
+      "address": address,
+      "rating": rating,
+      "photos_urls": photosUrls,
+      "comments": comments,
     };
   }
 
@@ -92,5 +93,13 @@ class Hotel {
         .ref()
         .child(photosUrls[0])
         .getDownloadURL();
+  }
+
+  Future<void> setFavourites(List<dynamic> favourites) async {
+    if (favourites.contains(hotelId)) {
+      isFavourite = true;
+    } else {
+      isFavourite = false;
+    }
   }
 }

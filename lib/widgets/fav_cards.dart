@@ -8,6 +8,7 @@ import 'package:hoteldise/widgets/loader.dart';
 
 class FavCards extends StatefulWidget {
   final AuthBase Auth;
+
   const FavCards({
     Key? key,
     required this.Auth,
@@ -50,16 +51,16 @@ class _FavCardsState extends State<FavCards> {
         }
         for (int i = 0; i < newHotels.length; i++) {
           await newHotels[i].setExtraFields();
+          newHotels[i].isFavourite = true;
         }
         _favourites = newHotels;
       });
+    }
+    if (mounted) {
       setState(() {
         loaded = true;
       });
     }
-    setState(() {
-      loaded = true;
-    });
   }
 
   @override
