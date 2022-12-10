@@ -31,7 +31,7 @@ class _HotelCommentState extends State<HotelComment> {
       child: Row(
         children: [
           CircleAvatar(
-              radius: 24,
+              radius: 26,
               backgroundImage: widget.avatarUrl != null
                   ? NetworkImage(widget.avatarUrl!)
                   : const NetworkImage(
@@ -55,8 +55,8 @@ class _HotelCommentState extends State<HotelComment> {
                 ReadMoreText(
                   widget.content,
                   trimLines: 3,
-                  trimCollapsedText: 'Read More',
-                  trimExpandedText: 'Read Less',
+                  trimCollapsedText: 'Show More',
+                  trimExpandedText: 'Show Less',
                   trimMode: TrimMode.Line,
                   style: const TextStyle(fontSize: 14, color: lightGreyColor),
                   lessStyle:

@@ -75,7 +75,7 @@ class _HotelsHomeState extends State<HotelsHome> {
     //with at least one empty room, in cost range
     newHotels = newHotels
         .where((h) => h.rooms.any((r) =>
-            r.numOfFreeSuchRooms > 0 &&
+            // r.numOfFreeSuchRooms > 0 &&
             r.price.price >= costRange.start &&
             r.price.price <= costRange.end &&
             facilities.every((f) => r.facilities!.contains(f))))
