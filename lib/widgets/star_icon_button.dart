@@ -8,9 +8,9 @@ class StarIconButton extends StatelessWidget {
 
   const StarIconButton(
       {Key? key,
-        required this.isFilled,
-        required this.onPressed,
-        required this.isDisabled})
+      required this.isFilled,
+      required this.onPressed,
+      required this.isDisabled})
       : super(key: key);
 
   @override

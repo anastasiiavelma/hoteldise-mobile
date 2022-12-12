@@ -3,10 +3,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import 'package:hoteldise/models/hotel.dart';
+import 'package:hoteldise/pages/hotels/home/calendarPopUp.dart';
+import 'package:hoteldise/pages/hotels/home/roomsAdultsPopUp.dart';
 import 'package:hoteldise/pages/hotels/home/search/address_search.dart';
 import 'package:hoteldise/pages/hotels/home/sort.dart';
 import 'package:hoteldise/services/auth.dart';
 import 'package:hoteldise/widgets/hotel_card.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../services/firestore.dart';
@@ -91,8 +94,8 @@ class _HotelsHomeState extends State<HotelsHome> {
     //getting user favourites
     AuthBase Auth = Provider.of<AuthBase>(context, listen: false);
     List favourites = [];
-    await Firestore().fetchUser(Auth.currentUser!.uid).then((user) {
-      favourites = user!.favourites;
+    await Firestore().getUserFavourites(Auth.currentUser!.uid).then((value) {
+      favourites = value;
     });
 
     //setting extra fields
@@ -312,28 +315,26 @@ class _HotelsHomeState extends State<HotelsHome> {
               const SizedBox(
                 height: 12,
               ),
-              hotelsLoaded == false ?
-              const Loader() :
-              Flexible(
-                child: ListView.separated(
-                  scrollDirection: Axis.vertical,
-                  itemCount: matchedHotels.length + 1,
-                  itemBuilder: (context, index) {
-                    if (index == matchedHotels.length) {
-                      return const SizedBox(height: 0);
-                    }
-                    else {
-                        return HotelCard(
-                          hotel: matchedHotels[index],
-                          Auth: Auth,
-                        );
-                    }
-                  },
-                  separatorBuilder: (BuildContext context, int index) {
-                    return const SizedBox(height: 20);
-                  }
-                ),
-              ),
+              hotelsLoaded == false
+                  ? const Loader()
+                  : Flexible(
+                      child: ListView.separated(
+                          scrollDirection: Axis.vertical,
+                          itemCount: matchedHotels.length + 1,
+                          itemBuilder: (context, index) {
+                            if (index == matchedHotels.length) {
+                              return const SizedBox(height: 0);
+                            } else {
+                              return HotelCard(
+                                hotel: matchedHotels[index],
+                                Auth: Auth,
+                              );
+                            }
+                          },
+                          separatorBuilder: (BuildContext context, int index) {
+                            return const SizedBox(height: 20);
+                          }),
+                    ),
             ],
           ),
         ),
@@ -359,5 +360,156 @@ class _HotelsHomeState extends State<HotelsHome> {
       facilities = result[1];
       getHotels(context);
     });
+  }
+
+  Widget getTimeDateUI() {
+    return Padding(
+      padding: const EdgeInsets.only(left: 18, bottom: 16),
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            child: Row(
+              children: <Widget>[
+                Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    focusColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
+                    hoverColor: Colors.transparent,
+                    splashColor: Colors.grey.withOpacity(0.2),
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(4.0),
+                    ),
+                    onTap: () {
+                      FocusScope.of(context).requestFocus(FocusNode());
+                      showDatePicker(context: context);
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                          left: 8, right: 8, top: 4, bottom: 4),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text('Choose date',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 16,
+                                color: Colors.grey.withOpacity(0.8),
+                              )),
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          Text(
+                            '${DateFormat("dd, MMM").format(startDate)} - ${DateFormat("dd, MMM").format(endDate)}',
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: Container(
+              width: 1,
+              height: 42,
+              color: Colors.grey.withOpacity(0.8),
+            ),
+          ),
+          Expanded(
+            child: Row(
+              children: <Widget>[
+                Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    focusColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
+                    hoverColor: Colors.transparent,
+                    splashColor: Colors.grey.withOpacity(0.2),
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(4.0),
+                    ),
+                    onTap: () {
+                      FocusScope.of(context).requestFocus(FocusNode());
+                      showRoomsAdults(context: context);
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                          left: 8, right: 8, top: 4, bottom: 4),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            'Number of Rooms',
+                            style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 16,
+                                color: Colors.grey.withOpacity(0.8)),
+                          ),
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          Text(
+                            getRoomsAdultsString().toString(),
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void showDatePicker({BuildContext? context}) {
+    showDialog<dynamic>(
+      context: context!,
+      builder: (BuildContext context) => CalendarPopupView(
+        barrierDismissible: true,
+        minimumDate: DateTime.now(),
+        maximumDate: DateTime.now().add(const Duration(days: 365)),
+        initialEndDate: endDate,
+        initialStartDate: startDate,
+        onApplyClick: (DateTime startData, DateTime endData) {
+          setState(() {
+            startDate = startData;
+            endDate = endData;
+          });
+        },
+        onCancelClick: () {},
+      ),
+    );
+  }
+
+  void showRoomsAdults({BuildContext? context}) {
+    showDialog<dynamic>(
+      context: context!,
+      builder: (BuildContext context) => RoomsAdultsView(
+        barrierDismissible: true,
+        onApplyClick: (DateTime startData, DateTime endData) {
+          setState(() {
+            startDate = startData;
+            endDate = endData;
+          });
+        },
+        onCancelClick: () {},
+      ),
+    );
   }
 }

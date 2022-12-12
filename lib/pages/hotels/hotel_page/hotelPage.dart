@@ -1,4 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:hoteldise/pages/hotels/home/home.dart';
+import 'package:hoteldise/utils/toast.dart';
+import 'package:hoteldise/widgets/comments.dart';
 import 'package:hoteldise/widgets/hotel_comment.dart';
 import 'package:hoteldise/widgets/room_card.dart';
 import 'package:hoteldise/widgets/text_widget.dart';
@@ -13,19 +18,20 @@ import '/../../themes/constants.dart';
 import '/../models/hotel.dart';
 
 class HotelPage extends StatefulWidget {
-  const HotelPage(
-      {Key? key,
-      this.onApplyClick,
-      this.onCancelClick,
-      this.barrierDismissible = true,
-      required this.hotel // required this.hotel
-      })
-      : super(key: key);
+  const HotelPage({
+    Key? key,
+    this.onApplyClick,
+    this.onCancelClick,
+    this.barrierDismissible = true,
+    required this.hotel, // required this.hotel
+    required this.context,
+  }) : super(key: key);
 
   final Hotel hotel;
   final bool barrierDismissible;
   final Function(DateTime, DateTime)? onApplyClick;
   final Function()? onCancelClick;
+  final BuildContext context;
 
   @override
   State<HotelPage> createState() => HotelPageState();
@@ -35,7 +41,16 @@ class HotelPageState extends State<HotelPage> with TickerProviderStateMixin {
   AnimationController? animationController;
   SizedBox sectionSeparator = const SizedBox(height: 20);
   SizedBox sectionContentSeparator = const SizedBox(height: 4);
+
+  final TextEditingController _textFieldController = TextEditingController();
   late List<RoomType> rooms;
+  String commentText = '';
+  List<dynamic> comments = [];
+
+  Map<String, dynamic> _placeRating = {"count": 0, "mark": 0};
+  bool _isRatingSending = false;
+  int filledStars = 0;
+  late AuthBase Auth;
 
   void _toggleFavourite(AuthBase auth) async {
     if (widget.hotel.isFavourite!) {
@@ -62,6 +77,51 @@ class HotelPageState extends State<HotelPage> with TickerProviderStateMixin {
         duration: const Duration(milliseconds: 400), vsync: this);
     animationController?.forward();
     super.initState();
+    setState(() {
+      _placeRating = {
+        'count': widget.hotel.rating.count,
+        'mark': widget.hotel.rating.mark
+      };
+    });
+    setState(() {
+      Auth = Provider.of<AuthBase>(widget.context);
+    });
+    Firestore()
+        .getUserRatingForPlace(Auth.currentUser!.uid, widget.hotel.hotelId)
+        .then((value) => setState(() {
+              filledStars = value;
+            }));
+    // Firestore().getPlaceComments(widget.hotel.hotelId).then((value) {
+    //   setState(() {
+    //     comments = value;
+    //   });
+    // });
+  }
+
+  void updateRating(int newRating) async {
+    setState(() {
+      _isRatingSending = true;
+    });
+    if (newRating != filledStars) {
+      int oldUserRating = filledStars;
+      setState(() {
+        filledStars = newRating;
+      });
+      Map<String, dynamic> newPlaceRating = await Firestore().updatePlaceRating(
+          oldUserRating: oldUserRating,
+          newUserRating: newRating,
+          oldMark: _placeRating['mark'],
+          hotelId: widget.hotel.hotelId,
+          usersCount: _placeRating['count']);
+      await Firestore().updateUserPlaceRating(
+          Auth.currentUser!.uid, widget.hotel.hotelId, newRating);
+      setState(() {
+        _placeRating = newPlaceRating;
+      });
+    }
+    setState(() {
+      _isRatingSending = false;
+    });
   }
 
   @override
@@ -243,8 +303,7 @@ class HotelPageState extends State<HotelPage> with TickerProviderStateMixin {
                                   scrollDirection: Axis.horizontal,
                                   itemBuilder:
                                       (BuildContext context, int index) {
-                                    return RoomCard(
-                                        room: rooms[index]);
+                                    return RoomCard(room: rooms[index]);
                                   },
                                   separatorBuilder: (context, index) =>
                                       const SizedBox(
@@ -296,7 +355,7 @@ class HotelPageState extends State<HotelPage> with TickerProviderStateMixin {
                           size: 14,
                         ),
                         const SizedBox(width: 4),
-                        getStarButtons()
+                        _buildRatingStars(filledStars)
                       ],
                     ),
                     Row(
@@ -320,33 +379,19 @@ class HotelPageState extends State<HotelPage> with TickerProviderStateMixin {
                       ],
                     ),
                     sectionContentSeparator,
-                    HotelComment(
-                        content:
-                            'djjjjjjjjjjjjjjjjjjjjjjjjjjjjjqnjqnwnqjddjjjjjjjjjjjjjjjjjjjjjjjjjjjjjqnjqnwnqjddjjjjjjjjjjjjjjjjjjjjjjjjjjjjjqnjqnwnqjddjjjjjjjjjjjjjjjjjjjjjjjjjjjjjqnjqnwnqjddjjjjjjjjjjjjjjjjjjjjjjjjjjjjjqnjqnwnqjddjjjjjjjjjjjjjjjjjjjjjjjjjjjjjqnjqnwnqjddjjjjjjjjjjjjjjjjjjjjjjjjjjjjjqnjqnwnqjd',
-                        avatarUrl: null,
-                        publishDate: DateTime.now(),
-                        authorName: 'Petro'),
-                    const SizedBox(height: 8),
-                    OutlinedButton(
-                      onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: const Size.fromHeight(40),
-                        side:
-                            const BorderSide(width: 1.2, color: secondaryColor),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(32.0),
-                        ),
-                      ),
-                      child: AppText(
-                        text: "Write a Review",
-                        color: secondaryColor,
-                        size: 14,
-                        weight: FontWeight.w600,
-                      ),
-                    ),
+                    // ElevatedButton(
+                    //     child: Text("Add comment"),
+                    //     style: ElevatedButton.styleFrom(
+                    //         padding: const EdgeInsets.symmetric(
+                    //             vertical: 15, horizontal: 30)),
+                    //     onPressed: () => _showPopup())
                   ],
                 ),
-              )
+              ),
+              ...comments.map((item) => Comment(
+                    commentText: item['comment'],
+                    imagePath: item['avatarUrl'],
+                  ))
             ],
           ),
         ),
@@ -359,8 +404,13 @@ class HotelPageState extends State<HotelPage> with TickerProviderStateMixin {
             elevation: 0,
             centerTitle: true,
             leading: IconButton(
-                icon: const Icon(Icons.arrow_back),
-                onPressed: () => {Navigator.pop(context)}),
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => const HotelsHome()),
+                );
+              },
+            ),
             actions: [
               IconButton(
                   onPressed: () => setState(() {
@@ -384,5 +434,69 @@ class HotelPageState extends State<HotelPage> with TickerProviderStateMixin {
         ),
       ],
     )));
+  }
+
+  // Future _showPopup() async {
+  //   return showDialog(
+  //       context: context,
+  //       builder: (context) {
+  //         return AlertDialog(
+  //           title: const Text("Add your comment"),
+  //           content: TextField(
+  //             onChanged: (value) {
+  //               commentText = value;
+  //             },
+  //             controller: _textFieldController,
+  //             decoration: const InputDecoration(hintText: "Comment"),
+  //           ),
+  //           actions: <Widget>[
+  //             ElevatedButton(
+  //               child: const Text("Add"),
+  //               style: ElevatedButton.styleFrom(
+  //                   padding:
+  //                       EdgeInsets.symmetric(vertical: 15, horizontal: 30)),
+  //               onPressed: () {
+  //                 if (commentText != '') {
+  //                   Firestore()
+  //                       .addComment(
+  //                           comment: commentText,
+  //                           hotel_id: widget.hotel!.hotelId,
+  //                           user_email: Auth.currentUser!.email ?? '',
+  //                           user_id: Auth.currentUser!.uid)
+  //                       .then((value) => CustomToast(
+  //                               color: Colors.green,
+  //                               message: "Your comment added")
+  //                           .show());
+  //                 }
+  //                 _textFieldController.clear();
+  //                 setState(() {
+  //                   commentText = '';
+  //                 });
+  //                 Navigator.pop(context);
+  //               },
+  //             ),
+  //           ],
+  //         );
+  //       });
+  // }
+
+  Widget _buildRatingStars(int filledStars) {
+    List<StarIconButton> filledStarsList = [];
+    List<StarIconButton> outlinedStarsList = [];
+    for (int i = 1; i <= filledStars; i++) {
+      filledStarsList.add(StarIconButton(
+          isFilled: true,
+          isDisabled: _isRatingSending,
+          onPressed: () => updateRating(i)));
+    }
+    for (int i = filledStars + 1; i <= 5; i++) {
+      outlinedStarsList.add(StarIconButton(
+          isFilled: false,
+          isDisabled: _isRatingSending,
+          onPressed: () => updateRating(i)));
+    }
+    return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [...filledStarsList, ...outlinedStarsList]);
   }
 }

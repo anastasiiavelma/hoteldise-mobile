@@ -1,5 +1,5 @@
 class Rating {
-  Rating( {required this.mark, required this.count});
+  Rating({required this.mark, required this.count});
   late int mark;
   late int count;
 
