@@ -74,153 +74,162 @@ class _HotelCardState extends State<HotelCard> {
             context,
             MaterialPageRoute<dynamic>(
                 builder: (BuildContext context) =>
-                    HotelPage(hotel: widget.hotel),
+                    HotelPage(hotel: widget.hotel, context: context),
                 fullscreenDialog: true),
           );
-        // FocusScope.of(context).requestFocus(FocusNode());
-        // openHotelPage(widget.hotel);
+          // FocusScope.of(context).requestFocus(FocusNode());
+          // openHotelPage(widget.hotel);
         },
-      child: Center(
-        child: Container(
-          constraints: const BoxConstraints(maxWidth: 340),
-          decoration: BoxDecoration(
-            color: elevatedGrey,
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: Column(
-            children: [
-              Container(
-                alignment: Alignment.topRight,
-                height: 200.0,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15.0),
-                    image: DecorationImage(
-                        fit: BoxFit.cover,
-                        image: NetworkImage(widget.hotel.mainImageUrl))),
-                child: IconButton(
-                    onPressed: () => setState(() {
-                          _isHeartLoading ? null : _toggleFavourite();
-                        }),
-                    iconSize: 40,
-                    icon: widget.hotel.isFavourite!
-                        ? Icon(
-                            EvaIcons.heart,
-                            color: Colors.pink[200],
-                          )
-                        : Icon(
-                            EvaIcons.heartOutline,
-                            color: Colors.grey[300],
-                          )),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Flexible(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          AppText(
-                            text: widget.hotel.name,
-                            size: 16,
-                            weight: FontWeight.w700,
-                            overflow: TextOverflow.ellipsis,
-                            color: textBase,
-                          ),
-                          const SizedBox(height: 4),
-                          Row(
-                            children: [
-                              Flexible(
-                                child: Text(
-                                  widget.hotel.address.address,
-                                  softWrap: false,
-                                  style: const TextStyle(
-                                    fontSize: 12,
+        child: Center(
+          child: Container(
+            constraints: const BoxConstraints(maxWidth: 340),
+            decoration: BoxDecoration(
+              color: elevatedGrey,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Column(
+              children: [
+                Container(
+                  alignment: Alignment.topRight,
+                  height: 200.0,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15.0),
+                      image: DecorationImage(
+                          fit: BoxFit.cover,
+                          image: NetworkImage(widget.hotel.mainImageUrl))),
+                  child: IconButton(
+                      onPressed: () => setState(() {
+                            _isHeartLoading ? null : _toggleFavourite();
+                          }),
+                      iconSize: 40,
+                      icon: widget.hotel.isFavourite!
+                          ? Icon(
+                              EvaIcons.heart,
+                              color: Colors.pink[200],
+                            )
+                          : Icon(
+                              EvaIcons.heartOutline,
+                              color: Colors.grey[300],
+                            )),
+                ),
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Flexible(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            AppText(
+                              text: widget.hotel.name,
+                              size: 16,
+                              weight: FontWeight.w700,
+                              overflow: TextOverflow.ellipsis,
+                              color: textBase,
+                            ),
+                            const SizedBox(height: 4),
+                            Row(
+                              children: [
+                                Flexible(
+                                  child: Text(
+                                    widget.hotel.address.address,
+                                    softWrap: false,
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      color: lightGreyColor,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ),
+                                // const SizedBox(width: 4),
+                                // const Icon(
+                                //   Icons.location_on,
+                                //   size: 14,
+                                //   color: primaryColor,
+                                // ),
+                                // AppText(
+                                //     text: hotel.distance != 0
+                                //         ? "${hotel.distance.toInt()} km to hotel"
+                                //         : "hotel too far",
+                                //     size: 12,
+                                //     color: lightGreyColor),
+                                const SizedBox(width: 50),
+                              ],
+                            ),
+                            const SizedBox(height: 4),
+                            Row(
+                              children: [
+                                for (int i = 0;
+                                    i < widget.hotel.rating.mark;
+                                    i++)
+                                  const Icon(
+                                    Icons.star_rounded,
+                                    size: 16,
+                                    color: primaryColor,
+                                  ),
+                                for (int i = 0;
+                                    i < 5 - widget.hotel.rating.mark;
+                                    i++)
+                                  const Icon(
+                                    Icons.star_border_rounded,
+                                    size: 16,
+                                    color: primaryColor,
+                                  ),
+                                const SizedBox(width: 4),
+                                Flexible(
+                                  child: AppText(
+                                    text:
+                                        "based on ${widget.hotel.rating.count.toString()} mark${widget.hotel.rating.count > 1 ? "s" : ""}",
+                                    size: 12,
                                     color: lightGreyColor,
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
-                              ),
-                              // const SizedBox(width: 4),
-                              // const Icon(
-                              //   Icons.location_on,
-                              //   size: 14,
-                              //   color: primaryColor,
-                              // ),
-                              // AppText(
-                              //     text: hotel.distance != 0
-                              //         ? "${hotel.distance.toInt()} km to hotel"
-                              //         : "hotel too far",
-                              //     size: 12,
-                              //     color: lightGreyColor),
-                              const SizedBox(width: 50),
-                            ],
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      Column(
+                        children: [
+                          AppText(
+                            text: "${widget.hotel.averageCost}\$",
+                            size: 16,
+                            weight: FontWeight.w700,
+                            color: textBase,
                           ),
                           const SizedBox(height: 4),
-                          Row(
-                            children: [
-                              for (int i = 0; i < widget.hotel.rating.mark; i++)
-                                const Icon(
-                                  Icons.star_rounded,
-                                  size: 16,
-                                  color: primaryColor,
-                                ),
-                              for (int i = 0;
-                                  i < 5 - widget.hotel.rating.mark;
-                                  i++)
-                                const Icon(
-                                  Icons.star_border_rounded,
-                                  size: 16,
-                                  color: primaryColor,
-                                ),
-                              const SizedBox(width: 4),
-                              Flexible(
-                                child: AppText(
-                                  text:
-                                      "based on ${widget.hotel.rating.count.toString()} mark${widget.hotel.rating.count > 1 ? "s" : ""}",
-                                  size: 12,
-                                  color: lightGreyColor,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            ],
-                          ),
+                          AppText(
+                              text: "/avg per night",
+                              size: 12,
+                              color: textBase),
                         ],
                       ),
-                    ),
-                    Column(
-                      children: [
-                        AppText(
-                          text: "${widget.hotel.averageCost}\$",
-                          size: 16,
-                          weight: FontWeight.w700,
-                          color: textBase,
-                        ),
-                        const SizedBox(height: 4),
-                        AppText(text: "/avg per night", size: 12, color: textBase),
-                      ],
-                    ),
-                  ],
-                ),
-              )
-            ],
+                    ],
+                  ),
+                )
+              ],
+            ),
           ),
-        ),
-      )
-    );
+        ));
   }
 
   Future<void> openHotelPage(Hotel hotel) async {
-      MaterialPageRoute<dynamic>(
-          builder: (BuildContext context) => HotelPage(hotel: hotel)
-      );
-  }
-  Future<void> openSomePage() async {
     MaterialPageRoute<dynamic>(
-      builder: (BuildContext context) => FiltersScreen(costRange: new RangeValues(0, 1000), facilities: ["null"],)
-    );
+        builder: (BuildContext context) => HotelPage(
+              hotel: hotel,
+              context: context,
+            ));
   }
 
+  Future<void> openSomePage() async {
+    MaterialPageRoute<dynamic>(
+        builder: (BuildContext context) => FiltersScreen(
+              costRange: new RangeValues(0, 1000),
+              facilities: ["null"],
+            ));
+  }
 }

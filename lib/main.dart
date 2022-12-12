@@ -16,8 +16,6 @@ import 'firebase_options.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import '../../themes/constants.dart';
 
-
-
 Future<void> main() async {
   await Hive.initFlutter();
   await Hive.openBox('');
@@ -51,7 +49,7 @@ class _MyAppState extends State<MyApp> {
           ),
           child: MaterialApp(
             title: "HotelDise",
-            initialRoute: '/main', // '/'
+            initialRoute: '/',
             routes: {
               '/favourites': (context) => const FavScreen(),
               '/profile': (context) => const ProfileScreen(),
@@ -59,8 +57,7 @@ class _MyAppState extends State<MyApp> {
               '/main': (context) => const MenuBar(),
               '/signIn': (context) => const SignInScreen(),
               '/signUp': (context) => const SignUpScreen(),
-              // '/hotelPage': (context) => const HotelPage(),
-              '/': (context) => const MenuBar(),
+              '/': (context) => const HotelsHome(),
             },
             theme: ThemeData.dark(),
           )),
