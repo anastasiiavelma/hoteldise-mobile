@@ -468,7 +468,9 @@ class HotelPageState extends State<HotelPage> with TickerProviderStateMixin {
                   setState(() {
                     commentText = '';
                   });
-                  Navigator.pop(context);
+                  setState(() {
+                    Navigator.pop(context);
+                  });
                 },
               ),
             ],
