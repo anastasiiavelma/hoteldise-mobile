@@ -164,6 +164,7 @@ class Firestore {
         .then((snapshot) => snapshot.docs.map((doc) {
               return {
                 'comment': doc['comment'],
+                'userEmail': doc['user_email'],
                 'avatarUrl': 'assets/images/user_placeholder.jpg'
               };
             }).toList());

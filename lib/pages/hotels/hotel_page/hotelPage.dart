@@ -91,11 +91,11 @@ class HotelPageState extends State<HotelPage> with TickerProviderStateMixin {
         .then((value) => setState(() {
               filledStars = value;
             }));
-    // Firestore().getPlaceComments(widget.hotel.hotelId).then((value) {
-    //   setState(() {
-    //     comments = value;
-    //   });
-    // });
+    Firestore().getPlaceComments(widget.hotel.hotelId).then((value) {
+      setState(() {
+        comments = value;
+      });
+    });
   }
 
   void updateRating(int newRating) async {
@@ -358,6 +358,7 @@ class HotelPageState extends State<HotelPage> with TickerProviderStateMixin {
                         _buildRatingStars(filledStars)
                       ],
                     ),
+                    const SizedBox(height: 15),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -367,30 +368,24 @@ class HotelPageState extends State<HotelPage> with TickerProviderStateMixin {
                           size: 14,
                           weight: FontWeight.w600,
                         ),
-                        TextButton(
-                          onPressed: () {},
-                          child: AppText(
-                            text: "See All",
-                            color: secondaryColor,
-                            size: 14,
-                            weight: FontWeight.w600,
-                          ),
-                        )
                       ],
                     ),
+                    const SizedBox(height: 10),
                     sectionContentSeparator,
-                    // ElevatedButton(
-                    //     child: Text("Add comment"),
-                    //     style: ElevatedButton.styleFrom(
-                    //         padding: const EdgeInsets.symmetric(
-                    //             vertical: 15, horizontal: 30)),
-                    //     onPressed: () => _showPopup())
+                    SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                            child: Text("Add comment"),
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: primaryColor),
+                            onPressed: () => _showPopup()))
                   ],
                 ),
               ),
               ...comments.map((item) => Comment(
                     commentText: item['comment'],
                     imagePath: item['avatarUrl'],
+                    userEmail: item['userEmail'],
                   ))
             ],
           ),
@@ -436,49 +431,50 @@ class HotelPageState extends State<HotelPage> with TickerProviderStateMixin {
     )));
   }
 
-  // Future _showPopup() async {
-  //   return showDialog(
-  //       context: context,
-  //       builder: (context) {
-  //         return AlertDialog(
-  //           title: const Text("Add your comment"),
-  //           content: TextField(
-  //             onChanged: (value) {
-  //               commentText = value;
-  //             },
-  //             controller: _textFieldController,
-  //             decoration: const InputDecoration(hintText: "Comment"),
-  //           ),
-  //           actions: <Widget>[
-  //             ElevatedButton(
-  //               child: const Text("Add"),
-  //               style: ElevatedButton.styleFrom(
-  //                   padding:
-  //                       EdgeInsets.symmetric(vertical: 15, horizontal: 30)),
-  //               onPressed: () {
-  //                 if (commentText != '') {
-  //                   Firestore()
-  //                       .addComment(
-  //                           comment: commentText,
-  //                           hotel_id: widget.hotel!.hotelId,
-  //                           user_email: Auth.currentUser!.email ?? '',
-  //                           user_id: Auth.currentUser!.uid)
-  //                       .then((value) => CustomToast(
-  //                               color: Colors.green,
-  //                               message: "Your comment added")
-  //                           .show());
-  //                 }
-  //                 _textFieldController.clear();
-  //                 setState(() {
-  //                   commentText = '';
-  //                 });
-  //                 Navigator.pop(context);
-  //               },
-  //             ),
-  //           ],
-  //         );
-  //       });
-  // }
+  Future _showPopup() async {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text("Add your comment"),
+            content: TextField(
+              onChanged: (value) {
+                commentText = value;
+              },
+              controller: _textFieldController,
+              decoration: const InputDecoration(hintText: "Comment"),
+            ),
+            actions: <Widget>[
+              ElevatedButton(
+                child: const Text("Add"),
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: primaryColor,
+                    padding:
+                        EdgeInsets.symmetric(vertical: 15, horizontal: 30)),
+                onPressed: () {
+                  if (commentText != '') {
+                    Firestore()
+                        .addComment(
+                            comment: commentText,
+                            hotel_id: widget.hotel!.hotelId,
+                            user_email: Auth.currentUser!.email ?? '',
+                            user_id: Auth.currentUser!.uid)
+                        .then((value) => CustomToast(
+                                color: Colors.green,
+                                message: "Your comment added")
+                            .show());
+                  }
+                  _textFieldController.clear();
+                  setState(() {
+                    commentText = '';
+                  });
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          );
+        });
+  }
 
   Widget _buildRatingStars(int filledStars) {
     List<StarIconButton> filledStarsList = [];
