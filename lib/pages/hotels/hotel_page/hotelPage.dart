@@ -225,10 +225,10 @@ class HotelPageState extends State<HotelPage> with TickerProviderStateMixin {
                           ),
                         ),
                         Column(
-                          children: const [
+                          children: [
                             Text(
-                              "\$ 200 ",
-                              style: TextStyle(
+                              "${widget.hotel.averageCost}\$",
+                              style: const TextStyle(
                                 color: textBase,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 20.0,

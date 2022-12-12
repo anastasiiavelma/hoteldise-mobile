@@ -1,3 +1,4 @@
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:hoteldise/models/price.dart';
 
 class RoomType {
@@ -29,5 +30,17 @@ class RoomType {
     photosUrls = List.from(json['photosUrls']);
     numOfFreeSuchRooms = json['numOfFreeSuchRooms'];
     id = json['id'];
+  }
+
+  Future<void> setImagesUrls() async {
+    List<String> photos = [];
+    for (var photo in photosUrls) {
+      String url = await FirebaseStorage.instance
+          .ref()
+          .child(photo)
+          .getDownloadURL();
+      photos.add(url);
+    }
+    photosUrls = photos;
   }
 }

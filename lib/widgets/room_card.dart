@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hoteldise/models/room_type.dart';
+import 'package:hoteldise/pages/hotels/room_page/room_page.dart';
 import 'package:hoteldise/widgets/text_widget.dart';
 
 import '../../../themes/constants.dart';
@@ -14,10 +15,30 @@ class RoomCard extends StatefulWidget {
 }
 
 class _RoomCardState extends State<RoomCard> {
+  Future<void> setImages() async {
+    await widget.room.setImagesUrls();
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    setImages();
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () async {
+        FocusScope.of(context).requestFocus(FocusNode());
+        Navigator.push<dynamic>(
+          context,
+          MaterialPageRoute<dynamic>(
+              builder: (BuildContext context) =>
+                  RoomPage(room: widget.room),
+              fullscreenDialog: true),
+        );
+      },
       child: Container(
         width: 160,
         padding: const EdgeInsets.all(10),
