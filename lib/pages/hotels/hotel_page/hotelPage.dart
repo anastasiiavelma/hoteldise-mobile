@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:hoteldise/pages/hotels/home/home.dart';
+import 'package:hoteldise/pages/main_menu/menubar.dart';
 import 'package:hoteldise/utils/toast.dart';
 import 'package:hoteldise/widgets/comments.dart';
 import 'package:hoteldise/widgets/hotel_comment.dart';
@@ -402,7 +403,7 @@ class HotelPageState extends State<HotelPage> with TickerProviderStateMixin {
               icon: const Icon(Icons.arrow_back),
               onPressed: () {
                 Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => const HotelsHome()),
+                  MaterialPageRoute(builder: (context) => const MenuBar()),
                 );
               },
             ),

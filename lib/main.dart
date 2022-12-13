@@ -57,7 +57,7 @@ class _MyAppState extends State<MyApp> {
               '/main': (context) => const MenuBar(),
               '/signIn': (context) => const SignInScreen(),
               '/signUp': (context) => const SignUpScreen(),
-              '/': (context) => const HotelsHome(),
+              '/': (context) => const MenuBar(),
             },
             theme: ThemeData.dark(),
           )),
