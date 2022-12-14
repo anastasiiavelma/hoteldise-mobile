@@ -1,3 +1,4 @@
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:hoteldise/models/price.dart';
 
 class RoomType {
