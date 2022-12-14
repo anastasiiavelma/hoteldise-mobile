@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:hoteldise/pages/hotels/home/book_room/book_page.dart';
 import 'package:hoteldise/pages/hotels/home/home.dart';
 import 'package:hoteldise/pages/main_menu/menubar.dart';
 import 'package:hoteldise/utils/toast.dart';
@@ -152,6 +154,7 @@ class HotelPageState extends State<HotelPage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    AuthBase Auth = Provider.of<AuthBase>(context);
     return SafeArea(
         child: Scaffold(
             body: Stack(
@@ -258,7 +261,28 @@ class HotelPageState extends State<HotelPage> with TickerProviderStateMixin {
                           "Book Now",
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          if (rooms.isNotEmpty) {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute<dynamic>(
+                                    builder: (BuildContext context) => BookRoom(
+                                          hotel: widget.hotel,
+                                          auth: Auth,
+                                        )));
+                          } else {
+                            Fluttertoast.showToast(
+                                msg:
+                                    "There are no vacancies, you cannot book a room!",
+                                toastLength: Toast.LENGTH_LONG,
+                                webPosition: "top",
+                                gravity: ToastGravity.TOP,
+                                timeInSecForIosWeb: 1,
+                                backgroundColor: Colors.red,
+                                textColor: const Color.fromARGB(255, 0, 0, 0),
+                                fontSize: 16.0);
+                          }
+                        },
                       ),
                     ),
                     const SizedBox(
