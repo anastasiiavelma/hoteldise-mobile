@@ -56,96 +56,97 @@ class _ProfileScreenState extends State<ProfileScreen> {
       });
     }
     return Scaffold(
-      backgroundColor: backgroundColor,
-      resizeToAvoidBottomInset: false,
-      body: Container(
-          alignment: Alignment.center,
-          padding: const EdgeInsets.all(30),
-          child: Column(
-            children: <Widget>[
-              const SizedBox(
-                height: 70,
-              ),
-              imageProfile(),
-              Form(
-                child: Column(
-                  children: [
-                    const SizedBox(
-                      height: 50.0,
-                    ),
-                    Container(
-                      alignment: Alignment.center,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10.0,
-                        vertical: 0.0,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(Auth.currentUser!.displayName ?? "User",
-                              style: Theme.of(context).textTheme.headline5),
-                          const SizedBox(
-                            width: 10.0,
-                          ),
-                          InkWell(
-                            onTap: () {
-                              _showPopup(Auth);
-                            },
-                            child: const Icon(
-                              UniconsLine.pen,
-                              color: primaryColor,
-                              size: 25.0,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const Divider(
-                      indent: 0,
-                      endIndent: 0,
-                      color: primaryColor,
-                      thickness: 1,
-                    ),
-                    const SizedBox(
-                      height: 30.0,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+        backgroundColor: backgroundColor,
+        resizeToAvoidBottomInset: false,
+        body: SingleChildScrollView(
+          child: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(30),
+              child: Column(
+                children: <Widget>[
+                  const SizedBox(
+                    height: 70,
+                  ),
+                  imageProfile(),
+                  Form(
+                    child: Column(
                       children: [
-                        Text(Auth.currentUser!.email ?? "Email",
-                            style: Theme.of(context).textTheme.headline5),
                         const SizedBox(
-                          width: 10.0,
+                          height: 50.0,
+                        ),
+                        Container(
+                          alignment: Alignment.center,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10.0,
+                            vertical: 0.0,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(Auth.currentUser!.displayName ?? "User",
+                                  style: Theme.of(context).textTheme.headline5),
+                              const SizedBox(
+                                width: 10.0,
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  _showPopup(Auth);
+                                },
+                                child: const Icon(
+                                  UniconsLine.pen,
+                                  color: primaryColor,
+                                  size: 25.0,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const Divider(
+                          indent: 0,
+                          endIndent: 0,
+                          color: primaryColor,
+                          thickness: 1,
+                        ),
+                        const SizedBox(
+                          height: 30.0,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(Auth.currentUser!.email ?? "Email",
+                                style: Theme.of(context).textTheme.headline5),
+                            const SizedBox(
+                              width: 10.0,
+                            ),
+                          ],
+                        ),
+                        const Divider(
+                          indent: 0,
+                          endIndent: 0,
+                          color: primaryColor,
+                          thickness: 1,
                         ),
                       ],
                     ),
-                    const Divider(
-                      indent: 0,
-                      endIndent: 0,
-                      color: primaryColor,
-                      thickness: 1,
+                  ),
+                  const SizedBox(
+                    height: 60,
+                  ),
+                  OutlinedButton(
+                    style: OutlinedButton.styleFrom(
+                      backgroundColor: Colors.black,
+                      side: BorderSide(color: primaryColor, width: 1.5),
+                      minimumSize: Size.fromHeight(40),
                     ),
-                  ],
-                ),
-              ),
-              const SizedBox(
-                height: 60,
-              ),
-              OutlinedButton(
-                style: OutlinedButton.styleFrom(
-                  backgroundColor: Colors.black,
-                  side: BorderSide(color: primaryColor, width: 1.5),
-                  minimumSize: Size.fromHeight(40),
-                ),
-                onPressed: () => _logOut(),
-                child: const Text(
-                  "LogOut",
-                  style: TextStyle(color: primaryColor, fontSize: 15),
-                ),
-              )
-            ],
-          )),
-    );
+                    onPressed: () => _logOut(),
+                    child: const Text(
+                      "LogOut",
+                      style: TextStyle(color: primaryColor, fontSize: 15),
+                    ),
+                  )
+                ],
+              )),
+        ));
   }
 
   Future _showPopup(AuthBase Auth) async {

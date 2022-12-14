@@ -128,6 +128,7 @@ class _SignInScreenState extends State<SignInScreen> {
         ? const WelcomeScreen()
         : Scaffold(
             backgroundColor: backgroundColor,
+            resizeToAvoidBottomInset: false,
             body: Container(
               alignment: Alignment.center,
               padding: const EdgeInsets.only(
