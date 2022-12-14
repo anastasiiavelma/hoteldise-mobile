@@ -53,7 +53,7 @@ class _RoomCardState extends State<RoomCard> {
             const Icon(Icons.bed_outlined),
             AppText(
               text:
-                  'Cost: ${widget.room.price.price}${widget.room.price.currency}',
+                  'Cost: ${widget.room.price.price} ${widget.room.price.currency}',
               color: textBase,
               size: 14,
             ),
@@ -75,8 +75,8 @@ class _RoomCardState extends State<RoomCard> {
         context: context,
         builder: (context) {
           return Dialog(
-              child: Container(
-                  width: double.infinity,
+              child: SizedBox(
+                  width: 350,
                   height: 470,
                   child: Scaffold(
                     appBar: AppBar(
@@ -97,13 +97,21 @@ class _RoomCardState extends State<RoomCard> {
                     body: ListView(
                       children: [
                         Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            getPhotos(),
+                            Container(
+                              child: getPhotos(),
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
                             Container(
                               padding: const EdgeInsets.symmetric(
-                                horizontal: 20.0,
+                                horizontal: 25.0,
                               ),
                               child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
@@ -144,7 +152,7 @@ class _RoomCardState extends State<RoomCard> {
                                     height: 10,
                                   ),
                                   Text(
-                                    'Cost: ${widget.room.price.price} ${widget.room.price.currency}/ per night',
+                                    'Cost: ${widget.room.price.price} ${widget.room.price.currency}/per night',
                                     style: const TextStyle(
                                       fontSize: 18,
                                     ),
@@ -163,7 +171,7 @@ class _RoomCardState extends State<RoomCard> {
   Widget getPhotos() {
     if (widget.room.photosUrls.isNotEmpty) {
       return SizedBox(
-        height: 220,
+        height: 200,
         width: 330,
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
@@ -191,12 +199,17 @@ class _RoomCardState extends State<RoomCard> {
       return SizedBox(
           height: 200,
           width: 330,
-          child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Image.asset(
+          child: ListView(
+            children: <Widget>[
+              Center(
+                  child: Image.asset(
                 'assets/images/no_image.jpg',
                 fit: BoxFit.fill,
-              )));
+                height: 200,
+                width: 300,
+              )),
+            ],
+          ));
     }
   }
 
